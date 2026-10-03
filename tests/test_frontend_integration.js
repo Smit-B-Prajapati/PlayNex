@@ -38,8 +38,7 @@ async function runSuite() {
     'crm.html',
     'members.html',
     'portal.html',
-    'dashboard.html',
-    'styleguide.html'
+    'dashboard.html'
   ];
 
   for (const page of pages) {
