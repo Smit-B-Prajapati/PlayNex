@@ -14,13 +14,182 @@ let courts = [
   { id: '6', name: 'Badminton Court 2 (Indoor Mat)', sport: 'badminton', walkinRate: 400 }
 ];
 
-// Members Plan Reference
-const memberProfiles = {
-  'CC-MEM-00101': { name: 'David Vance', plan: 'gold', rate: 0.0, rateLabel: 'Free (Gold Tier Entitlement)' },
-  'CC-MEM-00102': { name: 'Elena Rostova', plan: 'silver', rate: 300.0, rateLabel: '₹ 300.00 / hr (Silver Tier)' },
-  'CC-MEM-00103': { name: 'Leo Chen', plan: 'junior', rate: 200.0, rateLabel: '₹ 200.00 / hr (Junior Youth Tier)' },
-  'CC-MEM-00104': { name: 'Vikram Mehta', plan: 'silver', rate: 300.0, rateLabel: '₹ 300.00 / hr (Silver Tier)' }
-};
+// Dynamic Member Profiles Retrieval
+function getDynamicMembers() {
+  let rawMembers = [];
+  if (typeof window !== 'undefined' && window.ClubDataStore) {
+    rawMembers = window.ClubDataStore.getMembers() || [];
+  }
+  if (!rawMembers || rawMembers.length === 0) {
+    rawMembers = [
+      { id: 'CC-MEM-00101', name: 'David Vance', plan: 'gold', state: 'active' },
+      { id: 'CC-MEM-00102', name: 'Elena Rostova', plan: 'silver', state: 'active' },
+      { id: 'CC-MEM-00103', name: 'Leo Chen', plan: 'junior', state: 'active' },
+      { id: 'CC-MEM-00104', name: 'Vikram Mehta', plan: 'silver', state: 'expired' }
+    ];
+  }
+
+  return rawMembers.map(m => {
+    const planCode = (m.plan || 'gold').toLowerCase();
+    const isExpired = m.state === 'expired' || m.state === 'cancelled';
+    let rate = 0.0;
+    let rateLabel = 'Free (Gold Tier Entitlement)';
+
+    if (isExpired) {
+      rate = 500.0;
+      rateLabel = '₹ 500.00 / hr (Expired - Standard Rate)';
+    } else if (planCode === 'gold') {
+      rate = 0.0;
+      rateLabel = 'Free (Gold Tier Entitlement)';
+    } else if (planCode === 'silver') {
+      rate = 300.0;
+      rateLabel = '₹ 300.00 / hr (Silver Member Rate)';
+    } else if (planCode === 'junior') {
+      rate = 200.0;
+      rateLabel = '₹ 200.00 / hr (Junior Youth Rate)';
+    }
+
+    return {
+      id: m.id || m.member_code,
+      name: m.name,
+      plan: planCode,
+      state: m.state || 'active',
+      rate: rate,
+      rateLabel: rateLabel
+    };
+  });
+}
+
+function getCurrentMember() {
+  const members = getDynamicMembers();
+  let session = null;
+  if (typeof window !== 'undefined') {
+    const raw = sessionStorage.getItem('cc_portal_member');
+    if (raw) {
+      try { session = JSON.parse(raw); } catch (e) {}
+    }
+  }
+
+  if (session) {
+    const sessionCode = session.member_id || session.id || session.member_code;
+    const found = members.find(m => m.id === sessionCode || m.name.toLowerCase() === (session.name || '').toLowerCase());
+    if (found) return found;
+  }
+
+  const explicitId = document.getElementById('booking-member-id')?.value;
+  if (explicitId) {
+    const found = members.find(m => m.id === explicitId);
+    if (found) return found;
+  }
+
+  // Default to first active member
+  const activeMem = members.find(m => m.state === 'active') || members[0];
+  return activeMem;
+}
+
+function updateMemberDisplayCard() {
+  const member = getCurrentMember();
+  if (!member) return;
+
+  const idEl = document.getElementById('member-card-id');
+  const nameEl = document.getElementById('member-card-name');
+  const tierBadgeEl = document.getElementById('member-card-tier-badge');
+  const stateEl = document.getElementById('member-card-state');
+  const rateLabelEl = document.getElementById('member-card-rate-label');
+  const hiddenInput = document.getElementById('booking-member-id');
+
+  if (idEl) idEl.textContent = member.id;
+  if (nameEl) nameEl.textContent = member.name;
+  if (hiddenInput) hiddenInput.value = member.id;
+
+  if (tierBadgeEl) {
+    const planUpper = (member.plan || 'gold').toUpperCase();
+    const badgeClass = member.plan === 'gold' ? 'cc-badge-gold' : member.plan === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
+    tierBadgeEl.className = `cc-badge ${badgeClass}`;
+    tierBadgeEl.textContent = `★ ${planUpper} TIER`;
+  }
+
+  if (stateEl) {
+    stateEl.className = `cc-badge ${member.state === 'active' ? 'cc-badge-active' : 'cc-badge-danger'}`;
+    stateEl.textContent = member.state.toUpperCase();
+  }
+
+  if (rateLabelEl) {
+    rateLabelEl.textContent = member.rateLabel;
+  }
+
+  updateFormSummary();
+}
+
+function renderSwitchMembersList(filterText = '') {
+  const container = document.getElementById('switch-members-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const members = getDynamicMembers();
+  const filtered = members.filter(m => {
+    if (!filterText) return true;
+    const q = filterText.toLowerCase();
+    return m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q) || m.plan.toLowerCase().includes(q);
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="color: var(--cc-text-muted); font-size: 12px; padding: 1rem; text-align: center;">No registered members found.</div>';
+    return;
+  }
+
+  const current = getCurrentMember();
+
+  filtered.forEach(m => {
+    const isCurrent = current && current.id === m.id;
+    const planClass = m.plan === 'gold' ? 'cc-badge-gold' : m.plan === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
+    const item = document.createElement('div');
+    item.className = 'cc-card cc-card-glass';
+    item.style.cssText = `
+      padding: 10px 14px;
+      cursor: pointer;
+      border-color: ${isCurrent ? 'var(--cc-gold-500)' : 'var(--cc-border-medium)'};
+      background: ${isCurrent ? 'rgba(212, 175, 55, 0.12)' : 'rgba(22, 29, 46, 0.6)'};
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all var(--cc-transition-fast);
+    `;
+
+    item.innerHTML = `
+      <div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <strong style="color: var(--cc-text-primary); font-size: 14px;">${m.name}</strong>
+          <span class="cc-badge ${planClass}" style="font-size: 9px; padding: 1px 5px;">${m.plan.toUpperCase()}</span>
+        </div>
+        <div class="cc-text-mono" style="font-size: 11px; color: var(--cc-gold-400);">${m.id} &bull; <span style="color: var(--cc-text-muted);">${m.rateLabel}</span></div>
+      </div>
+      <div>
+        ${isCurrent ? '<span class="cc-badge cc-badge-active" style="font-size: 10px;">Active</span>' : '<button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; padding: 3px 10px;">Select</button>'}
+      </div>
+    `;
+
+    item.addEventListener('click', () => {
+      const hiddenInput = document.getElementById('booking-member-id');
+      if (hiddenInput) hiddenInput.value = m.id;
+      // Also update portal session
+      sessionStorage.setItem('cc_portal_member', JSON.stringify({
+        member_id: m.id,
+        member_code: m.id,
+        name: m.name,
+        plan_name: m.plan.toUpperCase(),
+        tier_code: m.plan,
+        state: m.state
+      }));
+      updateMemberDisplayCard();
+      const modal = document.getElementById('modal-switch-member');
+      if (modal) modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+    });
+
+    container.appendChild(item);
+  });
+}
 
 let bookingsData = (window.ClubDataStore && window.ClubDataStore.getBookings) ? window.ClubDataStore.getBookings() : [
   {
@@ -152,11 +321,9 @@ function updateFormSummary() {
   document.getElementById('summary-time-window').textContent = `${selectedSlotTime} → ${endSlot} (1 Hr Session)`;
   document.getElementById('form-selected-slot-badge').textContent = `${selectedSlotTime} - ${endSlot}`;
 
-  const isMember = document.getElementById('radio-party-member').checked;
+  const isMember = document.getElementById('radio-party-member')?.checked ?? true;
   if (isMember) {
-    const memberSelect = document.getElementById('booking-member-select');
-    const memberId = memberSelect.value;
-    const profile = memberProfiles[memberId];
+    const profile = getCurrentMember();
     if (profile) {
       document.getElementById('summary-rate-amount').textContent = profile.rateLabel;
     }
@@ -266,9 +433,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.warn('Could not fetch courts live, using stored defaults.');
   }
 
+  updateMemberDisplayCard();
   renderSlots();
   updateFormSummary();
   renderAdminBookings();
+
+  // Member Switch Button & Search Modal
+  const btnSwitchMember = document.getElementById('btn-switch-member');
+  const switchModal = document.getElementById('modal-switch-member');
+  const switchSearch = document.getElementById('switch-member-search');
+
+  if (btnSwitchMember && switchModal) {
+    btnSwitchMember.addEventListener('click', () => {
+      if (switchSearch) switchSearch.value = '';
+      renderSwitchMembersList('');
+      switchModal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  if (switchSearch) {
+    switchSearch.addEventListener('input', (e) => {
+      renderSwitchMembersList(e.target.value);
+    });
+  }
 
   // Court Dropdown Change
   const courtSelect = document.getElementById('booking-court-select');
@@ -337,12 +525,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Member select change
-  const memberSelect = document.getElementById('booking-member-select');
-  if (memberSelect) {
-    memberSelect.addEventListener('change', updateFormSummary);
-  }
-
   // Search Admin Bookings
   const adminSearch = document.getElementById('admin-booking-search');
   if (adminSearch) {
@@ -371,8 +553,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       let rateAppliedStr = '';
 
       if (isMember) {
-        memberId = memberSelect.value;
-        const profile = memberProfiles[memberId];
+        const profile = getCurrentMember();
+        if (!profile) {
+          if (errorBox) {
+            errorTitle.textContent = "No Member Profile";
+            errorMsg.textContent = "Please select or login as a registered club member.";
+            errorBox.style.display = 'flex';
+          }
+          return;
+        }
+        memberId = profile.id;
         playerName = `${profile.name} (${profile.plan.toUpperCase()})`;
         rateAppliedStr = profile.rate === 0 ? '₹ 0.00 (Free)' : `₹ ${profile.rate.toFixed(2)}`;
 
