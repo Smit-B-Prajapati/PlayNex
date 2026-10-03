@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrative Dashboard | CHAMPIONS CLUB</title>
+  <meta name="description" content="CHAMPIONS CLUB Administrative Dashboard. Live operational metrics calculated strictly from actual stored system records with 100% audit traceability.">
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/typography.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="cc-bg-base">
+
+  <!-- Global Header Navigation -->
+  <header class="cc-navbar" id="dashboard-navbar">
+    <div class="cc-navbar-container">
+      <a href="index.html" class="cc-brand">
+        <div class="cc-brand-logo-mark">C</div>
+        <div class="cc-brand-text">
+          <span class="cc-brand-name">CHAMPIONS CLUB</span>
+          <span class="cc-brand-tagline">PLAY. PERFORM. BELONG.</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="cc-nav-links">
+          <li><a href="index.html" class="cc-nav-link">Home</a></li>
+          <li><a href="members.html" class="cc-nav-link">Roster (Admin)</a></li>
+          <li><a href="portal.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Member Portal</a></li>
+          <li><a href="dashboard.html" class="cc-nav-link is-active cc-text-gold" style="font-weight: 700;" aria-current="page">Admin Dashboard</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Header / Context Ribbon -->
+  <section class="cc-dashboard-hero">
+    <div class="cc-container">
+      <div class="cc-dashboard-header-flex">
+        <div>
+          <span class="cc-badge cc-badge-gold" style="margin-bottom: 8px;">ADMINISTRATIVE CONTROL CENTER</span>
+          <h1 class="cc-h2" style="margin: 6px 0 10px;">Executive &amp; Operations Dashboard</h1>
+          <p class="cc-body-sm" style="color: var(--cc-text-secondary); max-width: 680px; margin: 0;">
+            Real-time management metrics computed strictly from active stored records across Memberships, Court Bookings, Pro Shop, Bar POS, and Visitor Leads.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-sm); padding: 8px 14px; font-size: 13px;">
+            <span style="color: var(--cc-text-muted);">System Date:</span>
+            <strong style="color: var(--cc-gold-400); margin-left: 4px;" id="dashboard-current-date">Oct 3, 2026</strong>
+          </div>
+          <button id="btn-toggle-traceability" class="cc-btn cc-btn-secondary" style="padding: 10px 18px; font-size: 12px;">
+            Trace Data Sources: ON
+          </button>
+          <button id="btn-toggle-empty-state" class="cc-btn cc-btn-secondary" style="padding: 10px 18px; font-size: 12px; border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;">
+            Test Empty State ("No data available")
+          </button>
+          <button id="btn-restore-demo" class="cc-btn cc-btn-primary" style="padding: 10px 18px; font-size: 12px;">
+            Restore Baseline Records
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Dashboard Content -->
+  <main class="cc-container" style="padding: 32px 0 64px;">
+
+    <!-- Traceability & Anti-Hallucination Notice -->
+    <div class="cc-traceability-banner" id="traceability-info-banner">
+      <div>
+        <p>
+          <strong>STRICT DATA AUDIT RULE ACTIVE:</strong>
+          Every KPI, total, and figure below is computed dynamically from actual stored records.
+          No invented numbers (such as arbitrary revenue or made-up member counts) are used.
+          If no records exist for a category, <em>"No data available"</em> is displayed.
+        </p>
+      </div>
+      <div style="font-family: monospace; font-size: 11px; color: var(--cc-gold-400);">
+        Active Database Sync: Ready
+      </div>
+    </div>
+
+    <!-- Time Period Filter Navigation Bar -->
+    <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-medium); border-radius: var(--cc-radius-lg); padding: 12px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="font-size: 12px; color: var(--cc-text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Time Period:</span>
+        <button class="cc-filter-pill is-active cc-time-filter-pill" data-period="today">Today</button>
+        <button class="cc-filter-pill cc-time-filter-pill" data-period="week">This Week</button>
+        <button class="cc-filter-pill cc-time-filter-pill" data-period="month">This Month</button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 11px; color: var(--cc-text-muted);">Active Scope:</span>
+        <span class="cc-badge cc-badge-gold" id="dashboard-period-badge" style="font-size: 11px;">Today (Oct 3, 2026)</span>
+      </div>
+    </div>
+
+    <!-- Module Filter Navigation Pills -->
+    <div class="cc-filter-pill-bar">
+      <button class="cc-filter-pill is-active" data-module="all">All Modules</button>
+      <button class="cc-filter-pill" data-module="membership">Memberships</button>
+      <button class="cc-filter-pill" data-module="courts">Court Bookings</button>
+      <button class="cc-filter-pill" data-module="shop">Pro Shop Sales</button>
+      <button class="cc-filter-pill" data-module="bar">Bar &amp; Cafeteria POS</button>
+      <button class="cc-filter-pill" data-module="revenue">Revenue Ledger</button>
+      <button class="cc-filter-pill" data-module="inventory">Shared Inventory</button>
+      <button class="cc-filter-pill" data-module="crm">Enquiries &amp; Leads</button>
+    </div>
+
+    <!-- =========================================================================
+         EXECUTIVE SUMMARY KPIS (100% Calculated from Actual Records)
+         ========================================================================= -->
+    <div class="cc-kpi-grid">
+      <!-- 1. Membership Information -->
+      <div class="cc-kpi-card" data-module-card="membership">
+        <div class="cc-kpi-card-header">
+          <h3 class="cc-kpi-title">Memberships</h3>
+          <span class="cc-badge cc-badge-active" id="kpi-members-status-badge">Active</span>
+        </div>
+        <div class="cc-kpi-value" id="kpi-total-members">--</div>
+        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-members-sub">--</div>
+        <div class="cc-kpi-source-tag" title="Source in stored system data">
+          <span>Source:</span> <span id="kpi-members-source">localStorage['cc_members'] (club.member)</span>
+        </div>
+      </div>
+
+      <!-- 2. Court Bookings -->
+      <div class="cc-kpi-card" data-module-card="courts">
+        <div class="cc-kpi-card-header">
+          <h3 class="cc-kpi-title">Court Bookings</h3>
+          <span class="cc-badge cc-badge-gold">Oct 3, 2026</span>
+        </div>
+        <div class="cc-kpi-value" id="kpi-total-bookings">--</div>
+        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-bookings-sub">--</div>
+        <div class="cc-kpi-source-tag" title="Source in stored system data">
+          <span>Source:</span> <span id="kpi-bookings-source">localStorage['cc_bookings'] (club.booking)</span>
+        </div>
+      </div>
+
+      <!-- 3. Pro Shop Sales -->
+      <div class="cc-kpi-card" data-module-card="shop">
+        <div class="cc-kpi-card-header">
+          <h3 class="cc-kpi-title">Pro Shop Sales</h3>
+          <span class="cc-badge cc-badge-silver">Orders</span>
+        </div>
+        <div class="cc-kpi-value" id="kpi-total-shop-orders">--</div>
+        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-shop-sub">--</div>
+        <div class="cc-kpi-source-tag" title="Source in stored system data">
+          <span>Source:</span> <span id="kpi-shop-source">localStorage['cc_shop_orders'] (club.shop.order)</span>
+        </div>
+      </div>
+
+      <!-- 4. Bar / Cafe POS Sales -->
+      <div class="cc-kpi-card" data-module-card="bar">
+        <div class="cc-kpi-card-header">
+          <h3 class="cc-kpi-title">Bar / Cafe Sales</h3>
+          <span class="cc-badge cc-badge-warning">Daily Shift</span>
+        </div>
+        <div class="cc-kpi-value gold-accent" id="kpi-total-bar-revenue">--</div>
+        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-bar-sub">--</div>
+        <div class="cc-kpi-source-tag" title="Source in stored system data">
+          <span>Source:</span> <span id="kpi-bar-source">localStorage['cc_bar_revenue'] (club.bar.shift)</span>
+        </div>
+      </div>
+
+      <!-- 5. Unified Club Revenue -->
+      <div class="cc-kpi-card" data-module-card="revenue">
+        <div class="cc-kpi-card-header">
+          <h3 class="cc-kpi-title">Recorded Club Revenue</h3>
+          <span class="cc-badge cc-badge-gold">Itemized Sum</span>
+        </div>
+        <div class="cc-kpi-value gold-accent" id="kpi-total-revenue">--</div>
+        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-revenue-sub">--</div>
+        <div class="cc-kpi-source-tag" title="Source in stored system data">
+          <span>Source:</span> <span id="kpi-revenue-source">Shop + Bar + Court Receipts</span>
+        </div>
+      </div>
+
+      <!-- 6. Shared Shelf Inventory -->
+      <div class="cc-kpi-card" data-module-card="inventory">
+        <div class="cc-kpi-card-header">
+          <h3 class="cc-kpi-title">Inventory Shelf</h3>
+          <span class="cc-badge" id="kpi-inventory-badge">Shared Shelf</span>
+        </div>
+        <div class="cc-kpi-value" id="kpi-total-inventory-units">--</div>
+        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-inventory-sub">--</div>
+        <div class="cc-kpi-source-tag" title="Source in stored system data">
+          <span>Source:</span> <span id="kpi-inventory-source">localStorage['cc_products'] (club.product)</span>
+        </div>
+      </div>
+
+      <!-- 7. Enquiries / CRM Pipeline -->
+      <div class="cc-kpi-card" data-module-card="crm">
+        <div class="cc-kpi-card-header">
+          <h3 class="cc-kpi-title">Visitor Enquiries</h3>
+          <span class="cc-badge cc-badge-junior">CRM Pipeline</span>
+        </div>
+        <div class="cc-kpi-value" id="kpi-total-leads">--</div>
+        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-crm-sub">--</div>
+        <div class="cc-kpi-source-tag" title="Source in stored system data">
+          <span>Source:</span> <span id="kpi-crm-source">localStorage['cc_leads'] (club.enquiry)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         DETAILED DATA PANELS WITH COMPLETE LINEAGE
+         ========================================================================= -->
+
+    <!-- PANEL 1: MEMBERSHIP INFORMATION -->
+    <section class="cc-dashboard-panel" id="panel-membership">
+      <div class="cc-dashboard-panel-header">
+        <h2 class="cc-dashboard-panel-title">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          Membership Information &amp; Status
+        </h2>
+        <div style="display: flex; gap: 8px;">
+          <a href="members.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">Manage Members &rarr;</a>
+        </div>
+      </div>
+
+      <div id="table-container-members">
+        <!-- Rendered by dashboard_manager.js -->
+      </div>
+    </section>
+
+    <!-- PANEL 2: COURT BOOKINGS -->
+    <section class="cc-dashboard-panel" id="panel-courts">
+      <div class="cc-dashboard-panel-header">
+        <h2 class="cc-dashboard-panel-title">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Court Bookings &amp; Schedules (Tennis, Cricket, Badminton)
+        </h2>
+        <div style="display: flex; gap: 8px;">
+          <a href="bookings.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">Court Booking Portal &rarr;</a>
+        </div>
+      </div>
+
+      <div id="table-container-bookings">
+        <!-- Rendered by dashboard_manager.js -->
+      </div>
+    </section>
+
+    <!-- PANEL 3: PRO SHOP SALES & INVENTORY -->
+    <section class="cc-dashboard-panel" id="panel-shop">
+      <div class="cc-dashboard-panel-header">
+        <h2 class="cc-dashboard-panel-title">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          Pro Shop Sales Orders (Counter &amp; Online)
+        </h2>
+        <div style="display: flex; gap: 8px;">
+          <a href="shop.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">Open Pro Shop &rarr;</a>
+        </div>
+      </div>
+
+      <div id="table-container-shop-orders">
+        <!-- Rendered by dashboard_manager.js -->
+      </div>
+    </section>
+
+    <!-- PANEL 4: SHARED SHELF INVENTORY -->
+    <section class="cc-dashboard-panel" id="panel-inventory">
+      <div class="cc-dashboard-panel-header">
+        <h2 class="cc-dashboard-panel-title">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          Unified Shared Shelf Inventory (Rackets, Balls, Shoes, Accessories, Apparel)
+        </h2>
+        <div id="inventory-low-stock-alert-pill">
+          <!-- Dynamic alert tag -->
+        </div>
+      </div>
+
+      <div id="table-container-inventory">
+        <!-- Rendered by dashboard_manager.js -->
+      </div>
+    </section>
+
+    <!-- PANEL 5: BAR & CAFETERIA POS -->
+    <section class="cc-dashboard-panel" id="panel-bar">
+      <div class="cc-dashboard-panel-header">
+        <h2 class="cc-dashboard-panel-title">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Bar &amp; Cafeteria POS: Seating, Tabs &amp; Daily Reconciliation
+        </h2>
+        <div style="display: flex; gap: 8px;">
+          <a href="pos.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">Bar POS Terminal &rarr;</a>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+        <div>
+          <h3 class="cc-h4" style="margin: 0 0 12px; font-size: 14px; color: var(--cc-text-secondary); text-transform: uppercase;">Daily Bar Revenue Reconciliation Ledger</h3>
+          <div class="cc-ledger-card" id="bar-reconciliation-ledger">
+            <!-- Rendered by dashboard_manager.js -->
+          </div>
+        </div>
+
+        <div>
+          <h3 class="cc-h4" style="margin: 0 0 12px; font-size: 14px; color: var(--cc-text-secondary); text-transform: uppercase;">Active Running Member Tabs</h3>
+          <div id="table-container-bar-tabs">
+            <!-- Rendered by dashboard_manager.js -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 6: REVENUE TRACEABILITY LEDGER -->
+    <section class="cc-dashboard-panel" id="panel-revenue">
+      <div class="cc-dashboard-panel-header">
+        <h2 class="cc-dashboard-panel-title">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          Unified Revenue Ledger (Itemized Traceable Receipts)
+        </h2>
+        <span class="cc-badge cc-badge-gold">Zero Guesswork</span>
+      </div>
+
+      <div id="revenue-traceability-breakdown">
+        <!-- Rendered by dashboard_manager.js -->
+      </div>
+    </section>
+
+    <!-- PANEL 7: ENQUIRIES & CRM PIPELINE -->
+    <section class="cc-dashboard-panel" id="panel-crm">
+      <div class="cc-dashboard-panel-header">
+        <h2 class="cc-dashboard-panel-title">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Visitor Enquiries &amp; CRM Pipeline
+        </h2>
+        <div style="display: flex; gap: 8px;">
+          <a href="crm.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">CRM Kanban Pipeline &rarr;</a>
+        </div>
+      </div>
+
+      <div id="table-container-leads">
+        <!-- Rendered by dashboard_manager.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Raw Record Inspector Modal -->
+  <div class="cc-raw-inspector-modal" id="modal-raw-inspector" role="dialog" aria-modal="true" aria-labelledby="modal-inspector-title">
+    <div class="cc-raw-inspector-content">
+      <div class="cc-raw-inspector-header">
+        <div>
+          <span class="cc-badge cc-badge-gold" style="margin-bottom: 4px;">AUDIT TRACEABILITY</span>
+          <h3 class="cc-h3" id="modal-inspector-title" style="margin: 0; font-size: 18px;">Underlying Record Payload</h3>
+        </div>
+        <button id="btn-close-inspector" class="cc-btn-close" aria-label="Close Modal" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">&times;</button>
+      </div>
+      <div class="cc-raw-inspector-body">
+        <pre id="modal-inspector-json" style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 12px;"></pre>
+      </div>
+      <div style="padding: 12px 24px; border-top: 1px solid var(--cc-border-subtle); display: flex; justify-content: flex-end;">
+        <button class="cc-btn cc-btn-secondary" id="btn-done-inspector" style="padding: 8px 16px; font-size: 12px;">Close Inspector</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="cc-footer">
+    <div class="cc-container">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div class="cc-brand">
+          <div class="cc-brand-logo-mark">C</div>
+          <div class="cc-brand-text">
+            <span class="cc-brand-name">CHAMPIONS CLUB</span>
+            <span class="cc-brand-tagline">PLAY. PERFORM. BELONG.</span>
+          </div>
+        </div>
+        <p class="cc-body-xs" style="color: var(--cc-text-muted); margin: 0;">
+          Administrative Dashboard &bull; Authoritative Data Engine &bull; Reference Date: October 3, 2026
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/club_data_store.js"></script>
+  <script src="js/club_api.js"></script>
+  <script src="js/design_system.js"></script>
+  <script src="js/dashboard_manager.js"></script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHAMPIONS CLUB — Enquiries & CRM Pipeline</title>
+  <meta name="description" content="Visitor Enquiry Capture, Staff Assignment, Quotation, Follow-up, and New Member Conversion Pipeline.">
+  <link rel="stylesheet" href="css/design_system.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <style>
+    .cc-crm-pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+      align-items: flex-start;
+      margin-top: 1.5rem;
+    }
+    .cc-pipeline-col {
+      background: rgba(14, 19, 31, 0.6);
+      border: 1px solid var(--cc-border-subtle);
+      border-radius: var(--cc-radius-lg);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 480px;
+    }
+    .cc-col-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--cc-border-medium);
+    }
+    .cc-lead-card {
+      background: var(--cc-bg-secondary);
+      border: 1px solid var(--cc-border-medium);
+      border-radius: var(--cc-radius-md);
+      padding: 1rem;
+      cursor: pointer;
+      transition: all var(--cc-transition-fast);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .cc-lead-card:hover {
+      border-color: var(--cc-gold-500);
+      transform: translateY(-2px);
+      box-shadow: var(--cc-shadow-sm);
+    }
+    .cc-lead-card.is-converted {
+      border-color: rgba(0, 229, 153, 0.4);
+      background: rgba(0, 229, 153, 0.04);
+    }
+    @media (max-width: 1200px) {
+      .cc-crm-pipeline {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 768px) {
+      .cc-crm-pipeline {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       TOP NAVBAR
+       ========================================== -->
+  <header class="cc-navbar" id="crm-navbar">
+    <div class="cc-navbar-container">
+      <a href="index.html" class="cc-brand">
+        <div class="cc-brand-logo-mark">C</div>
+        <div class="cc-brand-text">
+          <span class="cc-brand-name">CHAMPIONS CLUB</span>
+          <span class="cc-brand-tagline">PLAY. PERFORM. BELONG.</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="cc-nav-links">
+          <li><a href="index.html" class="cc-nav-link">Landing Page</a></li>
+          <li><a href="bookings.html" class="cc-nav-link">Court Bookings</a></li>
+          <li><a href="shop.html" class="cc-nav-link">Pro Shop</a></li>
+          <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
+          <li><a href="crm.html" class="cc-nav-link is-active">Enquiries CRM</a></li>
+          <li><a href="members.html" class="cc-nav-link">Roster (Admin)</a></li>
+          <li><a href="portal.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Member Portal</a></li>
+          <li><a href="dashboard.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Admin Dashboard</a></li>
+          <li><a href="styleguide.html" class="cc-nav-link" target="_blank" rel="noopener">Styleguide</a></li>
+        </ul>
+      </nav>
+
+      <div class="cc-nav-actions">
+        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-open-enquiry-modal">
+          + New Visitor Enquiry
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="cc-container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+
+    <!-- HEADER & EXPLANATION -->
+    <div style="margin-bottom: 1.5rem;">
+      <div class="cc-eyebrow">Visitor Engagement Pipeline</div>
+      <h1 class="cc-heading-1">Enquiries &amp; Member Onboarding</h1>
+      <p class="cc-body-sm" style="margin-top: 4px;">
+        When a visitor reaches out online or at front desk, manage the lifecycle across strictly defined stages: <strong>New Enquiry &rarr; Contacted &rarr; Follow-up &rarr; Quote &rarr; Converted</strong>.
+      </p>
+    </div>
+
+    <!-- PIPELINE STAGES KANBAN BOARD -->
+    <div class="cc-crm-pipeline">
+      
+      <!-- STAGE 1: NEW ENQUIRY -->
+      <div class="cc-pipeline-col" id="col-new">
+        <div class="cc-col-header">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="cc-pulse-dot" style="background: var(--cc-junior-blue);"></span>
+            <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">New Enquiry</strong>
+          </div>
+          <span class="cc-badge cc-badge-junior" id="badge-count-new">0</span>
+        </div>
+        <div class="cc-cards-container" id="cards-new" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- STAGE 2: CONTACTED -->
+      <div class="cc-pipeline-col" id="col-contacted">
+        <div class="cc-col-header">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="cc-pulse-dot" style="background: var(--cc-amber);"></span>
+            <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">Contacted</strong>
+          </div>
+          <span class="cc-badge cc-badge-warning" id="badge-count-contacted">0</span>
+        </div>
+        <div class="cc-cards-container" id="cards-contacted" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- STAGE 3: FOLLOW-UP -->
+      <div class="cc-pipeline-col" id="col-followup">
+        <div class="cc-col-header">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="cc-pulse-dot" style="background: #38bdf8;"></span>
+            <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">Follow-up</strong>
+          </div>
+          <span class="cc-badge cc-badge-silver" id="badge-count-followup">0</span>
+        </div>
+        <div class="cc-cards-container" id="cards-followup" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- STAGE 4: QUOTE SENT -->
+      <div class="cc-pipeline-col" id="col-quote">
+        <div class="cc-col-header">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="cc-pulse-dot" style="background: var(--cc-gold-500);"></span>
+            <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">Quote</strong>
+          </div>
+          <span class="cc-badge cc-badge-gold" id="badge-count-quote">0</span>
+        </div>
+        <div class="cc-cards-container" id="cards-quote" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- STAGE 5: CONVERTED MEMBER -->
+      <div class="cc-pipeline-col" id="col-converted">
+        <div class="cc-col-header">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="cc-pulse-dot" style="background: var(--cc-neon-green);"></span>
+            <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">Converted</strong>
+          </div>
+          <span class="cc-badge cc-badge-active" id="badge-count-converted">0</span>
+        </div>
+        <div class="cc-cards-container" id="cards-converted" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+       MODAL: CREATE NEW VISITOR ENQUIRY
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-new-enquiry" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 540px;">
+      <div class="cc-modal-header">
+        <h3 class="cc-modal-title">Visitor Enquiry Capture</h3>
+        <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="form-visitor-enquiry">
+        <div class="cc-modal-body">
+          <div class="cc-form-group">
+            <label class="cc-label" for="enq-visitor-name">Full Name *</label>
+            <input type="text" id="enq-visitor-name" class="cc-input" placeholder="e.g. Siddharth Rao" required>
+          </div>
+
+          <div class="cc-grid cc-grid-cols-2">
+            <div class="cc-form-group">
+              <label class="cc-label" for="enq-visitor-phone">Phone / WhatsApp *</label>
+              <input type="text" id="enq-visitor-phone" class="cc-input" placeholder="+91 98000 11223" required>
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label" for="enq-visitor-email">Email Address</label>
+              <input type="email" id="enq-visitor-email" class="cc-input" placeholder="visitor@example.com">
+            </div>
+          </div>
+
+          <div class="cc-grid cc-grid-cols-2">
+            <div class="cc-form-group">
+              <label class="cc-label" for="enq-source">Enquiry Source</label>
+              <select id="enq-source" class="cc-select">
+                <option value="website">Website Enquiry</option>
+                <option value="walkin">Front Desk / Walk-in</option>
+                <option value="phone">Phone / WhatsApp</option>
+                <option value="referral">Member Referral</option>
+                <option value="staff">Staff Sourced</option>
+              </select>
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label" for="enq-interested-plan">Interested Membership Plan</label>
+              <select id="enq-interested-plan" class="cc-select">
+                <option value="gold">Gold Tier (Full Privileges)</option>
+                <option value="silver">Silver Tier (Standard)</option>
+                <option value="junior">Junior Tier (Youth Under 18)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="cc-form-group">
+            <label class="cc-label" for="enq-visitor-msg">Enquiry Query / Notes</label>
+            <textarea id="enq-visitor-msg" class="cc-textarea" placeholder="e.g. Inquiring about weekend court availability and coaching trials..."></textarea>
+          </div>
+        </div>
+        <div class="cc-modal-footer">
+          <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Cancel</button>
+          <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Submit Enquiry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: LEAD DETAILS, QUOTATION & CONVERSION
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-lead-detail" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 620px;">
+      <div class="cc-modal-header">
+        <div>
+          <span class="cc-eyebrow" id="lead-modal-ref">CC-ENQ-0001</span>
+          <h3 class="cc-modal-title" id="lead-modal-name">Visitor Name</h3>
+        </div>
+        <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cc-modal-body">
+        
+        <!-- Info Cards -->
+        <div style="background: rgba(22, 29, 46, 0.6); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 1rem; margin-bottom: 1.25rem; font-size: 13px; display: flex; flex-direction: column; gap: 0.5rem;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--cc-text-muted);">Contact:</span>
+            <strong id="lead-modal-contact" style="color: var(--cc-text-primary);">-</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--cc-text-muted);">Interested Plan:</span>
+            <span id="lead-modal-plan-badge"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: var(--cc-text-muted);">Assigned Staff:</span>
+            <select id="lead-modal-assign-staff" class="cc-select" style="max-width: 240px; padding: 4px 8px; font-size: 12px;">
+              <option value="Rohan Verma (Front Desk Lead)">Rohan Verma (Front Desk Lead)</option>
+              <option value="Pooja Patel (Membership Advisor)">Pooja Patel (Membership Advisor)</option>
+              <option value="Karan Mehra (Club Manager)">Karan Mehra (Club Manager)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Visitor Message -->
+        <div class="cc-card cc-card-glass" style="margin-bottom: 1.25rem; padding: 1rem;">
+          <div class="cc-eyebrow" style="margin-bottom: 0.35rem;">Visitor Query</div>
+          <p class="cc-body-sm" id="lead-modal-message" style="color: var(--cc-text-secondary);">-</p>
+        </div>
+
+        <!-- Quotation Section -->
+        <div class="cc-card cc-card-highlight" style="margin-bottom: 1.25rem; padding: 1rem;">
+          <div class="cc-card-header" style="margin-bottom: 0.5rem;">
+            <span class="cc-eyebrow" style="color: var(--cc-gold-400);">Send Membership Quote</span>
+            <span class="cc-badge cc-badge-active" id="lead-modal-quote-status">Pending</span>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: flex-end;">
+            <div class="cc-form-group" style="margin-bottom: 0; flex-grow: 1;">
+              <label class="cc-label" style="font-size: 10px;">Quoted Membership Fee (₹)</label>
+              <input type="number" id="lead-modal-quote-amount" class="cc-input" placeholder="24000" style="padding: 8px 12px; font-size: 13px;">
+            </div>
+            <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-action-send-quote">
+              Send Quote
+            </button>
+          </div>
+        </div>
+
+        <!-- Follow-up Activity Log -->
+        <div>
+          <div class="cc-eyebrow" style="margin-bottom: 0.5rem;">Follow-up Activity</div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <input type="text" id="lead-followup-input" class="cc-input" placeholder="Log call notes, tour feedback, WhatsApp message..." style="padding: 8px 12px; font-size: 13px;">
+            <button class="cc-btn cc-btn-secondary cc-btn-sm" id="btn-add-followup">Log Note</button>
+          </div>
+          <div class="cc-history-timeline" id="lead-followup-timeline" style="max-height: 120px; overflow-y: auto;">
+            <!-- Follow-up logs -->
+          </div>
+        </div>
+
+      </div>
+      <div class="cc-modal-footer" style="justify-content: space-between;">
+        <div>
+          <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" id="btn-action-mark-contacted">
+            Mark Contacted
+          </button>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Close</button>
+          <button type="button" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-action-convert-member">
+            &#9733; Convert to Member
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/club_data_store.js"></script>
+  <script src="js/club_api.js"></script>
+  <script src="js/design_system.js"></script>
+  <script src="js/crm_manager.js"></script>
+</body>
+</html>

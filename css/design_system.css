@@ -1,0 +1,86 @@
+/**
+ * CHAMPIONS CLUB — Master Design System Stylesheet
+ * Brand: CHAMPIONS CLUB | Tagline: PLAY. PERFORM. BELONG.
+ */
+
+@import './variables.css';
+@import './typography.css';
+@import './components.css';
+@import './responsive.css';
+
+/* Global Box-Sizing & Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--cc-bg-primary);
+  color: var(--cc-text-primary);
+  font-family: var(--cc-font-body);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background Ambient Glow Effects */
+body::before {
+  content: '';
+  position: fixed;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.12) 0%, rgba(8, 11, 16, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Showcase Section Helpers */
+.cc-showcase-section {
+  padding: var(--cc-space-12) 0;
+  border-bottom: 1px solid var(--cc-border-subtle);
+  position: relative;
+  z-index: var(--cc-z-base);
+}
+
+.cc-showcase-header {
+  margin-bottom: var(--cc-space-8);
+}
+
+.cc-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--cc-space-4);
+}
+
+.cc-swatch-card {
+  background: var(--cc-bg-secondary);
+  border: 1px solid var(--cc-border-subtle);
+  border-radius: var(--cc-radius-md);
+  padding: var(--cc-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cc-space-2);
+}
+
+.cc-swatch-preview {
+  height: 60px;
+  border-radius: var(--cc-radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cc-swatch-name {
+  font-family: var(--cc-font-display);
+  font-size: var(--cc-text-xs);
+  font-weight: 700;
+  color: var(--cc-text-primary);
+}
+
+.cc-swatch-val {
+  font-family: var(--cc-font-mono);
+  font-size: 0.6875rem;
+  color: var(--cc-text-muted);
+}

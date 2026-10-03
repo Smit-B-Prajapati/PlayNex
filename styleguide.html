@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHAMPIONS CLUB — Visual Design System</title>
+  <meta name="description" content="Official Visual Design System for CHAMPIONS CLUB. Play. Perform. Belong.">
+  <link rel="stylesheet" href="css/design_system.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       1. NAVBAR COMPONENT
+       ========================================== -->
+  <header class="cc-navbar" id="main-navbar">
+    <div class="cc-navbar-container">
+      <a href="#hero" class="cc-brand" id="nav-brand">
+        <div class="cc-brand-logo-mark">C</div>
+        <div class="cc-brand-text">
+          <span class="cc-brand-name">CHAMPIONS CLUB</span>
+          <span class="cc-brand-tagline">PLAY. PERFORM. BELONG.</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="cc-nav-links" id="nav-menu">
+          <li><a href="#typography" class="cc-nav-link is-active">Typography</a></li>
+          <li><a href="#colors" class="cc-nav-link">Colors</a></li>
+          <li><a href="#spacing" class="cc-nav-link">Spacing</a></li>
+          <li><a href="#buttons" class="cc-nav-link">Buttons</a></li>
+          <li><a href="#badges" class="cc-nav-link">Badges</a></li>
+          <li><a href="#cards" class="cc-nav-link">Cards</a></li>
+          <li><a href="#forms" class="cc-nav-link">Forms</a></li>
+          <li><a href="#tables" class="cc-nav-link">Tables</a></li>
+          <li><a href="#states" class="cc-nav-link">States & Modals</a></li>
+        </ul>
+      </nav>
+
+      <div class="cc-nav-actions">
+        <span class="cc-badge cc-badge-active">
+          <span class="cc-pulse-dot"></span> System Live
+        </span>
+        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" data-cc-modal-target="demo-modal-backdrop" id="btn-open-nav-modal">
+          Preview Modal
+        </button>
+        <button class="cc-nav-toggle" id="cc-nav-toggle" aria-label="Toggle navigation">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       MAIN SHOWCASE CONTAINER
+       ========================================== -->
+  <main class="cc-container">
+
+    <!-- HERO HEADER -->
+    <section class="cc-showcase-section" id="hero" style="text-align: center; padding-top: 4rem;">
+      <div class="cc-eyebrow" style="margin-bottom: 1rem;">Design System Specification</div>
+      <h1 class="cc-heading-hero">CHAMPIONS CLUB</h1>
+      <p class="cc-tagline" style="margin: 0.75rem 0 1.5rem;">PLAY. PERFORM. BELONG.</p>
+      <p class="cc-body-lg" style="max-width: 680px; margin: 0 auto;">
+        An original, high-performance athletic luxury design system crafted for the Champions Club ecosystem.
+      </p>
+    </section>
+
+    <!-- SECTION 1: TYPOGRAPHY -->
+    <section class="cc-showcase-section" id="typography">
+      <div class="cc-showcase-header">
+        <div class="cc-eyebrow">Visual Foundation</div>
+        <h2 class="cc-heading-2">Typography System</h2>
+        <p class="cc-body">Modern, athletic typography pairing <strong>Outfit</strong> for bold geometric display headers and <strong>Plus Jakarta Sans</strong> for clean body readability.</p>
+      </div>
+
+      <div class="cc-grid cc-grid-cols-2">
+        <div class="cc-card cc-card-glass">
+          <div class="cc-card-header">
+            <h3 class="cc-card-title">Display & Headings</h3>
+            <span class="cc-badge cc-badge-gold">Outfit</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div>
+              <div class="cc-eyebrow">Hero Display (Clamp 2.5rem - 4.5rem)</div>
+              <div class="cc-heading-hero cc-text-gradient-gold">CHAMPIONS</div>
+            </div>
+            <div>
+              <div class="cc-eyebrow">Heading 1 (3rem / 48px)</div>
+              <h1 class="cc-heading-1">Championship Courts</h1>
+            </div>
+            <div>
+              <div class="cc-eyebrow">Heading 2 (2.25rem / 36px)</div>
+              <h2 class="cc-heading-2">Member Entitlements</h2>
+            </div>
+            <div>
+              <div class="cc-eyebrow">Heading 3 (1.5rem / 24px)</div>
+              <h3 class="cc-heading-3">Pro Shop & Equipment</h3>
+            </div>
+            <div>
+              <div class="cc-eyebrow">Heading 4 (1.25rem / 20px)</div>
+              <h4 class="cc-heading-4">Cafeteria & Lounge Tab</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="cc-card cc-card-glass">
+          <div class="cc-card-header">
+            <h3 class="cc-card-title">Body, Labels & Accents</h3>
+            <span class="cc-badge cc-badge-silver">Plus Jakarta Sans</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div>
+              <div class="cc-eyebrow">Body Large (18px)</div>
+              <p class="cc-body-lg">Every member deserves seamless access to court reservations, pro gear, and premium hospitality.</p>
+            </div>
+            <div>
+              <div class="cc-eyebrow">Body Standard (16px)</div>
+              <p class="cc-body">Our unified club management platform empowers staff and delivers an effortless member experience across tennis and cricket facilities.</p>
+            </div>
+            <div>
+              <div class="cc-eyebrow">Body Small (14px)</div>
+              <p class="cc-body-sm">Standard sessions last one hour with 30-minute staggered starts.</p>
+            </div>
+            <div>
+              <div class="cc-eyebrow">Eyebrow / Overline (12px Uppercase Tracked)</div>
+              <div class="cc-eyebrow">Friday Night Social Play</div>
+            </div>
+            <div>
+              <div class="cc-eyebrow">Monospace (Code / Financials)</div>
+              <p class="cc-text-mono cc-text-gold" style="font-size: 1.125rem;">SESSION-ID #CC-2026-9842 &bull; ₹ 1,450.00</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: COLOR VARIABLES -->
+    <section class="cc-showcase-section" id="colors">
+      <div class="cc-showcase-header">
+        <div class="cc-eyebrow">Palette Tokens</div>
+        <h2 class="cc-heading-2">Color System</h2>
+        <p class="cc-body">Deep obsidian darks, metallic golds, athletic court neons, and tier identity palettes.</p>
+      </div>
+
+      <div class="cc-swatch-grid">
+        <div class="cc-swatch-card">
+          <div class="cc-swatch-preview" style="background: #080B10;"></div>
+          <span class="cc-swatch-name">Obsidian Primary</span>
+          <span class="cc-swatch-val">--cc-bg-primary (#080B10)</span>
+        </div>
+        <div class="cc-swatch-card">
+          <div class="cc-swatch-preview" style="background: #0E131F;"></div>
+          <span class="cc-swatch-name">Surface Secondary</span>
+          <span class="cc-swatch-val">--cc-bg-secondary (#0E131F)</span>
+        </div>
+        <div class="cc-swatch-card">
+          <div class="cc-swatch-preview" style="background: #161D2E;"></div>
+          <span class="cc-swatch-name">Surface Elevated</span>
+          <span class="cc-swatch-val">--cc-bg-tertiary (#161D2E)</span>
+        </div>
+        <div class="cc-swatch-card">
+          <div class="cc-swatch-preview" style="background: #D4AF37;"></div>
+          <span class="cc-swatch-name">Brand Gold (Gold Tier)</span>
+          <span class="cc-swatch-val">--cc-gold-500 (#D4AF37)</span>
+        </div>
+        <div class="cc-swatch-card">
+          <div class="cc-swatch-preview" style="background: #94A3B8;"></div>
+          <span class="cc-swatch-name">Silver Tier Muted</span>
+          <span class="cc-swatch-val">--cc-silver-500 (#94A3B8)</span>
+        </div>
+        <div class="cc-swatch-card">
+          <div class="cc-swatch-preview" style="background: #38BDF8;"></div>
+          <span class="cc-swatch-name">Junior Tier Blue</span>
+          <span class="cc-swatch-val">--cc-junior-blue (#38BDF8)</span>
+        </div>
+        <div class="cc-swatch-card">
+          <div class="cc-swatch-preview" style="background: #00E599;"></div>
+          <span class="cc-swatch-name">Electric Court Neon</span>
+          <span class="cc-swatch-val">--cc-neon-green (#00E599)</span>
+        </div>
+        <div class="cc-swatch-card">
+          <div class="cc-swatch-preview" style="background: #EF4444;"></div>
+          <span class="cc-swatch-name">Crimson Alert</span>
+          <span class="cc-swatch-val">--cc-crimson (#EF4444)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SPACING SYSTEM -->
+    <section class="cc-showcase-section" id="spacing">
+      <div class="cc-showcase-header">
+        <div class="cc-eyebrow">Harmonic Rhythm</div>
+        <h2 class="cc-heading-2">Spacing System (4px Base)</h2>
+        <p class="cc-body">Consistent spatial units engineered for balanced padding, margins, and component layouts.</p>
+      </div>
+
+      <div class="cc-card cc-card-glass">
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 120px; font-family: var(--cc-font-mono); font-size: 12px; color: var(--cc-gold-400);">--cc-space-1 (4px)</div>
+            <div style="height: 16px; width: 4px; background: var(--cc-gold-500); border-radius: 2px;"></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 120px; font-family: var(--cc-font-mono); font-size: 12px; color: var(--cc-gold-400);">--cc-space-2 (8px)</div>
+            <div style="height: 16px; width: 8px; background: var(--cc-gold-500); border-radius: 2px;"></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 120px; font-family: var(--cc-font-mono); font-size: 12px; color: var(--cc-gold-400);">--cc-space-4 (16px)</div>
+            <div style="height: 16px; width: 16px; background: var(--cc-gold-500); border-radius: 2px;"></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 120px; font-family: var(--cc-font-mono); font-size: 12px; color: var(--cc-gold-400);">--cc-space-6 (24px)</div>
+            <div style="height: 16px; width: 24px; background: var(--cc-gold-500); border-radius: 2px;"></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 120px; font-family: var(--cc-font-mono); font-size: 12px; color: var(--cc-gold-400);">--cc-space-8 (32px)</div>
+            <div style="height: 16px; width: 32px; background: var(--cc-gold-500); border-radius: 2px;"></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 120px; font-family: var(--cc-font-mono); font-size: 12px; color: var(--cc-gold-400);">--cc-space-12 (48px)</div>
+            <div style="height: 16px; width: 48px; background: var(--cc-gold-500); border-radius: 2px;"></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 120px; font-family: var(--cc-font-mono); font-size: 12px; color: var(--cc-gold-400);">--cc-space-16 (64px)</div>
+            <div style="height: 16px; width: 64px; background: var(--cc-gold-500); border-radius: 2px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: BUTTONS -->
+    <section class="cc-showcase-section" id="buttons">
+      <div class="cc-showcase-header">
+        <div class="cc-eyebrow">Interactive Controls</div>
+        <h2 class="cc-heading-2">Button System</h2>
+        <p class="cc-body">Tactile athletic buttons featuring glow elevations, loading states, and ergonomic sizes.</p>
+      </div>
+
+      <div class="cc-grid cc-grid-cols-2">
+        <div class="cc-card cc-card-glass">
+          <div class="cc-card-header">
+            <h3 class="cc-card-title">Button Variants</h3>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+            <button class="cc-btn cc-btn-primary" id="demo-btn-primary">Primary Gold</button>
+            <button class="cc-btn cc-btn-secondary" id="demo-btn-secondary">Secondary Dark</button>
+            <button class="cc-btn cc-btn-outline-gold" id="demo-btn-outline">Outline Gold</button>
+            <button class="cc-btn cc-btn-ghost" id="demo-btn-ghost">Ghost Action</button>
+            <button class="cc-btn cc-btn-neon" id="demo-btn-neon">Court Neon</button>
+          </div>
+        </div>
+
+        <div class="cc-card cc-card-glass">
+          <div class="cc-card-header">
+            <h3 class="cc-card-title">Sizes & States</h3>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+            <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Small Pill</button>
+            <button class="cc-btn cc-btn-primary cc-btn-lg">Large Action</button>
+            <button class="cc-btn cc-btn-primary cc-btn-icon-only" aria-label="Quick Action">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+              </svg>
+            </button>
+            <button class="cc-btn cc-btn-secondary is-disabled" disabled>Disabled</button>
+            <button class="cc-btn cc-btn-primary is-loading" id="demo-loading-btn">Loading</button>
+            <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-toggle-loading-demo">Toggle Loading Demo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: BADGES -->
+    <section class="cc-showcase-section" id="badges">
+      <div class="cc-showcase-header">
+        <div class="cc-eyebrow">Status & Categorization</div>
+        <h2 class="cc-heading-2">Badges & Pills</h2>
+        <p class="cc-body">Membership tier indicators and live facility status tags.</p>
+      </div>
+
+      <div class="cc-card cc-card-glass">
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+          <span class="cc-badge cc-badge-gold">&#9733; Gold Tier</span>
+          <span class="cc-badge cc-badge-silver">&#9670; Silver Tier</span>
+          <span class="cc-badge cc-badge-junior">&#9679; Junior Tier</span>
+          <span class="cc-badge cc-badge-active"><span class="cc-pulse-dot"></span> Court Active</span>
+          <span class="cc-badge cc-badge-social">&#127934; Social Play</span>
+          <span class="cc-badge cc-badge-warning">&#9888; Low Stock (2 left)</span>
+          <span class="cc-badge cc-badge-danger">&#10005; Maintenance</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: CARDS -->
+    <section class="cc-showcase-section" id="cards">
+      <div class="cc-showcase-header">
+        <div class="cc-eyebrow">Surface Elevation</div>
+        <h2 class="cc-heading-2">Card System</h2>
+        <p class="cc-body">Modular cards engineered for metric visualization, content grouping, and interactive elevation.</p>
+      </div>
+
+      <div class="cc-grid cc-grid-cols-3">
+        <!-- Stat Card 1 -->
+        <div class="cc-card cc-card-hover cc-stat-card">
+          <div class="cc-stat-label">Daily Court Utilization</div>
+          <div class="cc-stat-value">94.2%</div>
+          <div class="cc-stat-trend is-up">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+            </svg>
+            +12.4% vs last week
+          </div>
+        </div>
+
+        <!-- Highlight Card 2 -->
+        <div class="cc-card cc-card-highlight cc-card-hover">
+          <div class="cc-card-header">
+            <span class="cc-badge cc-badge-gold">Featured Tier</span>
+            <span class="cc-text-gold" style="font-weight: 800;">PREMIUM</span>
+          </div>
+          <h3 class="cc-card-title" style="margin-bottom: 0.5rem;">Gold Membership</h3>
+          <p class="cc-body-sm" style="margin-bottom: 1.5rem;">Full access to tennis and cricket courts, priority booking slots, and exclusive shop & cafeteria discounts.</p>
+          <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" style="width: 100%;">View Benefits</button>
+        </div>
+
+        <!-- Standard Glass Card 3 -->
+        <div class="cc-card cc-card-glass cc-card-hover">
+          <div class="cc-card-header">
+            <h3 class="cc-card-title">Pro Gear Stock</h3>
+            <span class="cc-badge cc-badge-active">Unified Shelf</span>
+          </div>
+          <p class="cc-body-sm" style="margin-bottom: 1rem;">Single inventory for physical pro shop counter sales and online orders.</p>
+          <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--cc-text-muted);">
+            <span>Rackets: <strong>24</strong></span>
+            <span>Balls: <strong>150</strong></span>
+            <span>Shoes: <strong>18</strong></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: FORM COMPONENTS -->
+    <section class="cc-showcase-section" id="forms">
+      <div class="cc-showcase-header">
+        <div class="cc-eyebrow">Data Entry</div>
+        <h2 class="cc-heading-2">Form Components</h2>
+        <p class="cc-body">Clean inputs, dropdowns, switches, search bars, and real-time validation states.</p>
+      </div>
+
+      <div class="cc-grid cc-grid-cols-2">
+        <div class="cc-card cc-card-glass">
+          <div class="cc-form-group">
+            <label class="cc-label" for="demo-name">Member Name</label>
+            <input type="text" id="demo-name" class="cc-input" placeholder="e.g. Alex Morgan">
+            <span class="cc-form-helper">Full legal name as registered.</span>
+          </div>
+
+          <div class="cc-form-group">
+            <label class="cc-label" for="demo-tier-select">Membership Plan</label>
+            <select id="demo-tier-select" class="cc-select">
+              <option value="gold">Gold Tier (Full Access & Benefits)</option>
+              <option value="silver">Silver Tier (Standard)</option>
+              <option value="junior">Junior Tier (Under 18)</option>
+            </select>
+          </div>
+
+          <div class="cc-form-group">
+            <label class="cc-label" for="demo-search-input">Search Equipment or Member</label>
+            <div class="cc-input-search-wrap">
+              <svg class="cc-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              <input type="search" id="demo-search-input" class="cc-input cc-input-search" placeholder="Type member ID, racket model, or court...">
+            </div>
+          </div>
+        </div>
+
+        <div class="cc-card cc-card-glass">
+          <div class="cc-form-group">
+            <label class="cc-label" for="demo-email-input">Email Address (Interactive Validation Demo)</label>
+            <input type="email" id="demo-email-input" class="cc-input" placeholder="member@championsclub.com" value="invalid-email-format">
+            <div class="cc-form-error-msg" id="demo-email-error" style="display: flex;">
+              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Please enter a valid email address.
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+            <label class="cc-switch">
+              <input type="checkbox" checked id="demo-switch-notifications">
+              <span class="cc-switch-slider"></span>
+              <span style="font-size: 14px; font-weight: 600; color: var(--cc-text-primary);">Automatic Bar Tab Settlement</span>
+            </label>
+
+            <label class="cc-checkbox">
+              <input type="checkbox" checked id="demo-checkbox-agree">
+              <span class="cc-checkbox-box">
+                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                </svg>
+              </span>
+              <span>Enable Overlap & Double-Booking Lock</span>
+            </label>
+
+            <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-toggle-error-demo" style="align-self: flex-start;">Toggle Error State Demo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 8: TABLES -->
+    <section class="cc-showcase-section" id="tables">
+      <div class="cc-showcase-header">
+        <div class="cc-eyebrow">Structured Records</div>
+        <h2 class="cc-heading-2">Table Component</h2>
+        <p class="cc-body">Dark luxury table styled with hover row transitions, badges, and action menus.</p>
+      </div>
+
+      <div class="cc-table-container">
+        <table class="cc-table">
+          <thead>
+            <tr>
+              <th>Member / ID</th>
+              <th>Tier</th>
+              <th>Facility / Sport</th>
+              <th>Status</th>
+              <th>Expiry</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: var(--cc-text-primary);">David Vance</div>
+                <div class="cc-text-mono" style="font-size: 12px; color: var(--cc-text-muted);">CC-MEM-00104</div>
+              </td>
+              <td><span class="cc-badge cc-badge-gold">Gold</span></td>
+              <td>Tennis Court 1 (Clay)</td>
+              <td><span class="cc-badge cc-badge-active"><span class="cc-pulse-dot"></span> In Session</span></td>
+              <td class="cc-text-mono">2026-12-31</td>
+              <td style="text-align: right;">
+                <button class="cc-btn cc-btn-secondary cc-btn-sm">History</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: var(--cc-text-primary);">Elena Rostova</div>
+                <div class="cc-text-mono" style="font-size: 12px; color: var(--cc-text-muted);">CC-MEM-00215</div>
+              </td>
+              <td><span class="cc-badge cc-badge-silver">Silver</span></td>
+              <td>Cricket Court 2 (Turf)</td>
+              <td><span class="cc-badge cc-badge-warning">Upcoming</span></td>
+              <td class="cc-text-mono">2026-08-15</td>
+              <td style="text-align: right;">
+                <button class="cc-btn cc-btn-secondary cc-btn-sm">History</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: var(--cc-text-primary);">Leo Chen</div>
+                <div class="cc-text-mono" style="font-size: 12px; color: var(--cc-text-muted);">CC-MEM-00388</div>
+              </td>
+              <td><span class="cc-badge cc-badge-junior">Junior</span></td>
+              <td>Friday Social Play</td>
+              <td><span class="cc-badge cc-badge-social">Shared</span></td>
+              <td class="cc-text-mono">2027-01-10</td>
+              <td style="text-align: right;">
+                <button class="cc-btn cc-btn-secondary cc-btn-sm">History</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 9: LOADING, EMPTY & ERROR STATES -->
+    <section class="cc-showcase-section" id="states">
+      <div class="cc-showcase-header">
+        <div class="cc-eyebrow">Feedback & Edge Cases</div>
+        <h2 class="cc-heading-2">System States & Modals</h2>
+        <p class="cc-body">Skeleton shimmer animations, friendly empty states, error alerts, and glassmorphic dialogs.</p>
+      </div>
+
+      <div class="cc-grid cc-grid-cols-3">
+        <!-- Loading Skeleton Demo -->
+        <div class="cc-card cc-card-glass">
+          <div class="cc-card-header">
+            <h3 class="cc-card-title">Loading Skeleton</h3>
+            <div class="cc-spinner"></div>
+          </div>
+          <div id="demo-skeleton-group">
+            <div class="cc-skeleton cc-skeleton-title"></div>
+            <div class="cc-skeleton cc-skeleton-text"></div>
+            <div class="cc-skeleton cc-skeleton-text" style="width: 80%;"></div>
+            <div class="cc-skeleton cc-skeleton-text" style="width: 60%;"></div>
+          </div>
+          <div id="demo-content-group" style="display: none;">
+            <p class="cc-body-sm" style="color: var(--cc-neon-green); font-weight: 600;">Data successfully loaded from server.</p>
+          </div>
+        </div>
+
+        <!-- Empty State Demo -->
+        <div class="cc-empty-state">
+          <div class="cc-empty-icon-wrap">
+            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+          </div>
+          <div class="cc-empty-title">No Active Bookings</div>
+          <p class="cc-empty-desc">There are no upcoming court slots scheduled for this time window.</p>
+          <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" data-cc-modal-target="demo-modal-backdrop">Explore Available Slots</button>
+        </div>
+
+        <!-- Error Alert State -->
+        <div class="cc-card cc-card-glass" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="cc-card-header">
+            <h3 class="cc-card-title">Alert & Error State</h3>
+          </div>
+          <div class="cc-alert-error">
+            <svg class="cc-alert-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <div>
+              <div class="cc-alert-title">Overlap Conflict Detected</div>
+              <div class="cc-alert-msg">Two players cannot reserve Court 1 at the same 6:00 PM session. Please select an adjacent slot.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       10. MODAL COMPONENT (Interactive)
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="demo-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="cc-modal">
+      <div class="cc-modal-header">
+        <h3 class="cc-modal-title" id="modal-title">Member Tier Overview</h3>
+        <button class="cc-modal-close" data-cc-modal-close aria-label="Close modal">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cc-modal-body">
+        <p class="cc-body" style="margin-bottom: 1.25rem;">
+          The Champions Club visual design system standardizes modal presentations with glassmorphic depth, accessible closing actions, and fluid spacing.
+        </p>
+        <div class="cc-form-group">
+          <label class="cc-label" for="modal-input-field">Sample Input</label>
+          <input type="text" id="modal-input-field" class="cc-input" placeholder="Enter session notes...">
+        </div>
+      </div>
+      <div class="cc-modal-footer">
+        <button class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Cancel</button>
+        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" data-cc-modal-close>Confirm Action</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       11. FOOTER COMPONENT
+       ========================================== -->
+  <footer class="cc-footer">
+    <div class="cc-footer-container">
+      <div class="cc-footer-grid">
+        <!-- Brand Column -->
+        <div>
+          <a href="#hero" class="cc-brand" style="margin-bottom: 1rem;">
+            <div class="cc-brand-logo-mark">C</div>
+            <div class="cc-brand-text">
+              <span class="cc-brand-name">CHAMPIONS CLUB</span>
+              <span class="cc-brand-tagline">PLAY. PERFORM. BELONG.</span>
+            </div>
+          </a>
+          <p class="cc-body-sm" style="max-width: 280px; margin-top: 0.75rem;">
+            The digital backbone of premier tennis, padel, badminton, and cricket club management.
+          </p>
+        </div>
+
+        <!-- Links Column 1 -->
+        <div>
+          <div class="cc-footer-title">Facilities</div>
+          <ul class="cc-footer-links">
+            <li><a href="#tables" class="cc-footer-link">Tennis Courts</a></li>
+            <li><a href="#tables" class="cc-footer-link">Cricket Arena</a></li>
+            <li><a href="#badges" class="cc-footer-link">Social Play Nights</a></li>
+          </ul>
+        </div>
+
+        <!-- Links Column 2 -->
+        <div>
+          <div class="cc-footer-title">Clubhouse</div>
+          <ul class="cc-footer-links">
+            <li><a href="#cards" class="cc-footer-link">Pro Gear Shop</a></li>
+            <li><a href="#cards" class="cc-footer-link">Cafeteria & Bar</a></li>
+            <li><a href="#cards" class="cc-footer-link">Membership Tiers</a></li>
+          </ul>
+        </div>
+
+        <!-- Links Column 3 -->
+        <div>
+          <div class="cc-footer-title">Operations</div>
+          <ul class="cc-footer-links">
+            <li><a href="#forms" class="cc-footer-link">Front Desk Portal</a></li>
+            <li><a href="#states" class="cc-footer-link">Staff Shifts</a></li>
+            <li><a href="#states" class="cc-footer-link">Monthly Reports</a></li>
+          </ul>
+        </div>
+
+        <!-- Newsletter / Contact Column -->
+        <div>
+          <div class="cc-footer-title">Stay Connected</div>
+          <div class="cc-form-group" style="margin-bottom: 0.75rem;">
+            <input type="email" class="cc-input" placeholder="Enter your email" style="padding: 10px 14px; font-size: 13px;">
+          </div>
+          <button class="cc-btn cc-btn-primary cc-btn-sm" style="width: 100%;">Subscribe</button>
+        </div>
+      </div>
+
+      <div class="cc-footer-bottom">
+        <div>&copy; 2026 CHAMPIONS CLUB. All rights reserved. &bull; Tagline: PLAY. PERFORM. BELONG.</div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#hero" class="cc-footer-link">Privacy Policy</a>
+          <a href="#hero" class="cc-footer-link">Terms of Service</a>
+          <a href="#hero" class="cc-footer-link">Design System Tokens</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/design_system.js"></script>
+</body>
+</html>

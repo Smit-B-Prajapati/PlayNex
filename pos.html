@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHAMPIONS CLUB — Bar & Cafeteria POS Terminal</title>
+  <meta name="description" content="Cafeteria & Bar POS Terminal with automatic member tier discounts, running tabs, tables management, and multi-payment processing (Cash, Card, UPI).">
+  <link rel="stylesheet" href="css/design_system.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <style>
+    .cc-pos-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.75rem;
+      align-items: flex-start;
+    }
+    .cc-menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .cc-menu-item-card {
+      background: var(--cc-bg-secondary);
+      border: 1px solid var(--cc-border-subtle);
+      border-radius: var(--cc-radius-md);
+      padding: 1rem;
+      cursor: pointer;
+      transition: all var(--cc-transition-fast);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 110px;
+    }
+    .cc-menu-item-card:hover {
+      border-color: var(--cc-gold-500);
+      transform: translateY(-2px);
+      background: var(--cc-bg-tertiary);
+    }
+    .cc-table-pill-btn {
+      background: rgba(22, 29, 46, 0.6);
+      border: 1px solid var(--cc-border-medium);
+      padding: 8px 14px;
+      border-radius: var(--cc-radius-md);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cc-text-primary);
+      cursor: pointer;
+      transition: all var(--cc-transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cc-table-pill-btn.is-active {
+      border-color: var(--cc-gold-500);
+      background: var(--cc-gold-glow);
+      color: var(--cc-gold-300);
+    }
+    .cc-table-pill-btn.is-occupied {
+      border-color: rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.08);
+      color: #FCA5A5;
+    }
+    .cc-ticket-box {
+      background: rgba(14, 19, 31, 0.95);
+      border: 1px solid var(--cc-border-highlight);
+      border-radius: var(--cc-radius-xl);
+      padding: var(--cc-space-6);
+      position: sticky;
+      top: 90px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       TOP NAVBAR
+       ========================================== -->
+  <header class="cc-navbar" id="pos-navbar">
+    <div class="cc-navbar-container">
+      <a href="index.html" class="cc-brand">
+        <div class="cc-brand-logo-mark">C</div>
+        <div class="cc-brand-text">
+          <span class="cc-brand-name">CHAMPIONS CLUB</span>
+          <span class="cc-brand-tagline">PLAY. PERFORM. BELONG.</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="cc-nav-links">
+          <li><a href="index.html" class="cc-nav-link">Landing Page</a></li>
+          <li><a href="bookings.html" class="cc-nav-link">Court Bookings</a></li>
+          <li><a href="shop.html" class="cc-nav-link">Pro Shop</a></li>
+          <li><a href="pos.html" class="cc-nav-link is-active">Bar POS</a></li>
+          <li><a href="crm.html" class="cc-nav-link">Enquiries CRM</a></li>
+          <li><a href="members.html" class="cc-nav-link">Roster (Admin)</a></li>
+          <li><a href="portal.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Member Portal</a></li>
+          <li><a href="dashboard.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Admin Dashboard</a></li>
+          <li><a href="styleguide.html" class="cc-nav-link" target="_blank" rel="noopener">Styleguide</a></li>
+        </ul>
+      </nav>
+
+      <div class="cc-nav-actions">
+        <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-open-daily-report">
+          Daily Revenue Report
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="cc-container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+
+    <!-- SHIFT & REVENUE KPI STRIP -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <div class="cc-eyebrow">Cafeteria &amp; Bar Operations</div>
+        <h1 class="cc-heading-1">POS Terminal &amp; Tabs Hub</h1>
+        <p class="cc-body-sm" style="margin-top: 2px;">
+          Active Shift: <strong style="color: var(--cc-text-primary);">Evening Shift (Staff: Rohit M.)</strong> &bull; Automatic member discount engine &bull; Cash / Card / UPI
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <div class="cc-card cc-stat-card" style="padding: 10px 16px; min-width: 120px;">
+          <span class="cc-stat-label">Daily Total</span>
+          <span class="cc-stat-value" id="kpi-daily-total" style="font-size: 1.35rem; color: var(--cc-neon-green);">₹ 0.00</span>
+        </div>
+        <div class="cc-card cc-stat-card" style="padding: 10px 16px; min-width: 90px;">
+          <span class="cc-stat-label">Cash</span>
+          <span class="cc-stat-value" id="kpi-cash-total" style="font-size: 1.15rem; color: var(--cc-text-primary);">₹ 0.00</span>
+        </div>
+        <div class="cc-card cc-stat-card" style="padding: 10px 16px; min-width: 90px;">
+          <span class="cc-stat-label">Card</span>
+          <span class="cc-stat-value" id="kpi-card-total" style="font-size: 1.15rem; color: var(--cc-gold-400);">₹ 0.00</span>
+        </div>
+        <div class="cc-card cc-stat-card" style="padding: 10px 16px; min-width: 90px;">
+          <span class="cc-stat-label">UPI</span>
+          <span class="cc-stat-value" id="kpi-upi-total" style="font-size: 1.15rem; color: var(--cc-junior-blue);">₹ 0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN POS WORKSPACE -->
+    <div class="cc-pos-grid">
+      
+      <!-- LEFT: TABLES SELECTOR & MENU ITEMS -->
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Table Matrix -->
+        <div class="cc-card cc-card-glass">
+          <div class="cc-card-header" style="margin-bottom: 0.75rem;">
+            <h3 class="cc-card-title">1. Cafeteria Tables</h3>
+            <span class="cc-badge cc-badge-gold">Live Seating</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.6rem;" id="table-buttons-container">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </div>
+
+        <!-- Menu Categories & Items (DEMO DATA) -->
+        <div class="cc-card cc-card-glass">
+          <div class="cc-card-header" style="margin-bottom: 0.75rem;">
+            <div>
+              <h3 class="cc-card-title">2. Select Menu Items</h3>
+              <p class="cc-body-xs" style="color: var(--cc-text-muted);">[DEMO DATA] Post-match nutrition, cafeteria food and drinks.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;" id="bar-menu-filters">
+              <button class="cc-filter-pill is-active" data-cat="all" style="padding: 4px 10px; font-size: 11px;">All</button>
+              <button class="cc-filter-pill" data-cat="beverage" style="padding: 4px 10px; font-size: 11px;">Drinks</button>
+              <button class="cc-filter-pill" data-cat="food" style="padding: 4px 10px; font-size: 11px;">Food</button>
+              <button class="cc-filter-pill" data-cat="nutrition" style="padding: 4px 10px; font-size: 11px;">Nutrition</button>
+            </div>
+          </div>
+
+          <div class="cc-menu-grid" id="menu-items-container">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </div>
+
+        <!-- Running Member Tabs Management -->
+        <div class="cc-card cc-card-glass">
+          <div class="cc-card-header">
+            <div>
+              <h3 class="cc-card-title">Active Running Member Tabs</h3>
+              <p class="cc-body-xs" style="color: var(--cc-text-muted);">Members running a tab before match and settling upon departure.</p>
+            </div>
+            <span class="cc-badge cc-badge-warning" id="active-tabs-count-badge">0 Open Tabs</span>
+          </div>
+
+          <div class="cc-table-container">
+            <table class="cc-table" id="active-tabs-table">
+              <thead>
+                <tr>
+                  <th>Tab Ref / Member</th>
+                  <th>Table</th>
+                  <th>Applied Disc %</th>
+                  <th>Orders Count</th>
+                  <th>Total Due</th>
+                  <th style="text-align: right;">Settle Tab</th>
+                </tr>
+              </thead>
+              <tbody id="active-tabs-body">
+                <!-- Populated dynamically by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: ACTIVE POS ORDER TICKET & SETTLEMENT -->
+      <div>
+        <div class="cc-ticket-box">
+          <div class="cc-card-header" style="margin-bottom: 0.75rem;">
+            <h3 class="cc-card-title cc-text-gold">Active Order Ticket</h3>
+            <span class="cc-badge cc-badge-active" id="ticket-table-badge">Table 1</span>
+          </div>
+
+          <!-- Customer / Member Selector -->
+          <div class="cc-form-group">
+            <label class="cc-label" for="pos-customer-select">Member Identification</label>
+            <select id="pos-customer-select" class="cc-select">
+              <option value="gold" data-name="David Vance" data-disc="15">David Vance — Gold Member (15% Auto-Discount)</option>
+              <option value="silver" data-name="Elena Rostova" data-disc="10">Elena Rostova — Silver Member (10% Auto-Discount)</option>
+              <option value="junior" data-name="Leo Chen" data-disc="5">Leo Chen — Junior Member (5% Auto-Discount)</option>
+              <option value="guest" data-name="Walk-in Guest" data-disc="0">Walk-in Guest (0% Discount)</option>
+            </select>
+            <span class="cc-form-helper" id="discount-indicator-text">
+              ✨ 15% discount automatically applied from Gold Tier.
+            </span>
+          </div>
+
+          <!-- Ticket Items Container -->
+          <div style="margin: 1rem 0;">
+            <div class="cc-eyebrow" style="margin-bottom: 0.5rem;">Ordered Items</div>
+            <div id="ticket-items-container" style="display: flex; flex-direction: column; gap: 0.5rem; min-height: 80px;">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Totals Breakdown -->
+          <div style="background: rgba(8, 11, 16, 0.6); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; font-size: 13px; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--cc-text-muted);">Subtotal:</span>
+              <span class="cc-text-mono" id="ticket-subtotal">₹ 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; color: var(--cc-gold-400);">
+              <span id="ticket-disc-label">Member Discount (15%):</span>
+              <span class="cc-text-mono" id="ticket-discount">- ₹ 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800; border-top: 1px solid var(--cc-border-medium); padding-top: 0.5rem; color: var(--cc-neon-green);">
+              <span>Total Due:</span>
+              <span class="cc-text-mono" id="ticket-total">₹ 0.00</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons: Charge to Tab vs Pay Now -->
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <button class="cc-btn cc-btn-outline-gold cc-btn-pill" id="btn-charge-to-tab" style="width: 100%;">
+              📋 Charge to Member Tab
+            </button>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+              <button class="cc-btn cc-btn-secondary cc-btn-sm" onclick="processDirectPayment('cash')">
+                💵 Cash
+              </button>
+              <button class="cc-btn cc-btn-secondary cc-btn-sm" onclick="processDirectPayment('card')">
+                💳 Card
+              </button>
+              <button class="cc-btn cc-btn-primary cc-btn-sm" onclick="processDirectPayment('upi')">
+                📱 UPI
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+       MODAL: DAILY BAR REVENUE RECONCILIATION REPORT
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-daily-revenue" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 580px;">
+      <div class="cc-modal-header">
+        <div>
+          <span class="cc-eyebrow">Closing Time Reconciliation</span>
+          <h3 class="cc-modal-title">Daily Bar &amp; Cafeteria Revenue</h3>
+        </div>
+        <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cc-modal-body">
+        <p class="cc-body-sm" style="margin-bottom: 1.25rem;">
+          Consolidated earnings for today across direct table orders, bar counter sales, and settled member tabs.
+        </p>
+
+        <div class="cc-grid cc-grid-cols-3" style="gap: 1rem; margin-bottom: 1.5rem;">
+          <div class="cc-card" style="padding: 1rem; text-align: center;">
+            <div style="font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase;">Cash Collected</div>
+            <div class="cc-text-mono" id="report-cash" style="font-size: 1.25rem; font-weight: 800; color: var(--cc-text-primary); margin-top: 4px;">₹ 0.00</div>
+          </div>
+          <div class="cc-card" style="padding: 1rem; text-align: center;">
+            <div style="font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase;">Card Collected</div>
+            <div class="cc-text-mono" id="report-card" style="font-size: 1.25rem; font-weight: 800; color: var(--cc-gold-400); margin-top: 4px;">₹ 0.00</div>
+          </div>
+          <div class="cc-card" style="padding: 1rem; text-align: center;">
+            <div style="font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase;">UPI Collected</div>
+            <div class="cc-text-mono" id="report-upi" style="font-size: 1.25rem; font-weight: 800; color: var(--cc-junior-blue); margin-top: 4px;">₹ 0.00</div>
+          </div>
+        </div>
+
+        <div style="background: rgba(22, 29, 46, 0.8); border: 1px solid var(--cc-gold-500); border-radius: var(--cc-radius-md); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 12px; color: var(--cc-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Total Daily Bar Earnings</div>
+            <div style="font-size: 12px; color: var(--cc-neon-green); font-weight: 600;">Shift Reconciled &bull; 100% Balanced</div>
+          </div>
+          <div class="cc-text-mono" id="report-total" style="font-size: 1.75rem; font-weight: 900; color: var(--cc-gold-400);">₹ 0.00</div>
+        </div>
+      </div>
+      <div class="cc-modal-footer">
+        <button type="button" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" data-cc-modal-close>
+          Close Report
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/club_data_store.js"></script>
+  <script src="js/club_api.js"></script>
+  <script src="js/design_system.js"></script>
+  <script src="js/pos_manager.js"></script>
+</body>
+</html>

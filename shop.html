@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHAMPIONS CLUB — Pro Shop & Unified Shared Inventory</title>
+  <meta name="description" content="Pro Shop equipment catalog and unified inventory shelf for Counter Walk-ins and Online orders with Click & Collect or Home Delivery.">
+  <link rel="stylesheet" href="css/design_system.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <style>
+    .cc-product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .cc-product-card {
+      background: var(--cc-bg-secondary);
+      border: 1px solid var(--cc-border-subtle);
+      border-radius: var(--cc-radius-lg);
+      padding: var(--cc-space-6);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all var(--cc-transition-base);
+    }
+    .cc-product-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--cc-border-highlight);
+      box-shadow: var(--cc-shadow-gold);
+    }
+    .cc-product-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--cc-radius-md);
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--cc-border-highlight);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cc-gold-400);
+      margin-bottom: 1rem;
+    }
+    .cc-stock-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0.75rem 0;
+    }
+    .cc-cart-drawer {
+      background: rgba(14, 19, 31, 0.95);
+      border: 1px solid var(--cc-border-highlight);
+      border-radius: var(--cc-radius-xl);
+      padding: var(--cc-space-6);
+      position: sticky;
+      top: 90px;
+    }
+    .cc-cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--cc-border-subtle);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       TOP NAVBAR
+       ========================================== -->
+  <header class="cc-navbar" id="shop-navbar">
+    <div class="cc-navbar-container">
+      <a href="index.html" class="cc-brand">
+        <div class="cc-brand-logo-mark">C</div>
+        <div class="cc-brand-text">
+          <span class="cc-brand-name">CHAMPIONS CLUB</span>
+          <span class="cc-brand-tagline">PLAY. PERFORM. BELONG.</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="cc-nav-links">
+          <li><a href="index.html" class="cc-nav-link">Landing Page</a></li>
+          <li><a href="bookings.html" class="cc-nav-link">Court Bookings</a></li>
+          <li><a href="shop.html" class="cc-nav-link is-active">Pro Shop</a></li>
+          <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
+          <li><a href="members.html" class="cc-nav-link">Roster (Admin)</a></li>
+          <li><a href="portal.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Member Portal</a></li>
+          <li><a href="dashboard.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Admin Dashboard</a></li>
+          <li><a href="styleguide.html" class="cc-nav-link" target="_blank" rel="noopener">Styleguide</a></li>
+        </ul>
+      </nav>
+
+      <div class="cc-nav-actions">
+        <span class="cc-badge cc-badge-active">
+          <span class="cc-pulse-dot"></span> Unified Shelf Sync
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="cc-container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+
+    <!-- HEADER & OVERVIEW -->
+    <div style="margin-bottom: 2rem;">
+      <div class="cc-eyebrow">Pro Equipment &amp; Apparel</div>
+      <h1 class="cc-heading-1">Pro Shop &amp; Unified Inventory Shelf</h1>
+      <p class="cc-body-sm" style="margin-top: 0.25rem;">
+        What a member buys at the counter and what they order from their sofa come from the exact same shelf. Real-time stock visibility, low-stock awareness, and pickup or home delivery options.
+      </p>
+    </div>
+
+    <!-- MAIN INTERACTIVE HUB: CATALOG ON LEFT, CART & FULFILLMENT ON RIGHT -->
+    <div class="cc-grid cc-grid-cols-2" style="grid-template-columns: 1.3fr 0.7fr; align-items: flex-start; gap: 1.75rem;">
+      
+      <!-- LEFT: PRODUCT CATALOG & CATEGORY FILTER -->
+      <div>
+        
+        <!-- Category Filter Pills -->
+        <div class="cc-card cc-card-glass" style="margin-bottom: 1.5rem; padding: 1rem;">
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" id="shop-category-filters">
+            <button class="cc-filter-pill is-active" data-cat="all">All Categories</button>
+            <button class="cc-filter-pill" data-cat="rackets">&#127934; Rackets</button>
+            <button class="cc-filter-pill" data-cat="balls">&#9918; Balls</button>
+            <button class="cc-filter-pill" data-cat="shoes">&#128095; Shoes</button>
+            <button class="cc-filter-pill" data-cat="accessories">&#127941; Accessories</button>
+            <button class="cc-filter-pill" data-cat="apparel">&#128085; Apparel</button>
+          </div>
+        </div>
+
+        <!-- Product Cards Grid -->
+        <div class="cc-product-grid" id="product-grid-container">
+          <!-- Populated dynamically by JS -->
+        </div>
+
+      </div>
+
+      <!-- RIGHT: OMNICHANNEL CHECKOUT & FULFILLMENT -->
+      <div>
+        <div class="cc-cart-drawer">
+          <div class="cc-card-header" style="margin-bottom: 1rem;">
+            <h3 class="cc-card-title cc-text-gold">Omnichannel Cart</h3>
+            <span class="cc-badge cc-badge-gold" id="cart-item-count-badge">0 Items</span>
+          </div>
+
+          <!-- Channel Toggle: Counter Walk-in vs Online Order -->
+          <div class="cc-form-group">
+            <label class="cc-label">Sales Channel</label>
+            <div style="display: flex; gap: 0.75rem;">
+              <label class="cc-checkbox" style="font-weight: 600;">
+                <input type="radio" name="order-channel" value="online" checked id="radio-channel-online">
+                <span class="cc-checkbox-box">●</span>
+                <span>Online Order (Sofa)</span>
+              </label>
+              <label class="cc-checkbox" style="font-weight: 600;">
+                <input type="radio" name="order-channel" value="counter" id="radio-channel-counter">
+                <span class="cc-checkbox-box">●</span>
+                <span>Counter Purchase</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Fulfillment Selector (Pickup vs Delivery) -->
+          <div id="section-fulfillment-select" class="cc-form-group">
+            <label class="cc-label" for="order-fulfillment-type">Fulfillment Method *</label>
+            <select id="order-fulfillment-type" class="cc-select">
+              <option value="pickup">Collect at Club (Click &amp; Collect)</option>
+              <option value="delivery">Home Delivery (Doorstep Dispatch)</option>
+            </select>
+          </div>
+
+          <!-- Customer Name & Contact -->
+          <div class="cc-form-group">
+            <label class="cc-label" for="customer-name-input">Customer / Member Name *</label>
+            <input type="text" id="customer-name-input" class="cc-input" placeholder="e.g. David Vance" value="David Vance">
+          </div>
+
+          <!-- Delivery Address (Conditional) -->
+          <div id="section-delivery-address" class="cc-form-group" style="display: none;">
+            <label class="cc-label" for="delivery-address-input">Home Delivery Address *</label>
+            <textarea id="delivery-address-input" class="cc-textarea" style="min-height: 70px;" placeholder="Flat No., Street, City, Pincode..."></textarea>
+          </div>
+
+          <!-- Cart Items List -->
+          <div style="margin: 1.25rem 0;">
+            <div class="cc-eyebrow" style="margin-bottom: 0.5rem;">Selected Items (From Shared Shelf)</div>
+            <div id="cart-items-container" style="display: flex; flex-direction: column; gap: 0.5rem; min-height: 60px;">
+              <p class="cc-body-xs" style="color: var(--cc-text-muted); padding: 12px 0;">Your cart is currently empty. Click "+ Add to Cart" on any product.</p>
+            </div>
+          </div>
+
+          <!-- Cart Total -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-top: 1px solid var(--cc-border-medium); margin-bottom: 1rem;">
+            <span style="font-weight: 700; color: var(--cc-text-primary);">Total Amount:</span>
+            <span class="cc-text-mono" id="cart-total-amount" style="font-size: 1.25rem; font-weight: 800; color: var(--cc-neon-green);">₹ 0.00</span>
+          </div>
+
+          <!-- Error Alert Box -->
+          <div id="shop-order-error" class="cc-alert-error" style="display: none; margin-bottom: 1rem;">
+            <svg class="cc-alert-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div class="cc-alert-msg" id="shop-error-msg">Error details...</div>
+          </div>
+
+          <button class="cc-btn cc-btn-primary cc-btn-pill" id="btn-submit-shop-order" style="width: 100%;">
+            CONFIRM ORDER &amp; DEDUCT STOCK
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==========================================
+         SHARED INVENTORY MANAGEMENT & RECENT ORDERS
+         ========================================== -->
+    <div style="margin-top: 4.5rem;">
+      <div class="cc-showcase-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <div class="cc-eyebrow">Shared Shelf Overview</div>
+          <h2 class="cc-heading-2">Unified Inventory &amp; Order Logs</h2>
+          <p class="cc-body-sm">Live physical stock status across both counter and online sales channels.</p>
+        </div>
+      </div>
+
+      <!-- Orders History Table -->
+      <div class="cc-table-container">
+        <table class="cc-table" id="shop-orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Channel</th>
+              <th>Customer</th>
+              <th>Fulfillment</th>
+              <th>Items Ordered</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="shop-orders-body">
+            <!-- Populated dynamically by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+       MODAL: ORDER CONFIRMATION RECEIPT
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-shop-confirmation" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 500px; text-align: center;">
+      <div class="cc-modal-header" style="justify-content: center; position: relative;">
+        <h3 class="cc-modal-title cc-text-gradient-gold">Order Confirmed</h3>
+        <button class="cc-modal-close" data-cc-modal-close style="position: absolute; right: 16px;">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cc-modal-body">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(0, 229, 153, 0.15); border: 2px solid var(--cc-neon-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--cc-neon-green); font-size: 26px;">
+          ✓
+        </div>
+        <div class="cc-text-mono" id="confirm-shop-id" style="font-size: 1.25rem; font-weight: 800; color: var(--cc-gold-400); margin-bottom: 0.5rem;">
+          CC-SO-0001
+        </div>
+        <p class="cc-body-sm" id="confirm-shop-msg" style="margin-bottom: 1.25rem;">
+          Stock has been deducted from the unified shared shelf.
+        </p>
+
+        <div style="background: rgba(22, 29, 46, 0.6); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 1rem; text-align: left; display: flex; flex-direction: column; gap: 0.5rem; font-size: 13px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--cc-text-muted);">Channel:</span>
+            <strong id="confirm-shop-channel" style="color: var(--cc-text-primary);">-</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--cc-text-muted);">Fulfillment:</span>
+            <strong id="confirm-shop-fulfillment" style="color: var(--cc-gold-400);">-</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--cc-text-muted);">Recipient:</span>
+            <strong id="confirm-shop-customer" style="color: var(--cc-text-primary);">-</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--cc-text-muted);">Total Value:</span>
+            <strong id="confirm-shop-total" class="cc-text-mono" style="color: var(--cc-neon-green);">-</strong>
+          </div>
+        </div>
+      </div>
+      <div class="cc-modal-footer" style="justify-content: center;">
+        <button type="button" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" data-cc-modal-close>
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/club_data_store.js"></script>
+  <script src="js/club_api.js"></script>
+  <script src="js/design_system.js"></script>
+  <script src="js/shop_manager.js"></script>
+</body>
+</html>

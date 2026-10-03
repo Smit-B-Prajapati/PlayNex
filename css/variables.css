@@ -1,0 +1,162 @@
+/**
+ * CHAMPIONS CLUB — Design System Tokens
+ * Brand: CHAMPIONS CLUB | Tagline: PLAY. PERFORM. BELONG.
+ */
+
+:root {
+  /* ==========================================================================
+     1. COLOR PALETTE (Luxury Athletic Palette: Obsidian, Pure Gold, Electric Turf)
+     ========================================================================== */
+
+  /* Backgrounds & Surfaces (Obsidian & Deep Carbon) */
+  --cc-bg-primary: #080B10;
+  --cc-bg-secondary: #0E131F;
+  --cc-bg-tertiary: #161D2E;
+  --cc-bg-elevated: #1C2438;
+  --cc-bg-surface-glass: rgba(18, 24, 38, 0.75);
+  --cc-bg-surface-glass-hover: rgba(26, 35, 54, 0.85);
+
+  /* Gold & Warm Metallic Accents (Premium / Gold Tier) */
+  --cc-gold-100: #FFF6E5;
+  --cc-gold-200: #FDE8BD;
+  --cc-gold-300: #F8D384;
+  --cc-gold-400: #EFB94B;
+  --cc-gold-500: #D4AF37; /* Primary Brand Gold */
+  --cc-gold-600: #B89223;
+  --cc-gold-700: #8C6D15;
+  --cc-gold-glow: rgba(212, 175, 55, 0.25);
+  --cc-gold-glow-intense: rgba(212, 175, 55, 0.5);
+
+  /* Athletic Performance Accents (Electric Court Neon & Turf Green) */
+  --cc-neon-green: #00E599;
+  --cc-neon-green-glow: rgba(0, 229, 153, 0.25);
+  --cc-electric-blue: #00B4D8;
+  --cc-electric-blue-glow: rgba(0, 180, 216, 0.25);
+  --cc-crimson: #EF4444;
+  --cc-crimson-glow: rgba(239, 68, 68, 0.25);
+  --cc-amber: #F59E0B;
+
+  /* Silver Tier Palette */
+  --cc-silver-100: #F8FAFC;
+  --cc-silver-300: #CBD5E1;
+  --cc-silver-500: #94A3B8;
+  --cc-silver-700: #475569;
+
+  /* Junior Tier Palette */
+  --cc-junior-blue: #38BDF8;
+  --cc-junior-glow: rgba(56, 189, 248, 0.25);
+
+  /* Typography / Monochromes */
+  --cc-text-primary: #F8FAFC;
+  --cc-text-secondary: #94A3B8;
+  --cc-text-muted: #64748B;
+  --cc-text-inverse: #080B10;
+  --cc-text-gold: #F3CA65;
+
+  /* Borders & Dividers */
+  --cc-border-subtle: rgba(255, 255, 255, 0.08);
+  --cc-border-medium: rgba(255, 255, 255, 0.16);
+  --cc-border-highlight: rgba(212, 175, 55, 0.35);
+  --cc-border-focus: #D4AF37;
+
+  /* Gradients */
+  --cc-grad-gold: linear-gradient(135deg, #F9D976 0%, #D4AF37 50%, #A37A17 100%);
+  --cc-grad-gold-soft: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.03) 100%);
+  --cc-grad-dark-surface: linear-gradient(180deg, rgba(22, 29, 46, 0.8) 0%, rgba(14, 19, 31, 0.95) 100%);
+  --cc-grad-glow-mesh: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
+  --cc-grad-neon: linear-gradient(135deg, #00E599 0%, #00B4D8 100%);
+
+  /* ==========================================================================
+     2. SPACING SYSTEM (4px base)
+     ========================================================================== */
+  --cc-space-1: 4px;
+  --cc-space-2: 8px;
+  --cc-space-3: 12px;
+  --cc-space-4: 16px;
+  --cc-space-5: 20px;
+  --cc-space-6: 24px;
+  --cc-space-8: 32px;
+  --cc-space-10: 40px;
+  --cc-space-12: 48px;
+  --cc-space-16: 64px;
+  --cc-space-20: 80px;
+  --cc-space-24: 96px;
+  --cc-space-32: 128px;
+
+  /* ==========================================================================
+     3. TYPOGRAPHY SYSTEM
+     ========================================================================== */
+  --cc-font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --cc-font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --cc-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Font Sizes */
+  --cc-text-xs: 0.75rem;    /* 12px */
+  --cc-text-sm: 0.875rem;   /* 14px */
+  --cc-text-base: 1rem;     /* 16px */
+  --cc-text-lg: 1.125rem;   /* 18px */
+  --cc-text-xl: 1.25rem;    /* 20px */
+  --cc-text-2xl: 1.5rem;    /* 24px */
+  --cc-text-3xl: 1.875rem;  /* 30px */
+  --cc-text-4xl: 2.25rem;   /* 36px */
+  --cc-text-5xl: 3rem;      /* 48px */
+  --cc-text-6xl: 3.75rem;   /* 60px */
+  --cc-text-7xl: 4.5rem;    /* 72px */
+
+  /* Line Heights */
+  --cc-leading-none: 1;
+  --cc-leading-tight: 1.15;
+  --cc-leading-snug: 1.35;
+  --cc-leading-normal: 1.6;
+  --cc-leading-relaxed: 1.75;
+
+  /* Letter Spacing */
+  --cc-tracking-tight: -0.03em;
+  --cc-tracking-normal: 0em;
+  --cc-tracking-wide: 0.05em;
+  --cc-tracking-wider: 0.1em;
+  --cc-tracking-widest: 0.2em;
+
+  /* ==========================================================================
+     4. ELEVATIONS & SHADOWS
+     ========================================================================== */
+  --cc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --cc-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
+  --cc-shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.65);
+  --cc-shadow-gold: 0 0 30px rgba(212, 175, 55, 0.25);
+  --cc-shadow-neon: 0 0 25px rgba(0, 229, 153, 0.25);
+
+  /* ==========================================================================
+     5. BORDER RADIUS & BLUR
+     ========================================================================== */
+  --cc-radius-xs: 4px;
+  --cc-radius-sm: 6px;
+  --cc-radius-md: 10px;
+  --cc-radius-lg: 16px;
+  --cc-radius-xl: 24px;
+  --cc-radius-full: 9999px;
+
+  --cc-blur-sm: blur(8px);
+  --cc-blur-md: blur(16px);
+  --cc-blur-lg: blur(24px);
+
+  /* ==========================================================================
+     6. TRANSITIONS & TIMINGS
+     ========================================================================== */
+  --cc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --cc-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --cc-transition-fast: 150ms var(--cc-ease-out);
+  --cc-transition-base: 250ms var(--cc-ease-out);
+  --cc-transition-slow: 400ms var(--cc-ease-out);
+
+  /* ==========================================================================
+     7. Z-INDEX LAYERING
+     ========================================================================== */
+  --cc-z-base: 1;
+  --cc-z-dropdown: 50;
+  --cc-z-sticky: 100;
+  --cc-z-fixed: 200;
+  --cc-z-modal-backdrop: 500;
+  --cc-z-modal: 600;
+  --cc-z-toast: 1000;
+}

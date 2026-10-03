@@ -1,0 +1,297 @@
+/**
+ * CHAMPIONS CLUB — Public Landing Page Styles
+ * Supplements design_system.css for the public portal
+ */
+
+/* Hero Banner */
+.cc-landing-hero {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--cc-space-20) var(--cc-space-6);
+  border-bottom: 1px solid var(--cc-border-subtle);
+  overflow: hidden;
+}
+
+.cc-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(180deg, rgba(8, 11, 16, 0.65) 0%, rgba(8, 11, 16, 0.92) 100%), url('../assets/images/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  transform: scale(1.02);
+  transition: transform 10s ease;
+}
+
+.cc-landing-hero:hover .cc-hero-bg {
+  transform: scale(1.06);
+}
+
+.cc-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cc-hero-title {
+  font-family: var(--cc-font-display);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin: var(--cc-space-4) 0;
+}
+
+.cc-hero-subtitle {
+  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+  line-height: var(--cc-leading-relaxed);
+  color: #CBD5E1;
+  max-width: 680px;
+  margin-bottom: var(--cc-space-8);
+}
+
+.cc-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cc-space-4);
+  justify-content: center;
+}
+
+/* Facility Cards */
+.cc-facility-card {
+  background: var(--cc-bg-secondary);
+  border: 1px solid var(--cc-border-subtle);
+  border-radius: var(--cc-radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--cc-transition-base), border-color var(--cc-transition-base), box-shadow var(--cc-transition-base);
+}
+
+.cc-facility-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--cc-border-highlight);
+  box-shadow: var(--cc-shadow-gold);
+}
+
+.cc-facility-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: var(--cc-bg-tertiary);
+}
+
+.cc-facility-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--cc-transition-slow);
+}
+
+.cc-facility-card:hover .cc-facility-img {
+  transform: scale(1.08);
+}
+
+.cc-facility-badge-pos {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+}
+
+.cc-facility-body {
+  padding: var(--cc-space-6);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.cc-facility-title {
+  font-family: var(--cc-font-display);
+  font-size: var(--cc-text-xl);
+  font-weight: 700;
+  color: var(--cc-text-primary);
+  margin-bottom: var(--cc-space-2);
+}
+
+.cc-facility-features {
+  list-style: none;
+  padding: 0;
+  margin: var(--cc-space-4) 0 var(--cc-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cc-space-2);
+}
+
+.cc-facility-feature-item {
+  font-size: var(--cc-text-xs);
+  color: var(--cc-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--cc-space-2);
+}
+
+.cc-facility-feature-item::before {
+  content: '✓';
+  color: var(--cc-gold-500);
+  font-weight: 800;
+}
+
+/* Membership Tiers Grid */
+.cc-tier-card {
+  background: var(--cc-bg-secondary);
+  border: 1px solid var(--cc-border-subtle);
+  border-radius: var(--cc-radius-xl);
+  padding: var(--cc-space-8);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all var(--cc-transition-base);
+}
+
+.cc-tier-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--cc-shadow-lg);
+}
+
+.cc-tier-card.is-featured {
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.12) 0%, rgba(14, 19, 31, 0.98) 100%);
+  border-color: var(--cc-gold-500);
+  box-shadow: var(--cc-shadow-gold);
+}
+
+.cc-tier-featured-pill {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.cc-tier-name {
+  font-family: var(--cc-font-display);
+  font-size: var(--cc-text-2xl);
+  font-weight: 800;
+  color: var(--cc-text-primary);
+  margin-bottom: var(--cc-space-2);
+}
+
+.cc-tier-price-box {
+  background: rgba(8, 11, 16, 0.6);
+  border: 1px dashed var(--cc-border-medium);
+  border-radius: var(--cc-radius-md);
+  padding: var(--cc-space-3) var(--cc-space-4);
+  margin: var(--cc-space-4) 0 var(--cc-space-6);
+  text-align: center;
+}
+
+.cc-tier-price-label {
+  font-family: var(--cc-font-display);
+  font-size: var(--cc-text-xs);
+  font-weight: 800;
+  letter-spacing: var(--cc-tracking-widest);
+  text-transform: uppercase;
+  color: var(--cc-gold-400);
+}
+
+.cc-tier-benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--cc-space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cc-space-3);
+  flex-grow: 1;
+}
+
+.cc-tier-benefit-item {
+  font-size: var(--cc-text-sm);
+  color: var(--cc-text-secondary);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cc-space-2);
+  line-height: var(--cc-leading-snug);
+}
+
+.cc-tier-benefit-icon {
+  color: var(--cc-gold-500);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Shop Category Cards */
+.cc-shop-cat-card {
+  background: var(--cc-bg-secondary);
+  border: 1px solid var(--cc-border-subtle);
+  border-radius: var(--cc-radius-lg);
+  padding: var(--cc-space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--cc-space-3);
+  transition: all var(--cc-transition-base);
+  text-decoration: none;
+}
+
+.cc-shop-cat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cc-border-highlight);
+  background: var(--cc-bg-tertiary);
+}
+
+.cc-shop-cat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--cc-radius-md);
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--cc-border-highlight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cc-gold-400);
+}
+
+.cc-shop-cat-name {
+  font-family: var(--cc-font-display);
+  font-size: var(--cc-text-lg);
+  font-weight: 700;
+  color: var(--cc-text-primary);
+}
+
+.cc-shop-cat-desc {
+  font-size: var(--cc-text-xs);
+  color: var(--cc-text-muted);
+  line-height: var(--cc-leading-normal);
+}
+
+/* Final CTA Section */
+.cc-cta-section {
+  position: relative;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(14, 19, 31, 0.95) 50%, rgba(8, 11, 16, 0.98) 100%);
+  border: 1px solid var(--cc-border-highlight);
+  border-radius: var(--cc-radius-xl);
+  padding: var(--cc-space-16) var(--cc-space-8);
+  text-align: center;
+  margin: var(--cc-space-16) 0;
+  overflow: hidden;
+  box-shadow: var(--cc-shadow-gold);
+}
+
+.cc-cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

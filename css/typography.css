@@ -1,0 +1,158 @@
+/**
+ * CHAMPIONS CLUB — Typography System
+ * High-performance athletic luxury typography
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* Base Font Configuration */
+html {
+  font-family: var(--cc-font-body);
+  font-size: 16px;
+  color: var(--cc-text-primary);
+  background-color: var(--cc-bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings & Display Typography */
+h1, h2, h3, h4, h5, h6,
+.cc-heading-hero,
+.cc-heading-1,
+.cc-heading-2,
+.cc-heading-3,
+.cc-heading-4,
+.cc-heading-5,
+.cc-heading-6 {
+  font-family: var(--cc-font-display);
+  font-weight: 700;
+  color: var(--cc-text-primary);
+  line-height: var(--cc-leading-tight);
+  letter-spacing: var(--cc-tracking-tight);
+  margin: 0;
+}
+
+/* Hero Display - Cinematic Athletic */
+.cc-heading-hero {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+h1, .cc-heading-1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+h2, .cc-heading-2 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 700;
+}
+
+h3, .cc-heading-3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h4, .cc-heading-4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+h5, .cc-heading-5 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+h6, .cc-heading-6 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Body & Paragraphs */
+p, .cc-body {
+  font-size: var(--cc-text-base);
+  line-height: var(--cc-leading-normal);
+  color: var(--cc-text-secondary);
+  margin: 0;
+}
+
+.cc-body-lg {
+  font-size: var(--cc-text-lg);
+  line-height: var(--cc-leading-relaxed);
+  color: var(--cc-text-secondary);
+}
+
+.cc-body-sm {
+  font-size: var(--cc-text-sm);
+  line-height: var(--cc-leading-normal);
+  color: var(--cc-text-secondary);
+}
+
+.cc-body-xs {
+  font-size: var(--cc-text-xs);
+  line-height: var(--cc-leading-normal);
+  color: var(--cc-text-muted);
+}
+
+/* Athletic Overlines & Section Eyebrows */
+.cc-eyebrow {
+  font-family: var(--cc-font-display);
+  font-size: var(--cc-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--cc-tracking-widest);
+  color: var(--cc-gold-500);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cc-space-2);
+}
+
+.cc-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 2px;
+  background: var(--cc-grad-gold);
+  border-radius: var(--cc-radius-full);
+}
+
+/* Text Enhancements & Modifiers */
+.cc-text-gold {
+  color: var(--cc-gold-500);
+}
+
+.cc-text-gradient-gold {
+  background: var(--cc-grad-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.cc-text-gradient-neon {
+  background: var(--cc-grad-neon);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.cc-text-muted {
+  color: var(--cc-text-muted);
+}
+
+.cc-text-mono {
+  font-family: var(--cc-font-mono);
+  letter-spacing: -0.02em;
+}
+
+.cc-tagline {
+  font-family: var(--cc-font-display);
+  font-size: var(--cc-text-sm);
+  font-weight: 800;
+  letter-spacing: var(--cc-tracking-wider);
+  text-transform: uppercase;
+  color: var(--cc-gold-400);
+}
