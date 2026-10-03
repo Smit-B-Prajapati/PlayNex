@@ -272,14 +272,13 @@ const ClubAdminAuth = (function() {
       const href = (link.getAttribute('href') || '').toLowerCase();
       const text = (link.textContent || '').toLowerCase();
 
-      const isAdminDest = href.includes('dashboard.html') || 
-                          href.includes('crm.html') || 
-                          text.includes('admin') || 
-                          text.includes('crm') || 
-                          text.includes('roster (admin)') ||
-                          link.hasAttribute('data-cc-admin-nav');
+      // Enquiries (crm.html) is public-accessible for visitor membership enquiries
+      const isPureAdminDest = href.includes('dashboard.html') || 
+                              text.includes('admin dashboard') || 
+                              text.includes('roster (admin)') ||
+                              link.hasAttribute('data-cc-admin-nav');
 
-      if (isAdminDest) {
+      if (isPureAdminDest) {
         const li = link.closest('li') || link;
         if (authenticated) {
           li.classList.remove('cc-hidden-unauthorized');
@@ -326,16 +325,34 @@ const ClubAdminAuth = (function() {
     }
 
     // 5. Handle Full Page Access Gates (dashboard.html, crm.html, members.html)
+    const isCrmPage = typeof window !== 'undefined' && window.location && window.location.pathname.toLowerCase().includes('crm.html');
     const accessGate = document.getElementById('cc-admin-access-gate');
     const protectedContent = document.getElementById('cc-admin-protected-content');
+    const publicEnquirySec = document.getElementById('public-enquiry-section');
+    const btnToggleCrm = document.getElementById('btn-toggle-crm-view');
 
-    if (accessGate && protectedContent) {
+    if (isCrmPage) {
       if (authenticated) {
-        accessGate.style.setProperty('display', 'none', 'important');
-        protectedContent.style.removeProperty('display');
+        if (publicEnquirySec) publicEnquirySec.style.display = 'none';
+        if (accessGate) accessGate.style.display = 'none';
+        if (protectedContent) protectedContent.style.display = 'block';
+        if (btnToggleCrm) btnToggleCrm.textContent = '👥 Public View';
+        if (window.renderPipeline) window.renderPipeline();
       } else {
-        accessGate.style.removeProperty('display');
-        protectedContent.style.setProperty('display', 'none', 'important');
+        if (publicEnquirySec) publicEnquirySec.style.display = 'block';
+        if (accessGate) accessGate.style.display = 'none';
+        if (protectedContent) protectedContent.style.display = 'none';
+        if (btnToggleCrm) btnToggleCrm.textContent = '🔒 Staff Pipeline';
+      }
+    } else {
+      if (accessGate && protectedContent) {
+        if (authenticated) {
+          accessGate.style.setProperty('display', 'none', 'important');
+          protectedContent.style.removeProperty('display');
+        } else {
+          accessGate.style.removeProperty('display');
+          protectedContent.style.setProperty('display', 'none', 'important');
+        }
       }
     }
   }

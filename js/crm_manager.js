@@ -580,5 +580,211 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
+
+  // ==========================================
+  // PUBLIC ENQUIRY FORM & TRACKER LOGIC
+  // ==========================================
+  
+  // 1. URL Query Parameter Plan Pre-Selection (e.g. ?plan=gold, ?plan=silver, ?plan=junior)
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedPlan = urlParams.get('plan');
+  const pubPlanSelect = document.getElementById('pub-enq-plan');
+  if (requestedPlan && pubPlanSelect) {
+    const validPlans = ['gold', 'silver', 'junior'];
+    const matched = validPlans.find(p => p === requestedPlan.toLowerCase());
+    if (matched) {
+      pubPlanSelect.value = matched;
+    }
+  }
+
+  // 2. Public Membership Enquiry Form Submission
+  const pubForm = document.getElementById('form-public-enquiry');
+  if (pubForm) {
+    pubForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('pub-enq-name').value.trim();
+      const phone = document.getElementById('pub-enq-phone').value.trim();
+      const email = document.getElementById('pub-enq-email').value.trim();
+      const plan = document.getElementById('pub-enq-plan').value;
+      const message = document.getElementById('pub-enq-message').value.trim();
+      const feedback = document.getElementById('pub-enquiry-feedback');
+      const submitBtn = document.getElementById('btn-submit-public-enquiry');
+
+      if (!name || !phone) {
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.innerHTML = '<div class="cc-badge cc-badge-cancelled" style="width: 100%; text-align: center; padding: 8px;">Please provide both your name and phone number.</div>';
+        }
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Registering Enquiry in Club CRM...';
+
+      try {
+        let createdLead = null;
+        if (window.ClubAPI && window.ClubAPI.createLead) {
+          createdLead = await window.ClubAPI.createLead({
+            name,
+            phone,
+            email,
+            plan,
+            message,
+            source: 'website'
+          });
+        }
+
+        await fetchLeads();
+
+        const refCode = (createdLead && (createdLead.id || createdLead.name || createdLead.reference)) || `CC-ENQ-000${leads.length + 1}`;
+
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.innerHTML = `
+            <div style="background: rgba(0, 229, 153, 0.1); border: 1px solid var(--cc-neon-green); border-radius: var(--cc-radius-md); padding: 14px; color: var(--cc-neon-green); font-size: 13px; line-height: 1.5;">
+              <strong style="font-size: 14px;">✓ Membership Enquiry Submitted Successfully!</strong><br>
+              Official Tracking Reference: <strong class="cc-text-mono" style="color: var(--cc-gold-400); font-size: 14px;">${refCode}</strong><br>
+              <span style="font-size: 12px; color: var(--cc-text-secondary);">
+                Assigned Advisor: <strong>Pooja Patel (Membership Team)</strong> &bull; We will contact you via WhatsApp / Call at <strong>${phone}</strong> shortly.
+              </span>
+            </div>
+          `;
+        }
+
+        pubForm.reset();
+        if (requestedPlan && pubPlanSelect) pubPlanSelect.value = requestedPlan;
+        
+        if (window.ClubAPI && window.ClubAPI.showSuccess) {
+          window.ClubAPI.showSuccess(`Enquiry ${refCode} registered in CRM!`);
+        }
+
+        // Auto-fill track input for ease of use
+        const trackInput = document.getElementById('pub-track-input');
+        if (trackInput) trackInput.value = refCode;
+
+      } catch (err) {
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.innerHTML = `<div class="cc-badge cc-badge-cancelled" style="width: 100%; text-align: center; padding: 8px;">Error: ${err.message}</div>`;
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Membership Enquiry →';
+      }
+    });
+  }
+
+  // 3. Live Enquiry Status Tracker
+  const btnTrack = document.getElementById('btn-pub-track');
+  const trackInput = document.getElementById('pub-track-input');
+  const trackResult = document.getElementById('pub-track-result');
+
+  if (btnTrack && trackInput && trackResult) {
+    btnTrack.addEventListener('click', async () => {
+      const q = trackInput.value.trim().toLowerCase();
+      if (!q) {
+        trackResult.style.display = 'block';
+        trackResult.innerHTML = '<div style="color: var(--cc-crimson); font-size: 12px;">Please enter your reference code or phone number.</div>';
+        return;
+      }
+
+      await fetchLeads();
+      const found = leads.find(l => 
+        (l.id && l.id.toLowerCase() === q) || 
+        (l.phone && l.phone.replace(/\D/g, '').includes(q.replace(/\D/g, ''))) ||
+        (l.email && l.email.toLowerCase() === q)
+      );
+
+      trackResult.style.display = 'block';
+      if (!found) {
+        trackResult.innerHTML = `
+          <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--cc-radius-md); padding: 12px; font-size: 12px; color: var(--cc-crimson);">
+            No enquiry record found matching "<strong>${trackInput.value}</strong>". Please verify your reference number or submit a new enquiry.
+          </div>
+        `;
+        return;
+      }
+
+      const stageLabels = {
+        new: { label: 'New Enquiry Received', badge: 'cc-badge-junior' },
+        contacted: { label: 'Contacted by Advisor', badge: 'cc-badge-warning' },
+        followup: { label: 'Follow-up / Tour Scheduled', badge: 'cc-badge-silver' },
+        quote: { label: `Quote Sent (₹ ${Number(found.quoteAmount || 0).toLocaleString()})`, badge: 'cc-badge-gold' },
+        converted: { label: `Converted to Active Member (${found.memberId || 'Active'})`, badge: 'cc-badge-active' }
+      };
+
+      const stageInfo = stageLabels[found.stage] || { label: found.stage, badge: 'cc-badge-silver' };
+
+      trackResult.innerHTML = `
+        <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-highlight); border-radius: var(--cc-radius-md); padding: 14px; font-size: 13px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong class="cc-text-mono" style="color: var(--cc-gold-400);">${found.id}</strong>
+            <span class="cc-badge ${stageInfo.badge}">${stageInfo.label}</span>
+          </div>
+          <div style="color: var(--cc-text-primary); font-weight: 700; margin-bottom: 4px;">${found.name}</div>
+          <div style="color: var(--cc-text-secondary); font-size: 12px; margin-bottom: 6px;">
+            Tier Interest: <strong>${(found.plan || 'Gold').toUpperCase()}</strong> &bull; Advisor: <strong>${found.staff || 'Membership Team'}</strong>
+          </div>
+          <div style="font-size: 11px; color: var(--cc-text-muted);">
+            Latest status: ${found.followups && found.followups.length ? found.followups[found.followups.length - 1].note : 'Enquiry registered in club CRM.'}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // 4. View Switcher Helper for Staff / Public
+  const btnToggleCrm = document.getElementById('btn-toggle-crm-view');
+  if (btnToggleCrm) {
+    btnToggleCrm.addEventListener('click', () => {
+      const publicSec = document.getElementById('public-enquiry-section');
+      const gate = document.getElementById('cc-admin-access-gate');
+      const protectedContent = document.getElementById('cc-admin-protected-content');
+      const isAdmin = window.ClubAdminAuth && window.ClubAdminAuth.isAdmin();
+
+      if (isAdmin) {
+        // If admin is logged in, toggle between public view and Kanban board
+        if (publicSec && publicSec.style.display !== 'none') {
+          publicSec.style.display = 'none';
+          if (protectedContent) protectedContent.style.display = 'block';
+          btnToggleCrm.textContent = '👥 Public View';
+        } else {
+          if (publicSec) publicSec.style.display = 'block';
+          if (protectedContent) protectedContent.style.display = 'none';
+          btnToggleCrm.textContent = '📋 CRM Pipeline';
+        }
+      } else {
+        // If not logged in, open the Admin Login modal / gate
+        if (window.ClubAdminAuth && window.ClubAdminAuth.openLoginModal) {
+          window.ClubAdminAuth.openLoginModal();
+        } else {
+          showStaffGateView();
+        }
+      }
+    });
+  }
 });
+
+// Global Helpers for CRM views
+function showPublicEnquiryView() {
+  const publicSec = document.getElementById('public-enquiry-section');
+  const gate = document.getElementById('cc-admin-access-gate');
+  const protectedContent = document.getElementById('cc-admin-protected-content');
+  if (publicSec) publicSec.style.display = 'block';
+  if (gate) gate.style.display = 'none';
+  if (protectedContent) protectedContent.style.display = 'none';
+}
+
+function showStaffGateView() {
+  const publicSec = document.getElementById('public-enquiry-section');
+  const gate = document.getElementById('cc-admin-access-gate');
+  const protectedContent = document.getElementById('cc-admin-protected-content');
+  if (publicSec) publicSec.style.display = 'none';
+  if (gate) gate.style.display = 'block';
+  if (protectedContent) protectedContent.style.display = 'none';
+}
+
+window.showPublicEnquiryView = showPublicEnquiryView;
+window.showStaffGateView = showStaffGateView;
+
 
