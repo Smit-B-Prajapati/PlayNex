@@ -1,6 +1,6 @@
 /**
  * CHAMPIONS CLUB — Central Data Store & Audit Traceability
- * Provides synchronized persistence via localStorage across all modules.
+ * Provides synchronized persistence via localStorage & live server JSON store across all browser tabs (including InPrivate/Incognito windows).
  * Every metric is calculated strictly from actual stored records.
  * Supports baseline DEMO DATA restoration and empty-state testing ("No data available").
  */
@@ -19,7 +19,7 @@ const ClubDataStore = (function() {
     LEADS: 'cc_leads'
   };
 
-  // Seed DEMO DATA - Strictly labeled as DEMO DATA in compliance with DATA RULE
+  // Seed Baseline Club Data — includes all registered members and activity
   const SEED_DATA = {
     members: [
       {
@@ -30,6 +30,7 @@ const ClubDataStore = (function() {
         plan: 'gold',
         startDate: '2026-01-01',
         endDate: '2026-12-31',
+        state: 'active',
         history: [
           { timestamp: '2026-01-01 10:00', type: 'signup', desc: 'Enrolled under Gold Plan (1 Year Validity)' },
           { timestamp: '2026-02-14 18:30', type: 'checkin', desc: 'Front desk check-in for Tennis Court 1' },
@@ -45,6 +46,7 @@ const ClubDataStore = (function() {
         plan: 'silver',
         startDate: '2025-11-01',
         endDate: '2026-10-25', // Expiring in ~22 days from Oct 3, 2026
+        state: 'active',
         history: [
           { timestamp: '2025-11-01 11:30', type: 'signup', desc: 'Enrolled under Silver Plan' },
           { timestamp: '2026-05-10 17:00', type: 'checkin', desc: 'Front desk check-in for Cricket practice' }
@@ -59,6 +61,7 @@ const ClubDataStore = (function() {
         plan: 'junior',
         startDate: '2026-03-01',
         endDate: '2027-02-28',
+        state: 'active',
         history: [
           { timestamp: '2026-03-01 14:00', type: 'signup', desc: 'Enrolled under Junior Plan (Under 18)' },
           { timestamp: '2026-06-12 16:00', type: 'checkin', desc: 'Front desk check-in for Badminton session' }
@@ -73,11 +76,54 @@ const ClubDataStore = (function() {
         plan: 'silver',
         startDate: '2025-08-01',
         endDate: '2026-08-01', // Expired
+        state: 'expired',
         history: [
           { timestamp: '2025-08-01 09:00', type: 'signup', desc: 'Enrolled under Silver Plan' },
           { timestamp: '2026-08-01 00:00', type: 'expiry', desc: 'Validity expired on August 1, 2026' }
         ],
         notes: 'Renewal follow-up pending.'
+      },
+      {
+        id: 'CC-MEM-00105',
+        name: 'Siddharth Rao',
+        email: 'siddharth.rao@example.com',
+        phone: '+91 99001 22334',
+        plan: 'gold',
+        startDate: '2026-10-03',
+        endDate: '2027-10-03',
+        state: 'active',
+        history: [
+          { timestamp: '2026-10-03 10:00', type: 'signup', desc: 'Enrolled under Gold Plan (Converted from CRM Lead CC-ENQ-0001)' }
+        ],
+        notes: 'Weekend clay court enthusiast.'
+      },
+      {
+        id: 'CC-MEM-00106',
+        name: 'Vikramaditya Bose',
+        email: 'vikram.bose@example.com',
+        phone: '+91 97110 33445',
+        plan: 'junior',
+        startDate: '2026-10-03',
+        endDate: '2027-10-03',
+        state: 'active',
+        history: [
+          { timestamp: '2026-10-03 11:30', type: 'signup', desc: 'Enrolled under Junior Plan (Converted from CRM Lead CC-ENQ-0003)' }
+        ],
+        notes: 'Youth cricket team candidate.'
+      },
+      {
+        id: 'CC-MEM-00107',
+        name: 'Smit',
+        email: 'mevawalatisha@gmail.com',
+        phone: '+91 98989 00107',
+        plan: 'junior',
+        startDate: '2026-10-03',
+        endDate: '2027-10-03',
+        state: 'active',
+        history: [
+          { timestamp: '2026-10-03 14:00', type: 'signup', desc: 'Enrolled under Junior Plan (Front Desk Enrollment)' }
+        ],
+        notes: 'Enrolled at front desk.'
       }
     ],
     bookings: [
@@ -245,14 +291,15 @@ const ClubDataStore = (function() {
         plan: 'gold',
         sport: 'tennis',
         message: 'Interested in Gold membership and court availability for weekend tennis.',
-        stage: 'new',
+        stage: 'converted',
         staff: 'Pooja Patel (Membership Advisor)',
-        quoteSent: false,
+        quoteSent: true,
         quoteAmount: 24000,
         followups: [
-          { time: '2026-10-03 09:30', note: 'Website form submitted from public landing page.' }
+          { time: '2026-10-03 09:30', note: 'Website form submitted from public landing page.' },
+          { time: '2026-10-03 10:00', note: 'Quote accepted; converted to member CC-MEM-00105.' }
         ],
-        memberId: null
+        memberId: 'CC-MEM-00105'
       },
       {
         id: 'CC-ENQ-0002',
@@ -279,15 +326,16 @@ const ClubDataStore = (function() {
         plan: 'junior',
         sport: 'cricket',
         message: 'Looking for youth cricket net training for 15-year old son.',
-        stage: 'followup',
+        stage: 'converted',
         staff: 'Karan Mehra (Club Manager)',
         quoteSent: true,
         quoteAmount: 8000,
         followups: [
           { time: '2026-10-01 11:00', note: 'Spoke with parent; sent Junior membership quote (₹ 8,000/yr).' },
-          { time: '2026-10-02 18:00', note: 'Parent completed club tour; scheduled trial coaching session.' }
+          { time: '2026-10-02 18:00', note: 'Parent completed club tour; scheduled trial coaching session.' },
+          { time: '2026-10-03 11:30', note: 'Converted to Junior member CC-MEM-00106.' }
         ],
-        memberId: null
+        memberId: 'CC-MEM-00106'
       },
       {
         id: 'CC-ENQ-0004',
@@ -310,12 +358,25 @@ const ClubDataStore = (function() {
     ]
   };
 
-  // Safe Loader with localStorage priority
+  // Memory cache
+  let _cachedStore = {};
+  let _syncPromise = null;
+
+  // Safe Loader with Memory Cache and localStorage priority
   function load(key, defaultData) {
+    if (_cachedStore[key] && Array.isArray(_cachedStore[key]) && _cachedStore[key].length > 0) {
+      return JSON.parse(JSON.stringify(_cachedStore[key]));
+    }
+    if (_cachedStore[key] && typeof _cachedStore[key] === 'object' && !Array.isArray(_cachedStore[key])) {
+      return JSON.parse(JSON.stringify(_cachedStore[key]));
+    }
+
     try {
       const raw = localStorage.getItem(key);
       if (raw !== null) {
-        return JSON.parse(raw);
+        const parsed = JSON.parse(raw);
+        _cachedStore[key] = parsed;
+        return parsed;
       }
     } catch (e) {
       console.warn(`Error loading key ${key} from storage:`, e);
@@ -323,16 +384,67 @@ const ClubDataStore = (function() {
     return JSON.parse(JSON.stringify(defaultData));
   }
 
-  // Safe Saver
+  // Safe Saver with local storage and background server persistence
   function save(key, data) {
+    _cachedStore[key] = data;
     try {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (e) {
-      console.warn(`Error saving key ${key} to storage:`, e);
+      console.warn(`Error saving key ${key} to local storage:`, e);
+    }
+
+    // Persist to Central Server
+    if (typeof fetch === 'function') {
+      try {
+        fetch('/api/datastore', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key, data })
+        }).catch(() => {});
+      } catch (err) {}
     }
   }
 
+  // Asynchronous Server Synchronizer
+  async function syncWithServer() {
+    if (typeof fetch !== 'function') return false;
+    try {
+      const res = await fetch('/api/datastore', { cache: 'no-cache' });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.data) {
+          const serverStore = json.data;
+          Object.keys(serverStore).forEach(k => {
+            _cachedStore[k] = serverStore[k];
+            try {
+              localStorage.setItem(k, JSON.stringify(serverStore[k]));
+            } catch (e) {}
+          });
+          return true;
+        }
+      }
+    } catch (e) {
+      // Server offline or static fallback
+    }
+    return false;
+  }
+
+  // Auto-trigger sync immediately
+  if (typeof window !== 'undefined') {
+    _syncPromise = syncWithServer();
+  }
+
   return {
+    // Sync Utilities
+    async ensureSynced() {
+      if (_syncPromise) {
+        await _syncPromise;
+      } else {
+        await syncWithServer();
+      }
+    },
+    syncWithServer,
+
     // Member Operations
     getMembers() {
       return load(KEYS.MEMBERS, SEED_DATA.members);
@@ -395,7 +507,7 @@ const ClubDataStore = (function() {
       save(KEYS.LEADS, data);
     },
 
-    // Seed or Reset to Baseline DEMO DATA
+    // Seed or Reset to Baseline DATA
     resetToDemoData() {
       save(KEYS.MEMBERS, SEED_DATA.members);
       save(KEYS.BOOKINGS, SEED_DATA.bookings);

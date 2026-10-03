@@ -416,6 +416,12 @@ window.cancelBookingAction = async function(bookingId) {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
+  if (window.ClubDataStore && window.ClubDataStore.ensureSynced) {
+    try {
+      await window.ClubDataStore.ensureSynced();
+    } catch (e) {}
+  }
+
   // Load Courts from Backend API
   try {
     if (window.ClubAPI) {

@@ -268,6 +268,11 @@ async function loadPlansFromBackend() {
  * Retrieves members safely from ClubAPI or ClubDataStore.
  */
 async function getMembersFromStorage() {
+  if (window.ClubDataStore && window.ClubDataStore.ensureSynced) {
+    try {
+      await window.ClubDataStore.ensureSynced();
+    } catch (e) {}
+  }
   try {
     if (window.ClubAPI && window.ClubAPI.getMembers) {
       const members = await window.ClubAPI.getMembers({ search: currentSearch });

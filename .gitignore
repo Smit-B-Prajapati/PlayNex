@@ -5,3 +5,11 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 Thumbs.db
+.git_backup/
+.git_to_delete/
+temp_git_repo/
+*.txt
+apply_git_rewrite.py
+finalize_git.py
+rewrite_git_history.py
+

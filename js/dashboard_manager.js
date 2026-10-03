@@ -65,6 +65,12 @@
 
   // Master Render Function
   async function renderDashboard() {
+    if (window.ClubDataStore && window.ClubDataStore.ensureSynced) {
+      try {
+        await window.ClubDataStore.ensureSynced();
+      } catch (e) {}
+    }
+
     const range = getDateRange(currentPeriod);
     const periodBadge = document.getElementById('dashboard-period-badge');
     if (periodBadge) periodBadge.textContent = range.label;
