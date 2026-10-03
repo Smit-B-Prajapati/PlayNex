@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Bar Table Views -->
+    <record id="view_club_bar_table_tree" model="ir.ui.view">
+        <field name="name">club.bar.table.tree</field>
+        <field name="model">club.bar.table</field>
+        <field name="arch" type="xml">
+            <tree string="Cafeteria &amp; Bar Tables" decoration-success="state == 'available'" decoration-danger="state == 'occupied'">
+                <field name="table_number"/>
+                <field name="name"/>
+                <field name="capacity"/>
+                <field name="state" widget="badge" decoration-success="state == 'available'" decoration-danger="state == 'occupied'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Bar Shift Views & Daily Revenue -->
+    <record id="view_club_bar_shift_tree" model="ir.ui.view">
+        <field name="name">club.bar.shift.tree</field>
+        <field name="model">club.bar.shift</field>
+        <field name="arch" type="xml">
+            <tree string="Staff Shifts &amp; Daily Revenue" decoration-info="state == 'active'" decoration-success="state == 'closed'">
+                <field name="name"/>
+                <field name="staff_name"/>
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="total_revenue_cash" string="Cash (₹)"/>
+                <field name="total_revenue_card" string="Card (₹)"/>
+                <field name="total_revenue_upi" string="UPI (₹)"/>
+                <field name="total_revenue" string="Total Revenue (₹)"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_club_bar_shift_form" model="ir.ui.view">
+        <field name="name">club.bar.shift.form</field>
+        <field name="model">club.bar.shift</field>
+        <field name="arch" type="xml">
+            <form string="Staff Shift &amp; Daily Reconciliation">
+                <header>
+                    <button name="action_close_shift" string="Close Shift &amp; Reconcile Revenue" type="object" states="active" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Shift Identification"/>
+                        <h1><field name="name" placeholder="e.g. Evening Shift - 2026-10-03"/></h1>
+                    </div>
+                    <group>
+                        <group string="Staff &amp; Schedule">
+                            <field name="staff_name"/>
+                            <field name="start_time"/>
+                            <field name="end_time" readonly="1"/>
+                        </group>
+                        <group string="Daily Bar Revenue Reconciliation">
+                            <field name="total_revenue_cash"/>
+                            <field name="total_revenue_card"/>
+                            <field name="total_revenue_upi"/>
+                            <field name="total_revenue" class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Settled Tabs in Shift" name="tabs">
+                            <field name="tab_ids" readonly="1">
+                                <tree string="Settled Tabs">
+                                    <field name="name"/>
+                                    <field name="member_id"/>
+                                    <field name="table_id"/>
+                                    <field name="payment_method"/>
+                                    <field name="amount_total"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Bar Tab Views -->
+    <record id="view_club_bar_tab_tree" model="ir.ui.view">
+        <field name="name">club.bar.tab.tree</field>
+        <field name="model">club.bar.tab</field>
+        <field name="arch" type="xml">
+            <tree string="Member Running Tabs" decoration-warning="state == 'open'" decoration-success="state == 'closed'">
+                <field name="name"/>
+                <field name="member_id"/>
+                <field name="plan_id"/>
+                <field name="table_id"/>
+                <field name="opened_at"/>
+                <field name="discount_percent" string="Disc %"/>
+                <field name="amount_total" string="Total Due"/>
+                <field name="payment_method"/>
+                <field name="state" widget="badge" decoration-warning="state == 'open'" decoration-success="state == 'closed'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Bar POS Order Views -->
+    <record id="view_club_bar_order_tree" model="ir.ui.view">
+        <field name="name">club.bar.order.tree</field>
+        <field name="model">club.bar.order</field>
+        <field name="arch" type="xml">
+            <tree string="Bar &amp; Cafeteria Orders" decoration-info="state == 'draft'" decoration-warning="state in ['confirmed', 'served']" decoration-success="state == 'paid'">
+                <field name="name"/>
+                <field name="order_time"/>
+                <field name="table_id"/>
+                <field name="customer_type"/>
+                <field name="member_id"/>
+                <field name="discount_percent" string="Member Disc %"/>
+                <field name="amount_total" string="Total Amount"/>
+                <field name="payment_method"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_club_bar_order" model="ir.actions.act_window">
+        <field name="name">Bar &amp; Cafeteria POS Orders</field>
+        <field name="res_model">club.bar.order</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_club_bar_tab" model="ir.actions.act_window">
+        <field name="name">Member Running Tabs</field>
+        <field name="res_model">club.bar.tab</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_club_bar_table" model="ir.actions.act_window">
+        <field name="name">Cafeteria Tables</field>
+        <field name="res_model">club.bar.table</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_club_bar_shift" model="ir.actions.act_window">
+        <field name="name">Staff Shifts &amp; Daily Bar Revenue</field>
+        <field name="res_model">club.bar.shift</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

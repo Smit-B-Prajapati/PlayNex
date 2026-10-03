@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Member ID Generation -->
+        <record id="seq_club_member" model="ir.sequence">
+            <field name="name">Champions Club Member ID</field>
+            <field name="code">club.member</field>
+            <field name="prefix">CC-MEM-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Tier 1: Gold (Premium, Full Access) -->
+        <record id="plan_gold" model="club.membership.plan">
+            <field name="name">Gold</field>
+            <field name="code">gold</field>
+            <field name="sequence">1</field>
+            <field name="description">Premium, full-access membership plan. Entitles member to zero or optimal court rates, top gear shop discounts, top bar discounts, and running tab privileges.</field>
+            <!-- Configurable values - explicitly configured per club policy -->
+            <field name="fee_amount">0.0</field>
+            <field name="billing_period">annual</field>
+            <field name="validity_duration_days">365</field>
+            <field name="court_rate_policy">free</field>
+            <field name="court_hourly_rate">0.0</field>
+            <field name="shop_discount_percent">0.0</field>
+            <field name="bar_discount_percent">0.0</field>
+            <field name="allow_running_tab">True</field>
+        </record>
+
+        <!-- Tier 2: Silver (Standard Access) -->
+        <record id="plan_silver" model="club.membership.plan">
+            <field name="name">Silver</field>
+            <field name="code">silver</field>
+            <field name="sequence">2</field>
+            <field name="description">Standard club membership plan. Entitles member to reduced court rates compared to walk-ins, pro shop discounts, and cafeteria discounts.</field>
+            <!-- Configurable values -->
+            <field name="fee_amount">0.0</field>
+            <field name="billing_period">annual</field>
+            <field name="validity_duration_days">365</field>
+            <field name="court_rate_policy">discounted</field>
+            <field name="court_hourly_rate">0.0</field>
+            <field name="shop_discount_percent">0.0</field>
+            <field name="bar_discount_percent">0.0</field>
+            <field name="allow_running_tab">False</field>
+        </record>
+
+        <!-- Tier 3: Junior (Under 18 Discounted) -->
+        <record id="plan_junior" model="club.membership.plan">
+            <field name="name">Junior</field>
+            <field name="code">junior</field>
+            <field name="sequence">3</field>
+            <field name="description">Discounted youth membership for members under 18. Entitles member to discounted youth court rates, gear shop discounts, and cafeteria discounts.</field>
+            <!-- Configurable values -->
+            <field name="fee_amount">0.0</field>
+            <field name="billing_period">annual</field>
+            <field name="validity_duration_days">365</field>
+            <field name="court_rate_policy">discounted</field>
+            <field name="court_hourly_rate">0.0</field>
+            <field name="shop_discount_percent">0.0</field>
+            <field name="bar_discount_percent">0.0</field>
+            <field name="allow_running_tab">False</field>
+        </record>
+    </data>
+</odoo>

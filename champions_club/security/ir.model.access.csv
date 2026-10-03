@@ -1,0 +1,116 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+# ==============================================================================
+# 1. CLUB MEMBERSHIP PLANS (Configurable Tiers & Entitlements)
+# ==============================================================================
+access_club_membership_plan_frontdesk,club.membership.plan.frontdesk,model_club_membership_plan,group_club_front_desk,1,0,0,0
+access_club_membership_plan_crm,club.membership.plan.crm,model_club_membership_plan,group_club_crm_staff,1,0,0,0
+access_club_membership_plan_shop,club.membership.plan.shop,model_club_membership_plan,group_club_shop_staff,1,0,0,0
+access_club_membership_plan_bar,club.membership.plan.bar,model_club_membership_plan,group_club_bar_staff,1,0,0,0
+access_club_membership_plan_manager,club.membership.plan.manager,model_club_membership_plan,group_club_manager,1,1,1,0
+access_club_membership_plan_admin,club.membership.plan.admin,model_club_membership_plan,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 2. MEMBERS & MEMBER PROFILES
+# ==============================================================================
+access_club_member_frontdesk,club.member.frontdesk,model_club_member,group_club_front_desk,1,1,1,0
+access_club_member_crm,club.member.crm,model_club_member,group_club_crm_staff,1,1,1,0
+access_club_member_shop,club.member.shop,model_club_member,group_club_shop_staff,1,0,0,0
+access_club_member_bar,club.member.bar,model_club_member,group_club_bar_staff,1,0,0,0
+access_club_member_manager,club.member.manager,model_club_member,group_club_manager,1,1,1,1
+access_club_member_admin,club.member.admin,model_club_member,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 3. MEMBER ACTIVITY HISTORY
+# ==============================================================================
+access_club_member_history_frontdesk,club.member.history.frontdesk,model_club_member_history,group_club_front_desk,1,1,1,0
+access_club_member_history_crm,club.member.history.crm,model_club_member_history,group_club_crm_staff,1,1,1,0
+access_club_member_history_manager,club.member.history.manager,model_club_member_history,group_club_manager,1,1,1,1
+access_club_member_history_admin,club.member.history.admin,model_club_member_history,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 4. COURTS & ARENAS
+# ==============================================================================
+access_club_court_frontdesk,club.court.frontdesk,model_club_court,group_club_front_desk,1,0,0,0
+access_club_court_crm,club.court.crm,model_club_court,group_club_crm_staff,1,0,0,0
+access_club_court_manager,club.court.manager,model_club_court,group_club_manager,1,1,1,0
+access_club_court_admin,club.court.admin,model_club_court,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 5. COURT BOOKINGS
+# ==============================================================================
+access_club_booking_frontdesk,club.booking.frontdesk,model_club_booking,group_club_front_desk,1,1,1,0
+access_club_booking_crm,club.booking.crm,model_club_booking,group_club_crm_staff,1,0,0,0
+access_club_booking_manager,club.booking.manager,model_club_booking,group_club_manager,1,1,1,1
+access_club_booking_admin,club.booking.admin,model_club_booking,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 6. PRODUCTS & SHARED INVENTORY
+# ==============================================================================
+access_club_product_frontdesk,club.product.frontdesk,model_club_product,group_club_front_desk,1,0,0,0
+access_club_product_shop,club.product.shop,model_club_product,group_club_shop_staff,1,1,1,0
+access_club_product_manager,club.product.manager,model_club_product,group_club_manager,1,1,1,1
+access_club_product_admin,club.product.admin,model_club_product,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 7. PRO SHOP SALES ORDERS & LINES
+# ==============================================================================
+access_club_shop_order_frontdesk,club.shop.order.frontdesk,model_club_shop_order,group_club_front_desk,1,1,1,0
+access_club_shop_order_shop,club.shop.order.shop,model_club_shop_order,group_club_shop_staff,1,1,1,0
+access_club_shop_order_manager,club.shop.order.manager,model_club_shop_order,group_club_manager,1,1,1,1
+access_club_shop_order_admin,club.shop.order.admin,model_club_shop_order,group_club_administrator,1,1,1,1
+
+access_club_shop_order_line_shop,club.shop.order.line.shop,model_club_shop_order_line,group_club_shop_staff,1,1,1,0
+access_club_shop_order_line_manager,club.shop.order.line.manager,model_club_shop_order_line,group_club_manager,1,1,1,1
+access_club_shop_order_line_admin,club.shop.order.line.admin,model_club_shop_order_line,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 8. BAR & CAFETERIA (Tables, Items, Orders, Tabs, Shifts)
+# ==============================================================================
+access_club_bar_table_bar,club.bar.table.bar,model_club_bar_table,group_club_bar_staff,1,1,1,0
+access_club_bar_table_manager,club.bar.table.manager,model_club_bar_table,group_club_manager,1,1,1,1
+access_club_bar_table_admin,club.bar.table.admin,model_club_bar_table,group_club_administrator,1,1,1,1
+
+access_club_bar_item_bar,club.bar.item.bar,model_club_bar_item,group_club_bar_staff,1,0,0,0
+access_club_bar_item_manager,club.bar.item.manager,model_club_bar_item,group_club_manager,1,1,1,1
+access_club_bar_item_admin,club.bar.item.admin,model_club_bar_item,group_club_administrator,1,1,1,1
+
+access_club_bar_order_bar,club.bar.order.bar,model_club_bar_order,group_club_bar_staff,1,1,1,0
+access_club_bar_order_manager,club.bar.order.manager,model_club_bar_order,group_club_manager,1,1,1,1
+access_club_bar_order_admin,club.bar.order.admin,model_club_bar_order,group_club_administrator,1,1,1,1
+
+access_club_bar_order_line_bar,club.bar.order.line.bar,model_club_bar_order_line,group_club_bar_staff,1,1,1,0
+access_club_bar_order_line_manager,club.bar.order.line.manager,model_club_bar_order_line,group_club_manager,1,1,1,1
+access_club_bar_order_line_admin,club.bar.order.line.admin,model_club_bar_order_line,group_club_administrator,1,1,1,1
+
+access_club_bar_tab_bar,club.bar.tab.bar,model_club_bar_tab,group_club_bar_staff,1,1,1,0
+access_club_bar_tab_manager,club.bar.tab.manager,model_club_bar_tab,group_club_manager,1,1,1,1
+access_club_bar_tab_admin,club.bar.tab.admin,model_club_bar_tab,group_club_administrator,1,1,1,1
+
+access_club_bar_shift_bar,club.bar.shift.bar,model_club_bar_shift,group_club_bar_staff,1,1,1,0
+access_club_bar_shift_manager,club.bar.shift.manager,model_club_bar_shift,group_club_manager,1,1,1,1
+access_club_bar_shift_admin,club.bar.shift.admin,model_club_bar_shift,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 9. CRM VISITOR ENQUIRIES & LEADS
+# ==============================================================================
+access_club_enquiry_crm,club.enquiry.crm,model_club_enquiry,group_club_crm_staff,1,1,1,0
+access_club_enquiry_frontdesk,club.enquiry.frontdesk,model_club_enquiry,group_club_front_desk,1,1,1,0
+access_club_enquiry_manager,club.enquiry.manager,model_club_enquiry,group_club_manager,1,1,1,1
+access_club_enquiry_admin,club.enquiry.admin,model_club_enquiry,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 10. EMPLOYEES & LEAVE REQUESTS
+# ==============================================================================
+access_club_employee_staff,club.employee.staff,model_club_employee,group_club_front_desk,1,0,0,0
+access_club_employee_manager,club.employee.manager,model_club_employee,group_club_manager,1,1,1,1
+access_club_employee_admin,club.employee.admin,model_club_employee,group_club_administrator,1,1,1,1
+
+access_club_employee_leave_staff,club.employee.leave.staff,model_club_employee_leave,group_club_front_desk,1,1,1,0
+access_club_employee_leave_manager,club.employee.leave.manager,model_club_employee_leave,group_club_manager,1,1,1,1
+access_club_employee_leave_admin,club.employee.leave.admin,model_club_employee_leave,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 11. ADMINISTRATIVE DASHBOARD & REPORTING ENGINE
+# ==============================================================================
+access_club_dashboard_manager,club.dashboard.manager,model_club_dashboard,group_club_manager,1,1,1,1
+access_club_dashboard_admin,club.dashboard.admin,model_club_dashboard,group_club_administrator,1,1,1,1

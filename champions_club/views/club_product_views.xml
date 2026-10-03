@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Product Tree View with Low-Stock Alert Badges -->
+    <record id="view_club_product_tree" model="ir.ui.view">
+        <field name="name">club.product.tree</field>
+        <field name="model">club.product</field>
+        <field name="arch" type="xml">
+            <tree string="Pro Shop Unified Inventory" decoration-danger="is_low_stock == True">
+                <field name="default_code" string="SKU"/>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="list_price" string="Sales Price (Configurable)"/>
+                <field name="qty_on_hand" string="Stock on Hand (Shelf)"/>
+                <field name="min_stock_alert_level" string="Min Alert Threshold"/>
+                <field name="is_low_stock" widget="boolean_toggle" string="Low Stock Alert"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Product Form View -->
+    <record id="view_club_product_form" model="ir.ui.view">
+        <field name="name">club.product.form</field>
+        <field name="model">club.product</field>
+        <field name="arch" type="xml">
+            <form string="Pro Shop Product &amp; Unified Inventory">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Product Title"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Pro Tour Carbon Tennis Racket"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Catalog Details">
+                            <field name="category"/>
+                            <field name="default_code"/>
+                            <field name="list_price"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Unified Shared Shelf Inventory">
+                            <field name="qty_on_hand"/>
+                            <field name="min_stock_alert_level"/>
+                            <field name="is_low_stock" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Specifications" name="specs">
+                            <field name="description" placeholder="Product specifications, sizing, or stringing details..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Product Search View with Low-Stock & Category Filters -->
+    <record id="view_club_product_search" model="ir.ui.view">
+        <field name="name">club.product.search</field>
+        <field name="model">club.product</field>
+        <field name="arch" type="xml">
+            <search string="Search Inventory">
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('default_code', 'ilike', self)]"/>
+                <field name="category"/>
+                
+                <separator/>
+                <filter string="Low Stock Warning" name="filter_low_stock" domain="[('is_low_stock', '=', True)]"/>
+                
+                <separator/>
+                <filter string="Rackets" name="cat_rackets" domain="[('category', '=', 'rackets')]"/>
+                <filter string="Balls" name="cat_balls" domain="[('category', '=', 'balls')]"/>
+                <filter string="Shoes" name="cat_shoes" domain="[('category', '=', 'shoes')]"/>
+                <filter string="Accessories" name="cat_accessories" domain="[('category', '=', 'accessories')]"/>
+                <filter string="Apparel" name="cat_apparel" domain="[('category', '=', 'apparel')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
+                    <filter string="Low Stock Alert" name="group_by_low_stock" context="{'group_by': 'is_low_stock'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Product Action -->
+    <record id="action_club_product" model="ir.actions.act_window">
+        <field name="name">Pro Shop Catalog &amp; Inventory</field>
+        <field name="res_model">club.product</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_club_product_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage unified shelf stock for rackets, balls, shoes, accessories, and apparel.
+            </p>
+        </field>
+    </record>
+</odoo>

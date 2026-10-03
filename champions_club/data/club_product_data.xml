@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Shop Order Reference -->
+        <record id="seq_club_shop_order" model="ir.sequence">
+            <field name="name">Champions Club Shop Order Sequence</field>
+            <field name="code">club.shop.order</field>
+            <field name="prefix">CC-SO-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Category 1: Rackets -->
+        <record id="prod_racket_tennis_pro" model="club.product">
+            <field name="name">Pro Tour Carbon Tennis Racket</field>
+            <field name="default_code">CC-RCK-01</field>
+            <field name="category">rackets</field>
+            <field name="list_price">8500.0</field>
+            <field name="qty_on_hand">15.0</field>
+            <field name="min_stock_alert_level">4.0</field>
+            <field name="description">High-modulus graphite frame with synthetic gut stringing.</field>
+        </record>
+
+        <record id="prod_racket_badminton" model="club.product">
+            <field name="name">Championship Feather Badminton Racket</field>
+            <field name="default_code">CC-RCK-02</field>
+            <field name="category">rackets</field>
+            <field name="list_price">4200.0</field>
+            <field name="qty_on_hand">3.0</field>
+            <field name="min_stock_alert_level">5.0</field>
+            <field name="description">Lightweight head-heavy balance racket for rapid smashes.</field>
+        </record>
+
+        <!-- Category 2: Balls -->
+        <record id="prod_balls_tennis_can" model="club.product">
+            <field name="name">Tournament Tennis Balls (Pressurized Can of 3)</field>
+            <field name="default_code">CC-BAL-01</field>
+            <field name="category">balls</field>
+            <field name="list_price">450.0</field>
+            <field name="qty_on_hand">80.0</field>
+            <field name="min_stock_alert_level">15.0</field>
+            <field name="description">ITF approved championship extra-duty felt tennis balls.</field>
+        </record>
+
+        <record id="prod_balls_cricket_leather" model="club.product">
+            <field name="name">Match Grade 4-Piece Leather Cricket Ball</field>
+            <field name="default_code">CC-BAL-02</field>
+            <field name="category">balls</field>
+            <field name="list_price">750.0</field>
+            <field name="qty_on_hand">25.0</field>
+            <field name="min_stock_alert_level">8.0</field>
+            <field name="description">Alum tanned English leather with hand-stitched seam.</field>
+        </record>
+
+        <!-- Category 3: Shoes -->
+        <record id="prod_shoes_court" model="club.product">
+            <field name="name">All-Court Grip Athletic Sports Shoes</field>
+            <field name="default_code">CC-SHOE-01</field>
+            <field name="category">shoes</field>
+            <field name="list_price">5800.0</field>
+            <field name="qty_on_hand">12.0</field>
+            <field name="min_stock_alert_level">3.0</field>
+            <field name="description">Non-marking herringbone gum rubber outsole for clay and indoor courts.</field>
+        </record>
+
+        <!-- Category 4: Accessories -->
+        <record id="prod_acc_grip_tape" model="club.product">
+            <field name="name">Pro Overgrip &amp; Vibration Dampener Pack</field>
+            <field name="default_code">CC-ACC-01</field>
+            <field name="category">accessories</field>
+            <field name="list_price">350.0</field>
+            <field name="qty_on_hand">45.0</field>
+            <field name="min_stock_alert_level">10.0</field>
+            <field name="description">Tacky absorbent polyurethane overgrips with silicone dampeners.</field>
+        </record>
+
+        <!-- Category 5: Apparel -->
+        <record id="prod_apparel_jersey" model="club.product">
+            <field name="name">Champions Club Performance Match Jersey</field>
+            <field name="default_code">CC-APP-01</field>
+            <field name="category">apparel</field>
+            <field name="list_price">1800.0</field>
+            <field name="qty_on_hand">20.0</field>
+            <field name="min_stock_alert_level">5.0</field>
+            <field name="description">Moisture-wicking breathable athletic polyester club jersey.</field>
+        </record>
+    </data>
+</odoo>

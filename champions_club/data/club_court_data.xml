@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Court Booking Reference -->
+        <record id="seq_club_booking" model="ir.sequence">
+            <field name="name">Champions Club Booking Reference</field>
+            <field name="code">club.booking</field>
+            <field name="prefix">CC-BK-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Tennis Courts -->
+        <record id="court_tennis_1" model="club.court">
+            <field name="name">Tennis Court 1 (Clay)</field>
+            <field name="court_number">1</field>
+            <field name="sport_type">tennis</field>
+            <field name="surface_type">clay</field>
+            <field name="is_indoor">False</field>
+            <field name="is_floodlit">True</field>
+            <field name="walkin_hourly_rate">500.0</field>
+        </record>
+
+        <record id="court_tennis_2" model="club.court">
+            <field name="name">Tennis Court 2 (Hard)</field>
+            <field name="court_number">2</field>
+            <field name="sport_type">tennis</field>
+            <field name="surface_type">hard</field>
+            <field name="is_indoor">False</field>
+            <field name="is_floodlit">True</field>
+            <field name="walkin_hourly_rate">500.0</field>
+        </record>
+
+        <!-- Cricket Courts / Nets -->
+        <record id="court_cricket_1" model="club.court">
+            <field name="name">Cricket Pitch &amp; Net 1 (Turf)</field>
+            <field name="court_number">1</field>
+            <field name="sport_type">cricket</field>
+            <field name="surface_type">turf</field>
+            <field name="is_indoor">False</field>
+            <field name="is_floodlit">True</field>
+            <field name="walkin_hourly_rate">600.0</field>
+        </record>
+
+        <record id="court_cricket_2" model="club.court">
+            <field name="name">Cricket Practice Net 2</field>
+            <field name="court_number">2</field>
+            <field name="sport_type">cricket</field>
+            <field name="surface_type">turf</field>
+            <field name="is_indoor">False</field>
+            <field name="is_floodlit">True</field>
+            <field name="walkin_hourly_rate">600.0</field>
+        </record>
+
+        <!-- Badminton Indoor Courts -->
+        <record id="court_badminton_1" model="club.court">
+            <field name="name">Badminton Court 1 (Indoor Mat)</field>
+            <field name="court_number">1</field>
+            <field name="sport_type">badminton</field>
+            <field name="surface_type">synthetic</field>
+            <field name="is_indoor">True</field>
+            <field name="is_floodlit">True</field>
+            <field name="walkin_hourly_rate">400.0</field>
+        </record>
+
+        <record id="court_badminton_2" model="club.court">
+            <field name="name">Badminton Court 2 (Indoor Mat)</field>
+            <field name="court_number">2</field>
+            <field name="sport_type">badminton</field>
+            <field name="surface_type">synthetic</field>
+            <field name="is_indoor">True</field>
+            <field name="is_floodlit">True</field>
+            <field name="walkin_hourly_rate">400.0</field>
+        </record>
+    </data>
+</odoo>

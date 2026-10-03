@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Booking Tree View -->
+    <record id="view_club_booking_tree" model="ir.ui.view">
+        <field name="name">club.booking.tree</field>
+        <field name="model">club.booking</field>
+        <field name="arch" type="xml">
+            <tree string="Court Bookings" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'" decoration-muted="state == 'cancelled'" decoration-primary="state == 'completed'">
+                <field name="name"/>
+                <field name="court_id"/>
+                <field name="sport_type"/>
+                <field name="booking_type"/>
+                <field name="member_id"/>
+                <field name="walkin_name"/>
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="duration_hours" string="Duration (Hrs)"/>
+                <field name="is_social_play" string="Social Play"/>
+                <field name="rate_applied" string="Rate Applied"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'" decoration-muted="state == 'cancelled'" decoration-primary="state == 'completed'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Booking Calendar View -->
+    <record id="view_club_booking_calendar" model="ir.ui.view">
+        <field name="name">club.booking.calendar</field>
+        <field name="model">club.booking</field>
+        <field name="arch" type="xml">
+            <calendar string="Court Availability Schedule" date_start="start_time" date_stop="end_time" color="court_id" mode="week" quick_add="False">
+                <field name="name"/>
+                <field name="court_id"/>
+                <field name="member_id"/>
+                <field name="walkin_name"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Booking Form View -->
+    <record id="view_club_booking_form" model="ir.ui.view">
+        <field name="name">club.booking.form</field>
+        <field name="model">club.booking</field>
+        <field name="arch" type="xml">
+            <form string="Court Session Booking">
+                <header>
+                    <button name="action_confirm" string="Confirm Booking" type="object" states="draft" class="oe_highlight"/>
+                    <button name="action_complete" string="Mark Completed" type="object" states="confirmed" class="btn-primary"/>
+                    <button name="action_cancel" string="Cancel Booking" type="object" states="draft,confirmed" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Booking Reference: </span>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Facility &amp; Sport">
+                            <field name="court_id"/>
+                            <field name="sport_type"/>
+                            <field name="is_social_play"/>
+                        </group>
+                        <group string="Booking Party">
+                            <field name="booking_type" widget="radio"/>
+                            <field name="member_id" attrs="{'invisible': [('booking_type', '!=', 'member')], 'required': [('booking_type', '=', 'member')]}"/>
+                            <field name="plan_id" attrs="{'invisible': [('booking_type', '!=', 'member')]}"/>
+                            <field name="walkin_name" attrs="{'invisible': [('booking_type', '!=', 'walkin')], 'required': [('booking_type', '=', 'walkin')]}"/>
+                            <field name="walkin_phone" attrs="{'invisible': [('booking_type', '!=', 'walkin')]}"/>
+                        </group>
+                    </group>
+
+                    <group string="Schedule &amp; Rates (1-Hour Duration / 30-Min Slots)">
+                        <group>
+                            <field name="start_time"/>
+                            <field name="duration_hours"/>
+                            <field name="end_time"/>
+                        </group>
+                        <group>
+                            <field name="rate_applied" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Special Notes">
+                        <field name="notes" placeholder="Session details, racket rental notes, or player requests..."/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Booking Search View -->
+    <record id="view_club_booking_search" model="ir.ui.view">
+        <field name="name">club.booking.search</field>
+        <field name="model">club.booking</field>
+        <field name="arch" type="xml">
+            <search string="Search Court Bookings">
+                <field name="name"/>
+                <field name="court_id"/>
+                <field name="member_id"/>
+                <field name="walkin_name"/>
+                
+                <separator/>
+                <filter string="Confirmed Bookings" name="filter_confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Social Play Sessions" name="filter_social" domain="[('is_social_play', '=', True)]"/>
+                <filter string="Cancelled" name="filter_cancelled" domain="[('state', '=', 'cancelled')]"/>
+                
+                <separator/>
+                <filter string="Tennis Courts" name="filter_tennis" domain="[('sport_type', '=', 'tennis')]"/>
+                <filter string="Cricket Courts" name="filter_cricket" domain="[('sport_type', '=', 'cricket')]"/>
+                <filter string="Badminton Courts" name="filter_badminton" domain="[('sport_type', '=', 'badminton')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Court" name="group_by_court" context="{'group_by': 'court_id'}"/>
+                    <filter string="Sport" name="group_by_sport" context="{'group_by': 'sport_type'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Booking Date" name="group_by_date" context="{'group_by': 'start_time:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Booking Action -->
+    <record id="action_club_booking" model="ir.actions.act_window">
+        <field name="name">Court Bookings</field>
+        <field name="res_model">club.booking</field>
+        <field name="view_mode">tree,calendar,form</field>
+        <field name="search_view_id" ref="view_club_booking_search"/>
+        <field name="context">{'search_default_filter_confirmed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Book a court session for tennis, cricket, or badminton.
+            </p>
+        </field>
+    </record>
+</odoo>

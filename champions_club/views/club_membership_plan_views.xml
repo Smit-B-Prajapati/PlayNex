@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Membership Plan List View -->
+    <record id="view_club_membership_plan_tree" model="ir.ui.view">
+        <field name="name">club.membership.plan.tree</field>
+        <field name="model">club.membership.plan</field>
+        <field name="arch" type="xml">
+            <tree string="Membership Plans">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="fee_amount" string="Fee (Configurable)"/>
+                <field name="billing_period"/>
+                <field name="court_rate_policy"/>
+                <field name="shop_discount_percent" string="Shop Disc %"/>
+                <field name="bar_discount_percent" string="Bar Disc %"/>
+                <field name="allow_running_tab"/>
+                <field name="member_count" string="Active Members"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Membership Plan Form View -->
+    <record id="view_club_membership_plan_form" model="ir.ui.view">
+        <field name="name">club.membership.plan.form</field>
+        <field name="model">club.membership.plan</field>
+        <field name="arch" type="xml">
+            <form string="Membership Plan Configuration">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Plan Tier Name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Gold, Silver, Junior"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Tier Identity">
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Subscription Terms (Configurable)">
+                            <field name="fee_amount"/>
+                            <field name="billing_period"/>
+                            <field name="validity_duration_days"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Plan Entitlements (Configurable)" name="entitlements">
+                            <group>
+                                <group string="Court Rates Entitlement">
+                                    <field name="court_rate_policy"/>
+                                    <field name="court_hourly_rate" attrs="{'invisible': [('court_rate_policy', '=', 'free')]}"/>
+                                </group>
+                                <group string="Clubhouse Discounts">
+                                    <field name="shop_discount_percent"/>
+                                    <field name="bar_discount_percent"/>
+                                    <field name="allow_running_tab"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Overview &amp; Description" name="description">
+                            <field name="description" placeholder="Specify plan description and special benefits..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Membership Plan Action -->
+    <record id="action_club_membership_plan" model="ir.actions.act_window">
+        <field name="name">Membership Plans</field>
+        <field name="res_model">club.membership.plan</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure Gold, Silver, and Junior membership plans with custom fee and discount rates.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Enquiry Tree View -->
+    <record id="view_club_enquiry_tree" model="ir.ui.view">
+        <field name="name">club.enquiry.tree</field>
+        <field name="model">club.enquiry</field>
+        <field name="arch" type="xml">
+            <tree string="Visitor Enquiries &amp; Leads" decoration-info="stage == 'new'" decoration-warning="stage in ['contacted', 'followup', 'quote']" decoration-success="stage == 'converted'">
+                <field name="name"/>
+                <field name="enquiry_date"/>
+                <field name="partner_name" string="Visitor Name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="source" widget="badge"/>
+                <field name="interested_plan_id"/>
+                <field name="user_id" string="Assigned Staff"/>
+                <field name="quote_sent" widget="boolean_toggle"/>
+                <field name="quote_amount" string="Quoted Fee (₹)"/>
+                <field name="stage" widget="badge" decoration-info="stage == 'new'" decoration-warning="stage in ['contacted', 'followup', 'quote']" decoration-success="stage == 'converted'"/>
+                <field name="member_id" string="Converted Member"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Enquiry Kanban View -->
+    <record id="view_club_enquiry_kanban" model="ir.ui.view">
+        <field name="name">club.enquiry.kanban</field>
+        <field name="model">club.enquiry</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="partner_name"/>
+                <field name="phone"/>
+                <field name="source"/>
+                <field name="interested_plan_id"/>
+                <field name="quote_sent"/>
+                <field name="quote_amount"/>
+                <field name="user_id"/>
+                <field name="stage"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title"><field name="partner_name"/></strong>
+                                    <small class="text-muted"><field name="name"/></small>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div><i class="fa fa-phone"/> <field name="phone"/></div>
+                                <div t-if="record.source.raw_value">
+                                    <small class="text-muted">Source: <field name="source"/></small>
+                                </div>
+                                <div t-if="record.interested_plan_id.raw_value">
+                                    <span class="badge badge-info"><field name="interested_plan_id"/></span>
+                                </div>
+                                <div t-if="record.quote_sent.raw_value" class="text-success">
+                                    <i class="fa fa-check"/> Quote: ₹ <field name="quote_amount"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="enquiry_date" widget="date"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Enquiry Form View -->
+    <record id="view_club_enquiry_form" model="ir.ui.view">
+        <field name="name">club.enquiry.form</field>
+        <field name="model">club.enquiry</field>
+        <field name="arch" type="xml">
+            <form string="Visitor Enquiry &amp; Membership Lead">
+                <header>
+                    <button name="action_mark_contacted" string="Mark Contacted" type="object" states="new" class="btn-primary"/>
+                    <button name="action_send_quote" string="Send Quote" type="object" states="contacted,followup" class="btn-secondary"/>
+                    <button name="action_convert_to_member" string="Convert to Member" type="object" states="contacted,followup,quote" class="oe_highlight"/>
+                    <field name="stage" widget="statusbar" statusbar_visible="new,contacted,followup,quote,converted"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Enquiry Reference: </span>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="partner_name" placeholder="Visitor Full Name"/></h2>
+                    </div>
+
+                    <group>
+                        <group string="Visitor Contact &amp; Source">
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="source"/>
+                            <field name="enquiry_date"/>
+                        </group>
+                        <group string="Staff Assignment &amp; Plan Interest">
+                            <field name="user_id"/>
+                            <field name="interested_plan_id"/>
+                            <field name="partner_id" string="Associated Contact"/>
+                            <field name="member_id" attrs="{'invisible': [('member_id', '=', False)]}"/>
+                        </group>
+                    </group>
+
+                    <group string="Membership Quotation (Derived from Plan Fee)">
+                        <group>
+                            <field name="quote_sent"/>
+                            <field name="quote_amount"/>
+                        </group>
+                        <group>
+                            <field name="quote_notes" placeholder="Terms of quote, validity, trial session credit..."/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Enquiry Query" name="message">
+                            <field name="message" placeholder="Visitor's initial query or message from website..."/>
+                        </page>
+                        <page string="Staff Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes by sales or front desk staff..."/>
+                        </page>
+                        <page string="Follow-up Activity Log" name="followup">
+                            <field name="followup_notes" placeholder="Log phone calls, WhatsApp messages, or club tour notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Enquiry Search View -->
+    <record id="view_club_enquiry_search" model="ir.ui.view">
+        <field name="name">club.enquiry.search</field>
+        <field name="model">club.enquiry</field>
+        <field name="arch" type="xml">
+            <search string="Search Enquiries">
+                <field name="partner_name" filter_domain="['|', ('partner_name', 'ilike', self), ('name', 'ilike', self)]"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="user_id"/>
+                
+                <separator/>
+                <filter string="New Enquiries" name="filter_new" domain="[('stage', '=', 'new')]"/>
+                <filter string="Contacted" name="filter_contacted" domain="[('stage', '=', 'contacted')]"/>
+                <filter string="In Follow-up" name="filter_followup" domain="[('stage', '=', 'followup')]"/>
+                <filter string="Quote Sent" name="filter_quote" domain="[('stage', '=', 'quote')]"/>
+                <filter string="Converted Members" name="filter_converted" domain="[('stage', '=', 'converted')]"/>
+                
+                <separator/>
+                <filter string="Website Sourced" name="filter_source_web" domain="[('source', '=', 'website')]"/>
+                <filter string="Walk-in Sourced" name="filter_source_walkin" domain="[('source', '=', 'walkin')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Stage" name="group_by_stage" context="{'group_by': 'stage'}"/>
+                    <filter string="Assigned Staff" name="group_by_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Source" name="group_by_source" context="{'group_by': 'source'}"/>
+                    <filter string="Interested Plan" name="group_by_plan" context="{'group_by': 'interested_plan_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Enquiry Action -->
+    <record id="action_club_enquiry" model="ir.actions.act_window">
+        <field name="name">Enquiries &amp; CRM Pipeline</field>
+        <field name="res_model">club.enquiry</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="view_club_enquiry_search"/>
+        <field name="context">{'search_default_filter_new': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage visitor enquiries, send quotes, follow up, and welcome new members.
+            </p>
+        </field>
+    </record>
+</odoo>

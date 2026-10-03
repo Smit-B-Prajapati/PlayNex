@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Court Tree View -->
+    <record id="view_club_court_tree" model="ir.ui.view">
+        <field name="name">club.court.tree</field>
+        <field name="model">club.court</field>
+        <field name="arch" type="xml">
+            <tree string="Sports Courts">
+                <field name="court_number"/>
+                <field name="name"/>
+                <field name="sport_type"/>
+                <field name="surface_type"/>
+                <field name="is_indoor"/>
+                <field name="is_floodlit"/>
+                <field name="walkin_hourly_rate" string="Walk-in Rate (Configurable)"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Court Form View -->
+    <record id="view_club_court_form" model="ir.ui.view">
+        <field name="name">club.court.form</field>
+        <field name="model">club.court</field>
+        <field name="arch" type="xml">
+            <form string="Sports Court / Facility">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Court Facility Name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Tennis Court 1 (Clay)"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Facility Specification">
+                            <field name="sport_type"/>
+                            <field name="court_number"/>
+                            <field name="surface_type"/>
+                        </group>
+                        <group string="Amenities &amp; Features">
+                            <field name="is_indoor"/>
+                            <field name="is_floodlit"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Pricing &amp; Operating Hours (Configurable)">
+                        <group>
+                            <field name="walkin_hourly_rate"/>
+                        </group>
+                        <group>
+                            <field name="opening_hour" widget="float_time"/>
+                            <field name="closing_hour" widget="float_time"/>
+                            <field name="slot_interval_minutes"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Bookings History" name="bookings">
+                            <field name="booking_ids" readonly="1">
+                                <tree string="Court Bookings">
+                                    <field name="name"/>
+                                    <field name="booking_type"/>
+                                    <field name="member_id"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Court Action -->
+    <record id="action_club_court" model="ir.actions.act_window">
+        <field name="name">Sports Courts</field>
+        <field name="res_model">club.court</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage Tennis, Cricket, and Badminton courts.
+            </p>
+        </field>
+    </record>
+</odoo>

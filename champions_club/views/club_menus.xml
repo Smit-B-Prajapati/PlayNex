@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Top-Level Root Menu -->
+    <menuitem id="menu_champions_club_root"
+              name="Champions Club"
+              web_icon="champions_club,static/description/icon.png"
+              sequence="10"/>
+
+    <!-- Administrative Dashboard Menu -->
+    <menuitem id="menu_club_admin_dashboard"
+              name="Administrative Dashboard"
+              parent="menu_champions_club_root"
+              action="action_club_administrative_dashboard"
+              sequence="1"/>
+
+    <!-- Enquiries & CRM Category Menu -->
+    <menuitem id="menu_club_crm_root"
+              name="Enquiries &amp; Leads"
+              parent="menu_champions_club_root"
+              sequence="3"/>
+
+    <menuitem id="menu_club_enquiry_list"
+              name="Visitor Pipeline &amp; Quotes"
+              parent="menu_club_crm_root"
+              action="action_club_enquiry"
+              sequence="10"/>
+
+    <!-- Court Bookings Category Menu -->
+    <menuitem id="menu_club_court_operations"
+              name="Court Bookings"
+              parent="menu_champions_club_root"
+              sequence="5"/>
+
+    <menuitem id="menu_club_booking_list"
+              name="Bookings Calendar &amp; List"
+              parent="menu_club_court_operations"
+              action="action_club_booking"
+              sequence="10"/>
+
+    <menuitem id="menu_club_court_list"
+              name="Courts &amp; Arenas"
+              parent="menu_club_court_operations"
+              action="action_club_court"
+              sequence="20"/>
+
+    <!-- Pro Shop & Inventory Category Menu -->
+    <menuitem id="menu_club_shop_root"
+              name="Pro Shop &amp; Inventory"
+              parent="menu_champions_club_root"
+              sequence="8"/>
+
+    <menuitem id="menu_club_shop_orders"
+              name="Shop Sales Orders"
+              parent="menu_club_shop_root"
+              action="action_club_shop_order"
+              sequence="10"/>
+
+    <menuitem id="menu_club_product_catalog"
+              name="Catalog &amp; Stock Shelf"
+              parent="menu_club_shop_root"
+              action="action_club_product"
+              sequence="20"/>
+
+    <!-- Bar & Cafeteria Category Menu -->
+    <menuitem id="menu_club_bar_root"
+              name="Bar &amp; Cafeteria POS"
+              parent="menu_champions_club_root"
+              sequence="9"/>
+
+    <menuitem id="menu_club_bar_orders"
+              name="POS Orders"
+              parent="menu_club_bar_root"
+              action="action_club_bar_order"
+              sequence="10"/>
+
+    <menuitem id="menu_club_bar_tabs"
+              name="Member Running Tabs"
+              parent="menu_club_bar_root"
+              action="action_club_bar_tab"
+              sequence="20"/>
+
+    <menuitem id="menu_club_bar_tables"
+              name="Cafeteria Tables"
+              parent="menu_club_bar_root"
+              action="action_club_bar_table"
+              sequence="30"/>
+
+    <menuitem id="menu_club_bar_shifts"
+              name="Shifts &amp; Daily Revenue"
+              parent="menu_club_bar_root"
+              action="action_club_bar_shift"
+              sequence="40"/>
+
+    <!-- Membership Category Menu -->
+    <menuitem id="menu_club_memberships"
+              name="Memberships"
+              parent="menu_champions_club_root"
+              sequence="10"/>
+
+    <menuitem id="menu_club_member_list"
+              name="Members"
+              parent="menu_club_memberships"
+              action="action_club_member"
+              sequence="10"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_club_config"
+              name="Configuration"
+              parent="menu_champions_club_root"
+              sequence="90"/>
+
+    <menuitem id="menu_club_membership_plans"
+              name="Membership Plans"
+              parent="menu_club_config"
+              action="action_club_membership_plan"
+              sequence="10"/>
+
+    <menuitem id="menu_club_court_config"
+              name="Courts Configuration"
+              parent="menu_club_config"
+              action="action_club_court"
+              sequence="20"/>
+</odoo>

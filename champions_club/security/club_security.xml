@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- 1. Champions Club Module Category -->
+        <record id="module_category_champions_club" model="ir.module.category">
+            <field name="name">Champions Club Management</field>
+            <field name="description">Access control and roles for Sports Club Management System.</field>
+            <field name="sequence">25</field>
+        </record>
+
+        <!-- 2. Role 1: Front Desk / Staff -->
+        <record id="group_club_front_desk" model="res.groups">
+            <field name="name">Front Desk / Staff</field>
+            <field name="category_id" ref="module_category_champions_club"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Front desk staff: View members, register walk-ins, log check-ins, create court bookings, and view availability.</field>
+        </record>
+
+        <!-- 3. Role 2: Sales / CRM Staff -->
+        <record id="group_club_crm_staff" model="res.groups">
+            <field name="name">Sales / CRM Staff</field>
+            <field name="category_id" ref="module_category_champions_club"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Sales &amp; CRM staff: Manage visitor enquiries, follow-up logs, quotation generation, and prospective member conversions.</field>
+        </record>
+
+        <!-- 4. Role 3: Shop / Inventory Staff -->
+        <record id="group_club_shop_staff" model="res.groups">
+            <field name="name">Shop / Inventory Staff</field>
+            <field name="category_id" ref="module_category_champions_club"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Pro shop staff: Manage equipment catalog, monitor low stock thresholds, and fulfill counter/online sales orders.</field>
+        </record>
+
+        <!-- 5. Role 4: Bar / POS Staff -->
+        <record id="group_club_bar_staff" model="res.groups">
+            <field name="name">Bar / POS Staff</field>
+            <field name="category_id" ref="module_category_champions_club"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Bar &amp; cafeteria staff: Table management, kitchen order routing, member running tab processing, and multi-payment settlements.</field>
+        </record>
+
+        <!-- 6. Role 5: Manager / Owner -->
+        <record id="group_club_manager" model="res.groups">
+            <field name="name">Manager / Owner</field>
+            <field name="category_id" ref="module_category_champions_club"/>
+            <field name="implied_ids" eval="[
+                (4, ref('group_club_front_desk')),
+                (4, ref('group_club_crm_staff')),
+                (4, ref('group_club_shop_staff')),
+                (4, ref('group_club_bar_staff'))
+            ]"/>
+            <field name="comment">Club managers and owners: Executive and operational oversight, shift reconciliations, employee leave approvals, and live financial dashboards.</field>
+        </record>
+
+        <!-- 7. Role 6: Club Administrator -->
+        <record id="group_club_administrator" model="res.groups">
+            <field name="name">Club Administrator</field>
+            <field name="category_id" ref="module_category_champions_club"/>
+            <field name="implied_ids" eval="[(4, ref('group_club_manager'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+            <field name="comment">System administrator: Full CRUD access across all models, configurable pricing plans, court facility configurations, and system parameters.</field>
+        </record>
+
+        <!-- =========================================================================
+             RECORD RULES (Protection of Sensitive Operations)
+             ========================================================================= -->
+
+        <!-- Rule 1: Employee Leave Request Visibility (Staff see own, Managers see all) -->
+        <record id="rule_club_employee_leave_staff" model="ir.rule">
+            <field name="name">Employee Leave: Staff View Own Requests</field>
+            <field name="model_id" ref="model_club_employee_leave"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_club_front_desk')), (4, ref('group_club_crm_staff')), (4, ref('group_club_shop_staff')), (4, ref('group_club_bar_staff'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_club_employee_leave_manager" model="ir.rule">
+            <field name="name">Employee Leave: Managers Manage All Requests</field>
+            <field name="model_id" ref="model_club_employee_leave"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_club_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Rule 2: Bar Shift Protection (Staff can only edit active shifts; Managers can edit all) -->
+        <record id="rule_club_bar_shift_staff" model="ir.rule">
+            <field name="name">Bar Shift: Staff Operate on Active Shifts</field>
+            <field name="model_id" ref="model_club_bar_shift"/>
+            <field name="domain_force">[('state', '=', 'active')]</field>
+            <field name="groups" eval="[(4, ref('group_club_bar_staff'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_club_bar_shift_manager" model="ir.rule">
+            <field name="name">Bar Shift: Managers Oversee All Shifts</field>
+            <field name="model_id" ref="model_club_bar_shift"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_club_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+    </data>
+</odoo>

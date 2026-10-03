@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Member List / Tree View with 5 Status Badges and Expiration Info -->
+    <record id="view_club_member_tree" model="ir.ui.view">
+        <field name="name">club.member.tree</field>
+        <field name="model">club.member</field>
+        <field name="arch" type="xml">
+            <tree string="Club Members" decoration-success="state == 'active'" decoration-warning="state == 'expiring'" decoration-danger="state == 'expired'" decoration-muted="state in ('draft', 'cancelled')">
+                <field name="member_code"/>
+                <field name="name"/>
+                <field name="plan_id"/>
+                <field name="tier_code" invisible="1"/>
+                <field name="phone"/>
+                <field name="start_date"/>
+                <field name="end_date" string="Expiration Date"/>
+                <field name="days_until_expiry" string="Days Left"/>
+                <field name="has_active_benefits" widget="boolean_toggle" string="Active Benefits"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'" decoration-warning="state == 'expiring'" decoration-danger="state == 'expired'" decoration-info="state == 'draft'" decoration-muted="state == 'cancelled'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Member Form View -->
+    <record id="view_club_member_form" model="ir.ui.view">
+        <field name="name">club.member.form</field>
+        <field name="model">club.member</field>
+        <field name="arch" type="xml">
+            <form string="Club Member Profile">
+                <header>
+                    <button name="action_activate" string="Activate Membership" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="action_log_checkin" string="Log Check-in / Visit" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['draft', 'cancelled'])]}"/>
+                    <button name="action_renew_membership" string="Renew Membership" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['draft', 'cancelled'])]}"/>
+                    <button name="action_create_membership_invoice" string="Generate Subscription Invoice" type="object" class="btn-secondary" attrs="{'invisible': [('state', 'in', ['draft', 'cancelled'])]}"/>
+                    <button name="action_cancel_membership" string="Cancel Membership" type="object" class="btn-danger" attrs="{'invisible': [('state', 'in', ['draft', 'cancelled'])]}" confirm="Are you sure you want to cancel this membership? All active tier entitlements will be suspended."/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,expiring,expired,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_club_member_history_all)d" type="action" class="oe_stat_button" icon="fa-history" context="{'search_default_member_id': active_id}">
+                            <field name="history_count" string="Activity Logs" widget="statinfo"/>
+                        </button>
+                        <button name="%(action_club_booking)d" type="action" class="oe_stat_button" icon="fa-calendar-check-o" context="{'search_default_member_id': active_id}">
+                            <field name="booking_count" string="Bookings" widget="statinfo"/>
+                        </button>
+                        <button name="%(action_club_shop_order)d" type="action" class="oe_stat_button" icon="fa-shopping-cart" context="{'search_default_member_id': active_id}">
+                            <field name="shop_order_count" string="Shop Orders" widget="statinfo"/>
+                        </button>
+                        <button name="%(action_club_bar_tab)d" type="action" class="oe_stat_button" icon="fa-glass" context="{'search_default_member_id': active_id}">
+                            <field name="bar_tab_count" string="Bar Tabs" widget="statinfo"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <span class="o_form_label">Member ID: </span>
+                        <h3><field name="member_code" readonly="1"/></h3>
+                        <h1>
+                            <field name="name" placeholder="Member Full Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Contact &amp; Profile Details">
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="partner_id" readonly="1"/>
+                        </group>
+                        <group string="Membership Plan &amp; Tier">
+                            <field name="plan_id" options="{'no_create': True}"/>
+                            <field name="tier_code" invisible="1"/>
+                            <field name="has_active_benefits" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Membership Validity &amp; Expiry (Calculated from Dates)">
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                            <field name="days_until_expiry" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Current Entitlements" name="entitlements">
+                            <group>
+                                <group string="Rates &amp; Discounts">
+                                    <field name="court_rate_display" readonly="1"/>
+                                    <field name="shop_discount_display" readonly="1"/>
+                                    <field name="bar_discount_display" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Activity History Log" name="history">
+                            <field name="history_ids" readonly="1">
+                                <tree string="Activity Log">
+                                    <field name="timestamp"/>
+                                    <field name="activity_type"/>
+                                    <field name="description"/>
+                                    <field name="staff_user_id"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Court Bookings" name="bookings">
+                            <field name="booking_ids" readonly="1">
+                                <tree string="Bookings">
+                                    <field name="name"/>
+                                    <field name="court_id"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                    <field name="rate_applied"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Shop Purchases" name="shop_orders">
+                            <field name="shop_order_ids" readonly="1">
+                                <tree string="Shop Orders">
+                                    <field name="name"/>
+                                    <field name="order_date"/>
+                                    <field name="channel"/>
+                                    <field name="amount_total"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Bar &amp; Cafeteria Tabs" name="bar_tabs">
+                            <field name="bar_tab_ids" readonly="1">
+                                <tree string="Bar Tabs">
+                                    <field name="name"/>
+                                    <field name="table_id"/>
+                                    <field name="opened_at"/>
+                                    <field name="amount_total"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Front Desk Notes" name="notes">
+                            <field name="notes" placeholder="Notes for staff when member visits..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Member Search & Filter View -->
+    <record id="view_club_member_search" model="ir.ui.view">
+        <field name="name">club.member.search</field>
+        <field name="model">club.member</field>
+        <field name="arch" type="xml">
+            <search string="Search Members">
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('member_code', 'ilike', self)]"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="plan_id"/>
+                
+                <separator/>
+                <filter string="Active Members" name="filter_active" domain="[('state', '=', 'active')]"/>
+                <filter string="Expiring Soon (&lt;= 30 Days)" name="filter_expiring" domain="[('state', '=', 'expiring')]"/>
+                <filter string="Expired Members" name="filter_expired" domain="[('state', '=', 'expired')]"/>
+                <filter string="Draft Applications" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Cancelled Members" name="filter_cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <filter string="Active Benefits Entitled" name="filter_benefits" domain="[('has_active_benefits', '=', True)]"/>
+                
+                <separator/>
+                <filter string="Gold Tier" name="filter_gold" domain="[('tier_code', '=', 'gold')]"/>
+                <filter string="Silver Tier" name="filter_silver" domain="[('tier_code', '=', 'silver')]"/>
+                <filter string="Junior Tier" name="filter_junior" domain="[('tier_code', '=', 'junior')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Membership Plan" name="group_by_plan" context="{'group_by': 'plan_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Member Action -->
+    <record id="action_club_member" model="ir.actions.act_window">
+        <field name="name">Club Members</field>
+        <field name="res_model">club.member</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_club_member_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register a new Champions Club member under Gold, Silver, or Junior plan.
+            </p>
+        </field>
+    </record>
+
+    <!-- Member History All Action -->
+    <record id="action_club_member_history_all" model="ir.actions.act_window">
+        <field name="name">Member Activity Logs</field>
+        <field name="res_model">club.member.history</field>
+        <field name="view_mode">tree</field>
+    </record>
+</odoo>

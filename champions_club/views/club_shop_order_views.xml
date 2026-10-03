@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Shop Order Tree View -->
+    <record id="view_club_shop_order_tree" model="ir.ui.view">
+        <field name="name">club.shop.order.tree</field>
+        <field name="model">club.shop.order</field>
+        <field name="arch" type="xml">
+            <tree string="Pro Shop Orders" decoration-info="state == 'draft'" decoration-warning="state == 'confirmed'" decoration-success="state == 'completed'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="order_date"/>
+                <field name="customer_name"/>
+                <field name="channel" widget="badge"/>
+                <field name="fulfillment_type" widget="badge"/>
+                <field name="amount_total" string="Total (Configurable)"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'confirmed'" decoration-success="state == 'completed'" decoration-muted="state == 'cancelled'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Shop Order Form View -->
+    <record id="view_club_shop_order_form" model="ir.ui.view">
+        <field name="name">club.shop.order.form</field>
+        <field name="model">club.shop.order</field>
+        <field name="arch" type="xml">
+            <form string="Shop Sales Order">
+                <header>
+                    <button name="action_confirm" string="Confirm Order &amp; Deduct Stock" type="object" states="draft" class="oe_highlight"/>
+                    <button name="action_ready_for_pickup" string="Mark Ready for Pickup / Dispatched" type="object" states="confirmed" class="btn-primary"/>
+                    <button name="action_complete" string="Complete / Delivered" type="object" states="confirmed,ready" class="btn-primary"/>
+                    <button name="action_cancel" string="Cancel Order &amp; Restore Stock" type="object" states="draft,confirmed,ready" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,ready,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Order Reference: </span>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Channel &amp; Customer">
+                            <field name="channel"/>
+                            <field name="customer_type" widget="radio"/>
+                            <field name="member_id" attrs="{'invisible': [('customer_type', '!=', 'member')]}"/>
+                            <field name="customer_name"/>
+                            <field name="customer_phone"/>
+                        </group>
+                        <group string="Fulfillment Method">
+                            <field name="fulfillment_type"/>
+                            <field name="delivery_address" attrs="{'invisible': [('fulfillment_type', '!=', 'delivery')], 'required': [('fulfillment_type', '=', 'delivery')]}"/>
+                            <field name="order_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Products &amp; Shared Stock" name="order_lines">
+                            <field name="order_line_ids">
+                                <tree string="Order Lines" editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="qty"/>
+                                    <field name="unit_price"/>
+                                    <field name="subtotal" sum="Total"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Delivery notes or member requests..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Shop Order Action -->
+    <record id="action_club_shop_order" model="ir.actions.act_window">
+        <field name="name">Pro Shop Orders</field>
+        <field name="res_model">club.shop.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Process counter and online orders drawing from the unified stock shelf.
+            </p>
+        </field>
+    </record>
+</odoo>

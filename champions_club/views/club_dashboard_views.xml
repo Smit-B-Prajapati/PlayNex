@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Administrative Dashboard Action -->
+    <record id="action_club_administrative_dashboard" model="ir.actions.act_window">
+        <field name="name">Administrative Dashboard</field>
+        <field name="res_model">club.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Champions Club Operations &amp; Administrative Dashboard
+            </p>
+            <p>
+                Calculates real-time KPIs strictly from active stored records across Memberships, Court Bookings, Pro Shop, Bar POS, and Visitor Leads.
+            </p>
+        </field>
+    </record>
+
+    <!-- Administrative Dashboard Form View -->
+    <record id="view_club_dashboard_form" model="ir.ui.view">
+        <field name="name">club.dashboard.form</field>
+        <field name="res_model">club.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Administrative Control Center" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">CHAMPIONS CLUB</span>
+                        <h1>Operational Overview &amp; Control Center</h1>
+                        <p class="text-muted">
+                            Traceable operational indicators calculated from active database records.
+                        </p>
+                    </div>
+
+                    <notebook>
+                        <page string="Executive KPIs &amp; Lineage" name="kpis">
+                            <group string="Operational Modules">
+                                <group string="Memberships &amp; Rosters">
+                                    <field name="reference_date" readonly="1"/>
+                                </group>
+                                <group string="Anti-Hallucination Compliance">
+                                    <div class="alert alert-info" role="alert">
+                                        <strong>Traceability Notice:</strong> Every dashboard statistic is computed strictly from active stored records. Unrecorded categories display "No data available".
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
