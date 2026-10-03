@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CHAMPIONS CLUB — Member Management Portal</title>
-  <meta name="description" content="Front Desk & Member Management Portal for Champions Club. Track Gold, Silver, and Junior memberships, validity, and club history.">
+  <title>CHAMPIONS CLUB — Member Management &amp; Entitlements</title>
+  <meta name="description" content="Front Desk &amp; Member Management Portal for Champions Club. Central identity and entitlement layer for Gold, Silver, and Junior memberships, real-time validity, dynamic court/shop/bar benefits, and 360° activity history.">
   <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/landing.css">
   <style>
+    /* ==========================================================================
+       MEMBERSHIP SECTION ENHANCED STYLES
+       ========================================================================== */
     .cc-filter-pill {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--cc-border-medium);
@@ -22,20 +25,196 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      user-select: none;
     }
     .cc-filter-pill:hover,
     .cc-filter-pill.is-active {
       background: var(--cc-gold-glow);
       border-color: var(--cc-gold-500);
       color: var(--cc-gold-300);
+      transform: translateY(-1px);
     }
+    .cc-filter-pill .cc-count-chip {
+      background: rgba(0, 0, 0, 0.35);
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-size: 10px;
+      color: var(--cc-text-primary);
+    }
+
+    /* Interactive KPI Cards */
+    .cc-kpi-card {
+      background: var(--cc-bg-surface-glass);
+      border: 1px solid var(--cc-border-subtle);
+      border-radius: var(--cc-radius-lg);
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      transition: all var(--cc-transition-base);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 140px;
+      flex: 1;
+    }
+    .cc-kpi-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--cc-border-highlight);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+    }
+    .cc-kpi-card.is-active-kpi {
+      border-color: var(--cc-gold-500);
+      background: rgba(212, 175, 55, 0.08);
+      box-shadow: 0 0 16px var(--cc-gold-glow);
+    }
+    .cc-kpi-label {
+      font-size: 11px;
+      font-family: var(--cc-font-display);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cc-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cc-kpi-value {
+      font-family: var(--cc-font-mono);
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin: 0.35rem 0 0.2rem;
+    }
+    .cc-kpi-sub {
+      font-size: 11px;
+      color: var(--cc-text-secondary);
+    }
+
+    /* Plan Cards Tier Styling */
+    .cc-tier-card {
+      background: var(--cc-bg-surface-glass);
+      border: 1px solid var(--cc-border-medium);
+      border-radius: var(--cc-radius-xl);
+      padding: 1.5rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all var(--cc-transition-base);
+    }
+    .cc-tier-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+    }
+    .cc-tier-card-gold {
+      border-color: rgba(212, 175, 55, 0.4);
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.08) 0%, rgba(14, 19, 31, 0.85) 100%);
+    }
+    .cc-tier-card-gold:hover {
+      border-color: var(--cc-gold-500);
+      box-shadow: 0 14px 30px var(--cc-gold-glow);
+    }
+    .cc-tier-card-silver {
+      border-color: rgba(203, 213, 225, 0.3);
+      background: linear-gradient(180deg, rgba(203, 213, 225, 0.05) 0%, rgba(14, 19, 31, 0.85) 100%);
+    }
+    .cc-tier-card-junior {
+      border-color: rgba(56, 189, 248, 0.3);
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.06) 0%, rgba(14, 19, 31, 0.85) 100%);
+    }
+
+    .cc-tier-entitlements-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .cc-tier-entitlements-list li {
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cc-text-primary);
+    }
+    .cc-tier-entitlements-list li .cc-check-icon {
+      color: var(--cc-neon-green);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Digital Membership Card Presentation */
+    .cc-digital-card {
+      width: 100%;
+      border-radius: var(--cc-radius-lg);
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+      color: #FFFFFF;
+      margin-bottom: 1.5rem;
+    }
+    .cc-digital-card-gold {
+      background: linear-gradient(135deg, #1C180A 0%, #382E11 35%, #181408 70%, #2A210A 100%);
+      border: 1px solid rgba(212, 175, 55, 0.6);
+    }
+    .cc-digital-card-gold::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cc-digital-card-silver {
+      background: linear-gradient(135deg, #11141B 0%, #242D3D 35%, #10141C 70%, #1E2636 100%);
+      border: 1px solid rgba(203, 213, 225, 0.5);
+    }
+    .cc-digital-card-junior {
+      background: linear-gradient(135deg, #091924 0%, #10344D 35%, #081722 70%, #123C59 100%);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+    }
+
+    .cc-card-chip {
+      width: 38px;
+      height: 28px;
+      background: linear-gradient(135deg, #ECC94B 0%, #B7791F 100%);
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      position: relative;
+    }
+    .cc-card-chip::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .cc-qr-box {
+      background: #FFFFFF;
+      padding: 8px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 360 History Timeline */
     .cc-history-timeline {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.1rem;
       border-left: 2px solid var(--cc-border-medium);
       padding-left: 1.25rem;
-      margin-top: 1rem;
+      margin-top: 0.75rem;
     }
     .cc-history-item {
       position: relative;
@@ -51,15 +230,60 @@
       background: var(--cc-gold-500);
       box-shadow: 0 0 8px var(--cc-gold-glow);
     }
+    .cc-history-item.type-booking::before {
+      background: var(--cc-neon-green);
+      box-shadow: 0 0 8px var(--cc-neon-green-glow);
+    }
+    .cc-history-item.type-shop::before {
+      background: var(--cc-electric-blue);
+      box-shadow: 0 0 8px var(--cc-electric-blue-glow);
+    }
+    .cc-history-item.type-bar::before {
+      background: var(--cc-amber);
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+    }
+    .cc-history-item.type-renewal::before {
+      background: #A855F7;
+      box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+    }
     .cc-history-time {
       font-family: var(--cc-font-mono);
       font-size: 11px;
       color: var(--cc-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .cc-history-desc {
       font-size: 13px;
       color: var(--cc-text-primary);
-      margin-top: 2px;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* Member Avatar with Tier Border Ring */
+    .cc-avatar-ring {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+    .cc-avatar-gold {
+      background: linear-gradient(135deg, #B89223 0%, #D4AF37 100%);
+      box-shadow: 0 0 8px var(--cc-gold-glow);
+    }
+    .cc-avatar-silver {
+      background: linear-gradient(135deg, #64748B 0%, #94A3B8 100%);
+    }
+    .cc-avatar-junior {
+      background: linear-gradient(135deg, #0284C7 0%, #38BDF8 100%);
+      box-shadow: 0 0 8px var(--cc-junior-glow);
     }
   </style>
 </head>
@@ -85,7 +309,7 @@
           <li><a href="shop.html" class="cc-nav-link">Pro Shop</a></li>
           <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
           <li><a href="crm.html" class="cc-nav-link">Enquiries CRM</a></li>
-          <li><a href="members.html" class="cc-nav-link is-active">Roster (Admin)</a></li>
+          <li><a href="members.html" class="cc-nav-link is-active">Memberships</a></li>
           <li><a href="portal.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Member Portal</a></li>
           <li><a href="dashboard.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Admin Dashboard</a></li>
           <li><a href="styleguide.html" class="cc-nav-link" target="_blank" rel="noopener">Styleguide</a></li>
@@ -93,8 +317,11 @@
       </nav>
 
       <div class="cc-nav-actions">
-        <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-config-plans">
-          Configurable Plans
+        <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-quick-scan">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+          </svg>
+          Scan / Lookup ID
         </button>
         <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-add-member">
           + New Member
@@ -105,60 +332,225 @@
 
   <main class="cc-container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
 
-    <!-- HEADER & STATS -->
+    <!-- ==========================================
+         SECTION 1: DASHBOARD HEADER & KPI CARDS
+         ========================================== -->
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; gap: 1.5rem;">
       <div>
-        <div class="cc-eyebrow">Front Desk Operations</div>
-        <h1 class="cc-heading-1">Membership Roster</h1>
-        <p class="cc-body-sm" style="margin-top: 0.25rem;">
-          Track member profiles, Gold / Silver / Junior tiers, automated validity expiration, and visit history.
+        <div class="cc-eyebrow">Sports Club Membership Engine</div>
+        <h1 class="cc-heading-1">Memberships &amp; Entitlements</h1>
+        <p class="cc-body-sm" style="margin-top: 0.25rem; max-width: 680px;">
+          Central identity and entitlement layer for Champions Club. Track Gold, Silver, and Junior memberships, real-time validity, dynamic court/shop/bar benefits, and 360° activity history.
         </p>
       </div>
 
-      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-        <div class="cc-card cc-stat-card" style="padding: 12px 20px; min-width: 120px;">
-          <span class="cc-stat-label">Active</span>
-          <span class="cc-stat-value" id="stat-active" style="font-size: 1.5rem; color: var(--cc-neon-green);">0</span>
-        </div>
-        <div class="cc-card cc-stat-card" style="padding: 12px 20px; min-width: 120px;">
-          <span class="cc-stat-label">Expiring Soon</span>
-          <span class="cc-stat-value" id="stat-expiring" style="font-size: 1.5rem; color: #FBBF24;">0</span>
-        </div>
-        <div class="cc-card cc-stat-card" style="padding: 12px 20px; min-width: 120px;">
-          <span class="cc-stat-label">Expired</span>
-          <span class="cc-stat-value" id="stat-expired" style="font-size: 1.5rem; color: var(--cc-crimson);">0</span>
-        </div>
-        <div class="cc-card cc-stat-card" style="padding: 12px 20px; min-width: 120px;">
-          <span class="cc-stat-label">Draft / Cancelled</span>
-          <span class="cc-stat-value" id="stat-other" style="font-size: 1.5rem; color: var(--cc-text-muted);">0</span>
-        </div>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="cc-btn cc-btn-secondary cc-btn-sm" id="btn-quick-renew-header">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Renew Membership
+        </button>
+        <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-view-expiring-header">
+          <span class="cc-pulse-dot" style="background: #FBBF24;"></span>
+          View Expiring
+        </button>
+        <button class="cc-btn cc-btn-ghost cc-btn-sm" id="btn-config-plans">
+          Configurable Plans
+        </button>
       </div>
     </div>
 
-    <!-- CONTROLS: SEARCH & FILTERS -->
+    <!-- 6 CLICKABLE KPI CARDS DECK -->
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.25rem;">
+      <div class="cc-kpi-card is-active-kpi" id="kpi-total" data-filter="all">
+        <div class="cc-kpi-label">Total Roster <span>👥</span></div>
+        <div class="cc-kpi-value" id="stat-total" style="color: var(--cc-text-primary);">0</div>
+        <div class="cc-kpi-sub">Registered profiles</div>
+      </div>
+      <div class="cc-kpi-card" id="kpi-gold" data-filter="gold">
+        <div class="cc-kpi-label" style="color: var(--cc-gold-400);">Gold Tier <span>★</span></div>
+        <div class="cc-kpi-value" id="stat-gold" style="color: var(--cc-gold-300);">0</div>
+        <div class="cc-kpi-sub">Full access (Free courts)</div>
+      </div>
+      <div class="cc-kpi-card" id="kpi-silver" data-filter="silver">
+        <div class="cc-kpi-label" style="color: var(--cc-silver-300);">Silver Tier <span>◆</span></div>
+        <div class="cc-kpi-value" id="stat-silver" style="color: var(--cc-silver-100);">0</div>
+        <div class="cc-kpi-sub">Standard member access</div>
+      </div>
+      <div class="cc-kpi-card" id="kpi-junior" data-filter="junior">
+        <div class="cc-kpi-label" style="color: var(--cc-junior-blue);">Junior Tier <span>●</span></div>
+        <div class="cc-kpi-value" id="stat-junior" style="color: var(--cc-junior-blue);">0</div>
+        <div class="cc-kpi-sub">Under 18 youth access</div>
+      </div>
+      <div class="cc-kpi-card" id="kpi-expiring" data-filter="expiring">
+        <div class="cc-kpi-label" style="color: #FBBF24;">Expiring Soon <span>⚠️</span></div>
+        <div class="cc-kpi-value" id="stat-expiring" style="color: #FBBF24;">0</div>
+        <div class="cc-kpi-sub">Within next 30 days</div>
+      </div>
+      <div class="cc-kpi-card" id="kpi-expired" data-filter="expired">
+        <div class="cc-kpi-label" style="color: var(--cc-crimson);">Expired <span>✕</span></div>
+        <div class="cc-kpi-value" id="stat-expired" style="color: var(--cc-crimson);">0</div>
+        <div class="cc-kpi-sub">Benefits suspended</div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SECTION 2: 3 MEMBERSHIP PLAN CARDS
+         ========================================== -->
+    <div style="margin-bottom: 2.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+          <div class="cc-eyebrow">Entitlement Framework</div>
+          <h2 class="cc-heading-3">Membership Tiers &amp; Entitlements</h2>
+        </div>
+        <span class="cc-badge cc-badge-active">3 Tiers Configured</span>
+      </div>
+
+      <div class="cc-grid cc-grid-cols-3" style="gap: 1.25rem;">
+        
+        <!-- CARD 1: GOLD -->
+        <div class="cc-tier-card cc-tier-card-gold">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+              <span class="cc-badge cc-badge-gold" style="font-size: 11px; padding: 4px 10px;">★ GOLD PLAN</span>
+              <span class="cc-badge cc-badge-active" id="plan-count-gold">0 Members</span>
+            </div>
+            <h3 class="cc-heading-3" style="color: var(--cc-gold-200); margin-bottom: 0.25rem;">Premium Full Access</h3>
+            <p class="cc-body-xs" style="color: var(--cc-text-secondary);">Unlimited facility privileges, priority booking access, and running cafeteria tab.</p>
+            <div class="cc-text-mono" id="plan-fee-gold" style="font-size: 1.35rem; font-weight: 800; color: var(--cc-gold-400); margin: 0.75rem 0 0.5rem;">
+              ₹ 24,000 / yr
+            </div>
+            <hr style="border: none; border-top: 1px solid rgba(212, 175, 55, 0.2); margin: 0.75rem 0;">
+            
+            <ul class="cc-tier-entitlements-list">
+              <li><span class="cc-check-icon">✓</span> <span><strong>Court Access:</strong> Full Club Access</span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Court Pricing:</strong> <span style="color: var(--cc-neon-green); font-weight: 700;">Free / Zero (₹0)</span></span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Pro Shop Discount:</strong> <span id="plan-shop-gold">15% Off Gear &amp; Apparel</span></span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Bar &amp; Cafe Discount:</strong> <span id="plan-bar-gold">15% Off F&amp;B Orders</span></span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Running Member Tab:</strong> <span style="color: var(--cc-gold-300);">Allowed (Settle on Departure)</span></span></li>
+            </ul>
+          </div>
+          <button class="cc-btn cc-btn-outline-gold cc-btn-sm" style="width: 100%; margin-top: 0.5rem;" onclick="filterTableByTier('gold')">
+            Filter Gold Members
+          </button>
+        </div>
+
+        <!-- CARD 2: SILVER -->
+        <div class="cc-tier-card cc-tier-card-silver">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+              <span class="cc-badge cc-badge-silver" style="font-size: 11px; padding: 4px 10px;">◆ SILVER PLAN</span>
+              <span class="cc-badge cc-badge-active" id="plan-count-silver">0 Members</span>
+            </div>
+            <h3 class="cc-heading-3" style="color: var(--cc-silver-100); margin-bottom: 0.25rem;">Standard Membership</h3>
+            <p class="cc-body-xs" style="color: var(--cc-text-secondary);">Standard court reservations at member pricing and regular club privileges.</p>
+            <div class="cc-text-mono" id="plan-fee-silver" style="font-size: 1.35rem; font-weight: 800; color: var(--cc-silver-100); margin: 0.75rem 0 0.5rem;">
+              ₹ 14,000 / yr
+            </div>
+            <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 0.75rem 0;">
+            
+            <ul class="cc-tier-entitlements-list">
+              <li><span class="cc-check-icon">✓</span> <span><strong>Court Access:</strong> Standard Club Access</span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Court Pricing:</strong> <span id="plan-court-silver">₹ 300 / hr (Member Rate)</span></span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Pro Shop Discount:</strong> <span id="plan-shop-silver">10% Off Gear &amp; Apparel</span></span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Bar &amp; Cafe Discount:</strong> <span id="plan-bar-silver">10% Off F&amp;B Orders</span></span></li>
+              <li><span style="color: var(--cc-text-muted); font-size: 12px;">✕ Running Member Tab: Disabled (Pay as you go)</span></li>
+            </ul>
+          </div>
+          <button class="cc-btn cc-btn-secondary cc-btn-sm" style="width: 100%; margin-top: 0.5rem;" onclick="filterTableByTier('silver')">
+            Filter Silver Members
+          </button>
+        </div>
+
+        <!-- CARD 3: JUNIOR -->
+        <div class="cc-tier-card cc-tier-card-junior">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+              <span class="cc-badge cc-badge-junior" style="font-size: 11px; padding: 4px 10px;">● JUNIOR PLAN</span>
+              <span class="cc-badge cc-badge-active" id="plan-count-junior">0 Members</span>
+            </div>
+            <h3 class="cc-heading-3" style="color: var(--cc-junior-blue); margin-bottom: 0.25rem;">Under 18 / Discounted</h3>
+            <p class="cc-body-xs" style="color: var(--cc-text-secondary);">Subsidized youth tier for junior coaching clinics, training nets, and academy players.</p>
+            <div class="cc-text-mono" id="plan-fee-junior" style="font-size: 1.35rem; font-weight: 800; color: var(--cc-junior-blue); margin: 0.75rem 0 0.5rem;">
+              ₹ 8,000 / yr
+            </div>
+            <hr style="border: none; border-top: 1px solid rgba(56, 189, 248, 0.2); margin: 0.75rem 0;">
+            
+            <ul class="cc-tier-entitlements-list">
+              <li><span class="cc-check-icon">✓</span> <span><strong>Court Access:</strong> Youth Training &amp; Courts</span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Court Pricing:</strong> <span id="plan-court-junior">₹ 200 / hr (Youth Rate)</span></span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Pro Shop Discount:</strong> <span id="plan-shop-junior">15% Off Junior Gear &amp; Shuttles</span></span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Bar &amp; Cafe Discount:</strong> <span id="plan-bar-junior">5% Off Smoothies &amp; Snacks</span></span></li>
+              <li><span class="cc-check-icon">✓</span> <span><strong>Age Requirement:</strong> Under 18 (Validated DOB)</span></li>
+            </ul>
+          </div>
+          <button class="cc-btn cc-btn-secondary cc-btn-sm" style="width: 100%; margin-top: 0.5rem;" onclick="filterTableByTier('junior')">
+            Filter Junior Members
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==========================================
+         EXPIRING SOON ALERT BANNER
+         ========================================== -->
+    <div id="expiring-alert-banner" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--cc-radius-md); padding: 1rem 1.25rem; margin-bottom: 1.75rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.5rem;">⚠️</span>
+        <div>
+          <strong style="color: #FBBF24; font-size: 14px;" id="expiring-banner-text">Attention: 0 memberships expiring within 30 days.</strong>
+          <div style="font-size: 12px; color: var(--cc-text-secondary); margin-top: 2px;">Notify members or execute front-desk renewal to prevent court booking and discount suspension.</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="cc-btn cc-btn-sm cc-btn-secondary" style="border-color: #FBBF24; color: #FBBF24;" onclick="filterTableByStatus('expiring')">
+          Filter Expiring
+        </button>
+        <button class="cc-btn cc-btn-sm cc-btn-primary cc-btn-pill" id="btn-banner-renew-fast">
+          Quick Renew
+        </button>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SECTION 3: MEMBER TABLE & CONTROLS
+         ========================================== -->
     <div class="cc-card cc-card-glass" style="margin-bottom: 1.5rem; padding: 1.25rem;">
       <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
         
         <!-- Search Bar -->
-        <div class="cc-input-search-wrap" style="max-width: 360px;">
+        <div class="cc-input-search-wrap" style="max-width: 380px; flex: 1; min-width: 260px;">
           <svg class="cc-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
-          <input type="search" id="member-search" class="cc-input cc-input-search" placeholder="Search by name, ID or phone...">
+          <input type="search" id="member-search" class="cc-input cc-input-search" placeholder="Search by name, Member ID, phone or email...">
         </div>
 
-        <!-- Filter Pills -->
-        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" id="filter-container">
-          <button class="cc-filter-pill is-active" data-filter="all">All Members</button>
-          <button class="cc-filter-pill" data-filter="active">&#9679; Active</button>
-          <button class="cc-filter-pill" data-filter="expiring">&#9888; Expiring (&le;30d)</button>
-          <button class="cc-filter-pill" data-filter="expired">&#10005; Expired</button>
-          <button class="cc-filter-pill" data-filter="draft">&#9998; Draft</button>
-          <button class="cc-filter-pill" data-filter="cancelled">&#8861; Cancelled</button>
-          <button class="cc-filter-pill" data-filter="gold">&#9733; Gold</button>
-          <button class="cc-filter-pill" data-filter="silver">&#9670; Silver</button>
-          <button class="cc-filter-pill" data-filter="junior">&#9679; Junior</button>
+        <!-- Sort Select & Filter Pills -->
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--cc-text-muted); margin-right: 4px;">
+            <span>Sort:</span>
+            <select id="member-sort-select" class="cc-select" style="padding: 6px 12px; font-size: 12px; width: auto;">
+              <option value="expiry-asc">Expiry Date (Soonest first)</option>
+              <option value="expiry-desc">Expiry Date (Furthest first)</option>
+              <option value="name-asc">Name (A &rarr; Z)</option>
+              <option value="id-asc">Member ID</option>
+            </select>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;" id="filter-container">
+            <button class="cc-filter-pill is-active" data-filter="all">All Members <span class="cc-count-chip" id="chip-all">0</span></button>
+            <button class="cc-filter-pill" data-filter="gold">★ Gold <span class="cc-count-chip" id="chip-gold">0</span></button>
+            <button class="cc-filter-pill" data-filter="silver">◆ Silver <span class="cc-count-chip" id="chip-silver">0</span></button>
+            <button class="cc-filter-pill" data-filter="junior">● Junior <span class="cc-count-chip" id="chip-junior">0</span></button>
+            <button class="cc-filter-pill" data-filter="active">&#9679; Active</button>
+            <button class="cc-filter-pill" data-filter="expiring">⚠️ Expiring</button>
+            <button class="cc-filter-pill" data-filter="expired">✕ Expired</button>
+          </div>
         </div>
+
       </div>
     </div>
 
@@ -167,14 +559,14 @@
       <table class="cc-table" id="members-table">
         <thead>
           <tr>
-            <th>Member ID &amp; Name</th>
+            <th>Member</th>
+            <th>Member ID</th>
             <th>Tier Plan</th>
-            <th>Contact</th>
-            <th>Validity Range</th>
-            <th>Days Remaining</th>
-            <th>Active Benefits</th>
             <th>Status</th>
-            <th style="text-align: right;">Front Desk Action</th>
+            <th>Start Date</th>
+            <th>Expiry Date</th>
+            <th>Last Activity</th>
+            <th style="text-align: right;">Actions</th>
           </tr>
         </thead>
         <tbody id="members-table-body">
@@ -190,19 +582,199 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
         </svg>
       </div>
-      <div class="cc-empty-title">No matching members found</div>
-      <p class="cc-empty-desc">Try adjusting your search query or status filter.</p>
+      <div class="cc-empty-title">No matching member records found</div>
+      <p class="cc-empty-desc">Try clearing your search query or switching your status filter.</p>
+      <button class="cc-btn cc-btn-outline-gold cc-btn-sm" style="margin-top: 1rem;" onclick="resetMemberFilters()">
+        Reset Filters
+      </button>
     </div>
 
   </main>
 
   <!-- ==========================================
-       MODAL: ADD NEW MEMBER
+       MODAL: MEMBER PROFILE & 360 HISTORY (DRAWER)
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-member-detail" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 860px; width: 95%;">
+      <div class="cc-modal-header" style="border-bottom: 1px solid var(--cc-border-medium);">
+        <div>
+          <span class="cc-eyebrow" id="detail-member-id">CC-MEM-00101</span>
+          <h2 class="cc-modal-title" id="detail-member-name" style="margin-top: 2px;">Member Profile</h2>
+        </div>
+        <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cc-modal-body" style="padding: 1.5rem;">
+        
+        <div class="cc-grid cc-grid-cols-2" style="gap: 1.5rem; align-items: flex-start;">
+          
+          <!-- LEFT COLUMN: DIGITAL MEMBERSHIP CARD & PERSONAL INFO -->
+          <div>
+            <!-- DIGITAL MEMBERSHIP CARD -->
+            <div id="digital-card-container" class="cc-digital-card cc-digital-card-gold">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div class="cc-brand-logo-mark" style="width: 28px; height: 28px; font-size: 13px;">C</div>
+                  <div>
+                    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: #FFFFFF;">CHAMPIONS CLUB</div>
+                    <div style="font-size: 8px; letter-spacing: 0.12em; color: rgba(255,255,255,0.7);">SPORTS &amp; WELLNESS</div>
+                  </div>
+                </div>
+                <span class="cc-badge" id="card-tier-badge" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.3); font-size: 10px;">
+                  ★ GOLD MEMBER
+                </span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div class="cc-card-chip"></div>
+                <div style="font-family: var(--cc-font-mono); font-size: 10px; color: rgba(255,255,255,0.75);">
+                  NFC / RFID SECURE
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                  <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.65);">Member Name</div>
+                  <div id="card-member-name" style="font-size: 1.15rem; font-weight: 800; color: #FFFFFF; font-family: var(--cc-font-display); letter-spacing: 0.02em;">David Vance</div>
+                  <div id="card-member-id" class="cc-text-mono" style="font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 2px;">CC-MEM-00101</div>
+                </div>
+
+                <!-- LIVE SVG QR CODE -->
+                <div class="cc-qr-box" id="card-qr-box" title="Scan to verify member ID">
+                  <!-- Generated via SVG -->
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 0.6rem; margin-top: 0.75rem; font-size: 10px;">
+                <span id="card-status-label" style="font-weight: 700; color: var(--cc-neon-green);">● ACTIVE MEMBER</span>
+                <span id="card-validity-label" style="color: rgba(255,255,255,0.85);">Valid until: 31 Dec 2026</span>
+              </div>
+            </div>
+
+            <!-- PERSONAL INFORMATION PANEL -->
+            <div class="cc-card" style="padding: 1.25rem;">
+              <div class="cc-eyebrow" style="margin-bottom: 0.75rem;">Personal Information</div>
+              
+              <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 13px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--cc-text-muted);">Phone:</span>
+                  <span id="detail-phone" style="font-weight: 600; color: var(--cc-text-primary); font-family: var(--cc-font-mono);">-</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--cc-text-muted);">Email:</span>
+                  <span id="detail-email" style="font-weight: 600; color: var(--cc-text-primary);">-</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--cc-text-muted);">Date of Birth:</span>
+                  <span id="detail-dob" style="font-weight: 600; color: var(--cc-text-primary);">-</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--cc-text-muted);">Notes / Special:</span>
+                  <span id="detail-notes" style="font-style: italic; color: var(--cc-text-secondary); max-width: 60%; text-align: right;">-</span>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-quick-book-court" style="flex: 1;">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  Book Court
+                </button>
+                <button class="cc-btn cc-btn-secondary cc-btn-sm" id="btn-edit-member-info" style="padding: 6px 12px;">
+                  Edit
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: MEMBERSHIP STATUS, ENTITLEMENTS & 360 TIMELINE -->
+          <div>
+            
+            <!-- STATUS & EXPIRY ALERT -->
+            <div id="detail-expiry-alert" style="display: none; background: rgba(245, 158, 11, 0.15); border: 1px solid #FBBF24; border-radius: var(--cc-radius-md); padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 13px; color: #FBBF24;">
+              <strong>⚠️ Membership Expiring:</strong> <span id="detail-expiry-alert-text">Expires in 5 days.</span>
+            </div>
+
+            <!-- MEMBERSHIP ENTITLEMENTS MATRIX -->
+            <div class="cc-card cc-card-glass" style="margin-bottom: 1.25rem; padding: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <div class="cc-eyebrow">Tier Entitlements &amp; Privileges</div>
+                <span id="detail-benefits-badge" class="cc-badge cc-badge-active">Active Benefits</span>
+              </div>
+              
+              <div class="cc-grid cc-grid-cols-2" style="gap: 0.75rem; font-size: 12px;">
+                <div style="background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 6px;">
+                  <div style="color: var(--cc-text-muted);">Court Rate Policy</div>
+                  <div style="font-weight: 700; color: var(--cc-text-primary); font-size: 13px;" id="detail-court-entitlement">-</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 6px;">
+                  <div style="color: var(--cc-text-muted);">Pro Shop Discount</div>
+                  <div style="font-weight: 700; color: var(--cc-text-primary); font-size: 13px;" id="detail-shop-discount">-</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 6px;">
+                  <div style="color: var(--cc-text-muted);">Bar &amp; Cafeteria Discount</div>
+                  <div style="font-weight: 700; color: var(--cc-text-primary); font-size: 13px;" id="detail-bar-discount">-</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 6px;">
+                  <div style="color: var(--cc-text-muted);">Running Bar Tab</div>
+                  <div style="font-weight: 700; color: var(--cc-text-primary); font-size: 13px;" id="detail-tab-entitlement">-</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 360 ACTIVITY TIMELINE TABS -->
+            <div class="cc-card" style="padding: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <div class="cc-eyebrow">360° Relational Activity History</div>
+                <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-action-checkin" style="padding: 3px 10px; font-size: 11px;">
+                  + Check-in
+                </button>
+              </div>
+
+              <div class="cc-history-timeline" id="detail-history-list">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+      <div class="cc-modal-footer" style="display: flex; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" id="btn-action-renew">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Renew Membership
+          </button>
+          <button type="button" class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-action-change-plan">
+            Change Plan Tier
+          </button>
+          <button type="button" class="cc-btn cc-btn-danger cc-btn-sm" id="btn-action-cancel">
+            Cancel Membership
+          </button>
+        </div>
+        <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: ENROLL NEW MEMBER (WITH JUNIOR VALIDATION & SUMMARY)
        ========================================== -->
   <div class="cc-modal-backdrop" id="modal-add-member" role="dialog" aria-modal="true">
-    <div class="cc-modal">
+    <div class="cc-modal" style="max-width: 680px; width: 95%;">
       <div class="cc-modal-header">
-        <h3 class="cc-modal-title">Enroll New Club Member</h3>
+        <div>
+          <span class="cc-eyebrow">Front Desk Enrollment</span>
+          <h3 class="cc-modal-title">Enroll New Club Member</h3>
+        </div>
         <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -211,36 +783,35 @@
       </div>
       <form id="form-add-member">
         <div class="cc-modal-body">
+          
           <div class="cc-form-group">
             <label class="cc-label" for="new-member-name">Member Full Name *</label>
-            <input type="text" id="new-member-name" class="cc-input" placeholder="e.g. Marcus Rashford" required>
+            <input type="text" id="new-member-name" class="cc-input" placeholder="e.g. Smit Prajapati" required>
           </div>
 
           <div class="cc-grid cc-grid-cols-2">
-            <div class="cc-form-group">
-              <label class="cc-label" for="new-member-email">Email Address</label>
-              <input type="email" id="new-member-email" class="cc-input" placeholder="member@example.com">
-            </div>
             <div class="cc-form-group">
               <label class="cc-label" for="new-member-phone">Phone / WhatsApp *</label>
-              <input type="text" id="new-member-phone" class="cc-input" placeholder="+91 98765 43210" required>
+              <input type="text" id="new-member-phone" class="cc-input" placeholder="+91 98201 11223" required>
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label" for="new-member-email">Email Address</label>
+              <input type="email" id="new-member-email" class="cc-input" placeholder="smit@example.com">
             </div>
           </div>
 
           <div class="cc-grid cc-grid-cols-2">
+            <div class="cc-form-group">
+              <label class="cc-label" for="new-member-dob">Date of Birth * (For Junior validation)</label>
+              <input type="date" id="new-member-dob" class="cc-input" required>
+              <div id="new-member-age-hint" style="font-size: 11px; color: var(--cc-text-muted); margin-top: 4px;"></div>
+            </div>
             <div class="cc-form-group">
               <label class="cc-label" for="new-member-plan">Membership Tier *</label>
               <select id="new-member-plan" class="cc-select" required>
                 <option value="gold">Gold Tier (Premium, Full Access)</option>
                 <option value="silver" selected>Silver Tier (Standard Access)</option>
                 <option value="junior">Junior Tier (Under 18, Discounted)</option>
-              </select>
-            </div>
-            <div class="cc-form-group">
-              <label class="cc-label" for="new-member-status">Initial Status *</label>
-              <select id="new-member-status" class="cc-select" required>
-                <option value="active" selected>Active (Immediate Activation)</option>
-                <option value="draft">Draft (Pending Verification)</option>
               </select>
             </div>
           </div>
@@ -251,33 +822,42 @@
               <input type="date" id="new-member-start" class="cc-input" required>
             </div>
             <div class="cc-form-group">
-              <label class="cc-label" for="new-member-end">Expiration Date *</label>
+              <label class="cc-label" for="new-member-end">Expiration Date * (1 Year Standard)</label>
               <input type="date" id="new-member-end" class="cc-input" required>
             </div>
           </div>
 
-          <div class="cc-form-group">
-            <label class="cc-label" for="new-member-notes">Staff / Front Desk Notes</label>
-            <textarea id="new-member-notes" class="cc-textarea" placeholder="Any special instructions or member preferences..."></textarea>
+          <!-- JUNIOR VALIDATION ERROR BANNER -->
+          <div id="junior-error-banner" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--cc-crimson); color: #FCA5A5; padding: 0.75rem 1rem; border-radius: 6px; font-size: 12px; margin-bottom: 1rem;">
+            ✕ <strong>Junior Tier Restriction:</strong> Date of birth indicates applicant is 18 or older. Junior plan is strictly reserved for youth aged 6–17.
           </div>
+
+          <!-- REAL-TIME SUMMARY CARD PREVIEW -->
+          <div class="cc-card cc-card-glass" style="padding: 1rem; margin-top: 0.5rem; background: rgba(18, 24, 38, 0.9);">
+            <div class="cc-eyebrow" style="margin-bottom: 0.4rem; color: var(--cc-gold-400);">MEMBERSHIP SUMMARY</div>
+            <div id="new-member-summary" style="font-size: 13px; color: var(--cc-text-primary); line-height: 1.5;">
+              Select plan and fill dates to preview entitlements.
+            </div>
+          </div>
+
         </div>
         <div class="cc-modal-footer">
           <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Cancel</button>
-          <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Complete Enrollment</button>
+          <button type="submit" id="btn-submit-enroll" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Create Member</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- ==========================================
-       MODAL: MEMBER PROFILE & 360 HISTORY DRAWER
+       MODAL: RENEW MEMBERSHIP FLOW
        ========================================== -->
-  <div class="cc-modal-backdrop" id="modal-member-detail" role="dialog" aria-modal="true">
-    <div class="cc-modal" style="max-width: 720px;">
+  <div class="cc-modal-backdrop" id="modal-renew-member" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 540px; width: 95%;">
       <div class="cc-modal-header">
         <div>
-          <span class="cc-eyebrow" id="detail-member-id">CC-MEM-00000</span>
-          <h3 class="cc-modal-title" id="detail-member-name">Member Name</h3>
+          <span class="cc-eyebrow">Front Desk Operations</span>
+          <h3 class="cc-modal-title">Renew Membership</h3>
         </div>
         <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -285,100 +865,189 @@
           </svg>
         </button>
       </div>
-      <div class="cc-modal-body">
-        
-        <!-- Status & Plan summary -->
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(22, 29, 46, 0.6); padding: 1rem; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle); margin-bottom: 1.25rem;">
-          <div>
-            <div style="font-size: 12px; color: var(--cc-text-muted);">Assigned Plan</div>
-            <div id="detail-plan-badge" style="margin-top: 4px;"></div>
+      <form id="form-renew-member">
+        <div class="cc-modal-body">
+          <div class="cc-form-group">
+            <label class="cc-label" for="renew-member-select">Select Member *</label>
+            <select id="renew-member-select" class="cc-select" required></select>
           </div>
-          <div>
-            <div style="font-size: 12px; color: var(--cc-text-muted);">Validity Status</div>
-            <div id="detail-status-badge" style="margin-top: 4px;"></div>
+
+          <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+              <span style="color: var(--cc-text-muted);">Current Plan:</span>
+              <strong id="renew-current-plan" style="color: var(--cc-gold-300);">-</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+              <span style="color: var(--cc-text-muted);">Current Expiry Date:</span>
+              <span id="renew-current-expiry" class="cc-text-mono">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--cc-text-muted);">Current Status:</span>
+              <span id="renew-current-status" class="cc-badge cc-badge-active">-</span>
+            </div>
           </div>
-          <div>
-            <div style="font-size: 12px; color: var(--cc-text-muted);">Active Benefits</div>
-            <div id="detail-benefits-badge" style="margin-top: 4px;"></div>
+
+          <div class="cc-form-group">
+            <label class="cc-label" for="renew-duration-select">Extension Period *</label>
+            <select id="renew-duration-select" class="cc-select" required>
+              <option value="365" selected>1 Year (+365 Days Extension)</option>
+              <option value="180">6 Months (+180 Days Extension)</option>
+              <option value="90">3 Months (+90 Days Extension)</option>
+            </select>
           </div>
-          <div>
-            <div style="font-size: 12px; color: var(--cc-text-muted);">Expires On</div>
-            <div class="cc-text-mono" id="detail-expiry-date" style="font-size: 13px; font-weight: 700; color: var(--cc-text-primary); margin-top: 4px;">-</div>
+
+          <div class="cc-form-group">
+            <label class="cc-label">New Validity Expiration Date:</label>
+            <input type="date" id="renew-new-expiry" class="cc-input" required readonly style="background: rgba(255,255,255,0.03); font-weight: 700; color: var(--cc-neon-green);">
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(212, 175, 55, 0.08); border: 1px solid var(--cc-border-highlight); padding: 0.75rem 1rem; border-radius: 6px; font-size: 13px;">
+            <span style="color: var(--cc-text-secondary);">Renewal Subscription Fee:</span>
+            <strong id="renew-fee-label" class="cc-text-mono" style="color: var(--cc-gold-400); font-size: 15px;">₹ 24,000</strong>
           </div>
         </div>
-
-        <!-- Entitlements Summary -->
-        <div class="cc-card cc-card-glass" style="margin-bottom: 1.25rem; padding: 1rem;">
-          <div class="cc-eyebrow" style="margin-bottom: 0.5rem;">Tier Entitlements &amp; Privileges</div>
-          <div class="cc-grid cc-grid-cols-3" style="gap: 0.5rem; font-size: 12px;">
-            <div>
-              <div style="color: var(--cc-text-muted);">Court Policy</div>
-              <div style="font-weight: 700; color: var(--cc-text-primary);" id="detail-court-entitlement">-</div>
-            </div>
-            <div>
-              <div style="color: var(--cc-text-muted);">Shop Discount</div>
-              <div style="font-weight: 700; color: var(--cc-text-primary);" id="detail-shop-discount">-</div>
-            </div>
-            <div>
-              <div style="color: var(--cc-text-muted);">Bar Discount</div>
-              <div style="font-weight: 700; color: var(--cc-text-primary);" id="detail-bar-discount">-</div>
-            </div>
-          </div>
+        <div class="cc-modal-footer">
+          <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Cancel</button>
+          <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Confirm Renewal</button>
         </div>
+      </form>
+    </div>
+  </div>
 
-        <!-- 360 Relational History Tabs -->
+  <!-- ==========================================
+       MODAL: CHANGE PLAN TIER FLOW
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-change-plan" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 520px; width: 95%;">
+      <div class="cc-modal-header">
         <div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <div style="display: flex; gap: 0.5rem;">
-              <button class="cc-filter-pill is-active cc-tab-btn" data-tab="tab-activity">Activity Logs</button>
-              <button class="cc-filter-pill cc-tab-btn" data-tab="tab-bookings">Bookings</button>
-              <button class="cc-filter-pill cc-tab-btn" data-tab="tab-purchases">Shop Purchases</button>
-              <button class="cc-filter-pill cc-tab-btn" data-tab="tab-tabs">Bar Tabs</button>
+          <span class="cc-eyebrow">Tier Management</span>
+          <h3 class="cc-modal-title">Change Membership Plan</h3>
+        </div>
+        <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="form-change-plan">
+        <div class="cc-modal-body">
+          <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+              <span style="color: var(--cc-text-muted);">Member:</span>
+              <strong id="change-plan-member-name">-</strong>
             </div>
-            <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-action-checkin" style="padding: 4px 12px; font-size: 11px;">
-              + Log Check-in
-            </button>
-          </div>
-
-          <!-- Tab 1: Activity Logs -->
-          <div id="tab-activity" class="cc-tab-content">
-            <div class="cc-history-timeline" id="detail-history-list">
-              <!-- Populated dynamically -->
-            </div>
-          </div>
-
-          <!-- Tab 2: Bookings -->
-          <div id="tab-bookings" class="cc-tab-content" style="display: none;">
-            <div id="detail-bookings-list" style="font-size: 13px; color: var(--cc-text-secondary); margin-top: 0.5rem;">
-              <!-- Populated dynamically -->
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--cc-text-muted);">Current Tier:</span>
+              <span id="change-plan-current-badge" class="cc-badge cc-badge-silver">-</span>
             </div>
           </div>
 
-          <!-- Tab 3: Shop Purchases -->
-          <div id="tab-purchases" class="cc-tab-content" style="display: none;">
-            <div id="detail-purchases-list" style="font-size: 13px; color: var(--cc-text-secondary); margin-top: 0.5rem;">
-              <!-- Populated dynamically -->
+          <div class="cc-form-group">
+            <label class="cc-label" for="change-plan-select">New Plan Tier *</label>
+            <select id="change-plan-select" class="cc-select" required>
+              <option value="gold">★ Gold Tier (Premium, Full Access)</option>
+              <option value="silver">◆ Silver Tier (Standard Access)</option>
+              <option value="junior">● Junior Tier (Under 18, Discounted)</option>
+            </select>
+          </div>
+
+          <div class="cc-form-group">
+            <label class="cc-label" for="change-plan-reason">Reason for Change / Notes</label>
+            <input type="text" id="change-plan-reason" class="cc-input" placeholder="e.g. Member requested upgrade to Gold for free court privileges." required value="Member requested plan tier adjustment.">
+          </div>
+
+          <div class="cc-badge cc-badge-active" style="display: block; text-align: left; padding: 8px 12px; font-size: 12px;">
+            ✓ Member ID and past history will be preserved. New entitlements take effect immediately.
+          </div>
+        </div>
+        <div class="cc-modal-footer">
+          <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Cancel</button>
+          <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Apply Plan Change</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: QUICK COURT BOOKING FROM MEMBER PROFILE
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-quick-book" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 560px; width: 95%;">
+      <div class="cc-modal-header">
+        <div>
+          <span class="cc-eyebrow">Integrated Court Engine</span>
+          <h3 class="cc-modal-title">Book Court for Member</h3>
+        </div>
+        <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="form-quick-book">
+        <div class="cc-modal-body">
+          <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+              <span style="color: var(--cc-text-muted);">Member:</span>
+              <strong id="qb-member-name" style="color: var(--cc-text-primary);">-</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--cc-text-muted);">Tier Entitlement:</span>
+              <span id="qb-tier-badge" class="cc-badge cc-badge-gold">-</span>
             </div>
           </div>
 
-          <!-- Tab 4: Bar Tabs -->
-          <div id="tab-tabs" class="cc-tab-content" style="display: none;">
-            <div id="detail-bartabs-list" style="font-size: 13px; color: var(--cc-text-secondary); margin-top: 0.5rem;">
-              <!-- Populated dynamically -->
+          <div class="cc-form-group">
+            <label class="cc-label" for="qb-court-select">Facility / Court *</label>
+            <select id="qb-court-select" class="cc-select" required>
+              <option value="1">Tennis Court 1 (Clay)</option>
+              <option value="2">Tennis Court 2 (Hard)</option>
+              <option value="3">Cricket Pitch &amp; Net 1 (Turf)</option>
+              <option value="4">Cricket Practice Net 2</option>
+              <option value="5">Badminton Court 1 (Indoor Mat)</option>
+              <option value="6">Badminton Court 2 (Indoor Mat)</option>
+            </select>
+          </div>
+
+          <div class="cc-grid cc-grid-cols-2">
+            <div class="cc-form-group">
+              <label class="cc-label" for="qb-date-input">Booking Date *</label>
+              <input type="date" id="qb-date-input" class="cc-input" required>
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label" for="qb-slot-select">Session Time (1 Hour, 30m Slot) *</label>
+              <select id="qb-slot-select" class="cc-select" required>
+                <option value="06:00">06:00 &ndash; 07:00</option>
+                <option value="06:30">06:30 &ndash; 07:30</option>
+                <option value="07:00">07:00 &ndash; 08:00</option>
+                <option value="17:00">17:00 &ndash; 18:00</option>
+                <option value="17:30">17:30 &ndash; 18:30</option>
+                <option value="18:00" selected>18:00 &ndash; 19:00</option>
+                <option value="18:30">18:30 &ndash; 19:30</option>
+                <option value="19:00">19:00 &ndash; 20:00</option>
+                <option value="20:00">20:00 &ndash; 21:00</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- PRICING BREAKDOWN -->
+          <div style="background: rgba(18, 24, 38, 0.85); border: 1px solid var(--cc-border-medium); border-radius: 8px; padding: 1rem; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+              <span style="color: var(--cc-text-muted);">Standard Walk-in Rate:</span>
+              <span class="cc-text-mono" style="color: var(--cc-text-muted); text-decoration: line-through;" id="qb-walkin-price">₹ 500.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.4rem; border-top: 1px solid rgba(255,255,255,0.08);">
+              <span style="font-weight: 700; color: var(--cc-text-primary);">Applicable Member Price:</span>
+              <strong id="qb-member-price" class="cc-text-mono" style="font-size: 1.1rem; color: var(--cc-neon-green);">₹ 0.00 (Free)</strong>
             </div>
           </div>
         </div>
-
-      </div>
-      <div class="cc-modal-footer" style="flex-wrap: wrap; gap: 0.5rem; justify-content: space-between;">
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-          <button type="button" class="cc-btn cc-btn-primary cc-btn-sm" id="btn-action-activate" style="display: none;">Activate Membership</button>
-          <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" id="btn-action-renew">Renew (+1 Year)</button>
-          <button type="button" class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-action-change-plan">Change Plan</button>
-          <button type="button" class="cc-btn cc-btn-danger cc-btn-sm" id="btn-action-cancel">Cancel Membership</button>
+        <div class="cc-modal-footer">
+          <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Cancel</button>
+          <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Confirm Booking</button>
         </div>
-        <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Close</button>
-      </div>
+      </form>
     </div>
   </div>
 
@@ -386,7 +1055,7 @@
        MODAL: CONFIGURABLE PLANS & ENTITLEMENTS
        ========================================== -->
   <div class="cc-modal-backdrop" id="modal-config-plans" role="dialog" aria-modal="true">
-    <div class="cc-modal" style="max-width: 680px;">
+    <div class="cc-modal" style="max-width: 720px; width: 95%;">
       <div class="cc-modal-header">
         <div>
           <span class="cc-eyebrow">System Configuration</span>
@@ -399,8 +1068,8 @@
         </button>
       </div>
       <div class="cc-modal-body">
-        <div class="cc-badge cc-badge-warning" style="margin-bottom: 1.25rem;">
-          &#9888; STRICT COMPLIANCE: Pricing and discount rates are fully configurable.
+        <div class="cc-badge cc-badge-warning" style="margin-bottom: 1.25rem; display: block; text-align: left; padding: 8px 12px;">
+          &#9888; STRICT COMPLIANCE: Pricing, court entitlements, and discount rates are fully configurable without hardcoded assumptions.
         </div>
 
         <div class="cc-grid cc-grid-cols-3" style="gap: 1rem;">
@@ -422,7 +1091,7 @@
             </div>
             <div class="cc-form-group" style="margin-bottom: 0.5rem;">
               <label class="cc-label" style="font-size: 10px;">Shop Disc %</label>
-              <input type="text" class="cc-input plan-config-input" id="cfg-gold-shop" value="20%" style="padding: 6px 10px; font-size: 12px;">
+              <input type="text" class="cc-input plan-config-input" id="cfg-gold-shop" value="15%" style="padding: 6px 10px; font-size: 12px;">
             </div>
             <div class="cc-form-group" style="margin-bottom: 0;">
               <label class="cc-label" style="font-size: 10px;">Bar Disc %</label>
@@ -484,6 +1153,51 @@
       </div>
       <div class="cc-modal-footer">
         <button type="button" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-save-plan-config">Save Plan Configuration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: QUICK SCAN / ID LOOKUP
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-scan-lookup" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 460px; width: 95%;">
+      <div class="cc-modal-header">
+        <div>
+          <span class="cc-eyebrow">Front Desk Scanner</span>
+          <h3 class="cc-modal-title">Scan / Member ID Lookup</h3>
+        </div>
+        <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cc-modal-body">
+        <p class="cc-body-xs" style="color: var(--cc-text-muted); margin-bottom: 1rem;">
+          Scan the member's digital QR card or type their Member ID / phone number to access their profile and verify benefits.
+        </p>
+
+        <div class="cc-form-group">
+          <label class="cc-label" for="lookup-input">Enter Member ID, QR Payload or Phone</label>
+          <input type="text" id="lookup-input" class="cc-input" placeholder="e.g. CC-MEM-00101 or 9823411201" autofocus>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="cc-btn cc-btn-outline-gold cc-btn-sm" style="font-size: 11px; padding: 4px 10px;" onclick="simulateQuickScan('CC-MEM-00101')">
+            Scan Gold: David Vance
+          </button>
+          <button class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; padding: 4px 10px;" onclick="simulateQuickScan('CC-MEM-00102')">
+            Scan Silver: Elena Rostova
+          </button>
+          <button class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; padding: 4px 10px;" onclick="simulateQuickScan('CC-MEM-00103')">
+            Scan Junior: Leo Chen
+          </button>
+        </div>
+      </div>
+      <div class="cc-modal-footer">
+        <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Cancel</button>
+        <button type="button" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-submit-lookup">Open Profile</button>
       </div>
     </div>
   </div>
