@@ -7,6 +7,7 @@
   <meta name="description" content="Pro Shop equipment catalog and unified inventory shelf for Counter Walk-ins and Online orders with Click & Collect or Home Delivery.">
   <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/admin_auth.css">
   <style>
     .cc-product-grid {
       display: grid;
@@ -215,9 +216,9 @@
     </div>
 
     <!-- ==========================================
-         SHARED INVENTORY MANAGEMENT & RECENT ORDERS
+         SHARED INVENTORY MANAGEMENT & RECENT ORDERS (ADMIN ONLY)
          ========================================== -->
-    <div style="margin-top: 4.5rem;">
+    <div style="margin-top: 4.5rem;" class="cc-admin-only" id="admin-shop-orders-section">
       <div class="cc-showcase-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
         <div>
           <div class="cc-eyebrow">Shared Shelf Overview</div>
@@ -304,6 +305,7 @@
   <script src="js/club_data_store.js"></script>
   <script src="js/club_api.js"></script>
   <script src="js/design_system.js"></script>
+  <script src="js/admin_auth.js"></script>
   <script src="js/shop_manager.js"></script>
 </body>
 </html>

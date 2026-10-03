@@ -7,6 +7,7 @@
   <meta name="description" content="Front Desk &amp; Member Management Portal for Champions Club. Central identity and entitlement layer for Gold, Silver, and Junior memberships, real-time validity, dynamic court/shop/bar benefits, and 360° activity history.">
   <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/admin_auth.css">
   <style>
     /* ==========================================================================
        MEMBERSHIP SECTION ENHANCED STYLES
@@ -317,13 +318,13 @@
       </nav>
 
       <div class="cc-nav-actions">
-        <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-quick-scan">
+        <button class="cc-btn cc-btn-outline-gold cc-btn-sm cc-admin-only" id="btn-quick-scan">
           <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
           </svg>
           Scan / Lookup ID
         </button>
-        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-add-member">
+        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill cc-admin-only" id="btn-add-member">
           + New Member
         </button>
       </div>
@@ -344,7 +345,7 @@
         </p>
       </div>
 
-      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;" class="cc-admin-only">
         <button class="cc-btn cc-btn-secondary cc-btn-sm" id="btn-quick-renew-header">
           <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -361,8 +362,8 @@
       </div>
     </div>
 
-    <!-- 6 CLICKABLE KPI CARDS DECK -->
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.25rem;">
+    <!-- 6 CLICKABLE KPI CARDS DECK (ADMIN ONLY) -->
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.25rem;" class="cc-admin-only">
       <div class="cc-kpi-card is-active-kpi" id="kpi-total" data-filter="all">
         <div class="cc-kpi-label">Total Roster <span>👥</span></div>
         <div class="cc-kpi-value" id="stat-total" style="color: var(--cc-text-primary);">0</div>
@@ -494,9 +495,9 @@
     </div>
 
     <!-- ==========================================
-         EXPIRING SOON ALERT BANNER
+         EXPIRING SOON ALERT BANNER (ADMIN ONLY)
          ========================================== -->
-    <div id="expiring-alert-banner" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--cc-radius-md); padding: 1rem 1.25rem; margin-bottom: 1.75rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+    <div id="expiring-alert-banner" class="cc-admin-only" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--cc-radius-md); padding: 1rem 1.25rem; margin-bottom: 1.75rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
       <div style="display: flex; align-items: center; gap: 0.75rem;">
         <span style="font-size: 1.5rem;">⚠️</span>
         <div>
@@ -514,10 +515,25 @@
       </div>
     </div>
 
+    <!-- NON-ADMIN VISITOR PROMPT (SHOWN WHEN NOT LOGGED IN AS ADMIN) -->
+    <div class="cc-non-admin-only" style="margin-top: 2rem;">
+      <div class="cc-admin-gate-card" style="margin: 0 auto; padding: 2rem;">
+        <div style="font-size: 2.25rem; margin-bottom: 0.5rem;">🔒</div>
+        <span class="cc-eyebrow" style="color: var(--cc-gold-400);">STAFF &amp; FRONT DESK ACCESS</span>
+        <h3 class="cc-heading-3" style="margin: 4px 0 0.5rem;">Member Roster &amp; Entitlement Management</h3>
+        <p class="cc-body-xs" style="color: var(--cc-text-muted); margin-bottom: 1.25rem;">
+          Detailed member rosters, personal contact info, digital QR passes, front-desk renewals, and tier modifications are restricted to authorized club personnel.
+        </p>
+        <button type="button" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" onclick="ClubAdminAuth.openLoginModal()">
+          Sign In as Staff / Administrator
+        </button>
+      </div>
+    </div>
+
     <!-- ==========================================
-         SECTION 3: MEMBER TABLE & CONTROLS
+         SECTION 3: MEMBER TABLE & CONTROLS (ADMIN ONLY)
          ========================================== -->
-    <div class="cc-card cc-card-glass" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+    <div class="cc-card cc-card-glass cc-admin-only" style="margin-bottom: 1.5rem; padding: 1.25rem;">
       <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
         
         <!-- Search Bar -->
@@ -554,8 +570,8 @@
       </div>
     </div>
 
-    <!-- MEMBERS TABLE -->
-    <div class="cc-table-container">
+    <!-- MEMBERS TABLE (ADMIN ONLY) -->
+    <div class="cc-table-container cc-admin-only">
       <table class="cc-table" id="members-table">
         <thead>
           <tr>
@@ -576,7 +592,7 @@
     </div>
 
     <!-- Empty State for Search/Filter -->
-    <div id="members-empty-state" class="cc-empty-state" style="display: none; margin-top: 1.5rem;">
+    <div id="members-empty-state" class="cc-empty-state cc-admin-only" style="display: none; margin-top: 1.5rem;">
       <div class="cc-empty-icon-wrap">
         <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
@@ -1205,6 +1221,7 @@
   <script src="js/club_data_store.js"></script>
   <script src="js/club_api.js"></script>
   <script src="js/design_system.js"></script>
+  <script src="js/admin_auth.js"></script>
   <script src="js/membership_manager.js"></script>
 </body>
 </html>

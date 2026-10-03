@@ -1,0 +1,111 @@
+/* ==========================================================================
+   CHAMPIONS CLUB — Admin Authentication & Security Guard Styles
+   Ensures administrative controls, financial data, member rosters, and CRM
+   tools are visible strictly when an authorized Administrator is logged in.
+   ========================================================================== */
+
+/* Utility class for hiding unauthorized elements */
+.cc-hidden-unauthorized {
+  display: none !important;
+}
+
+/* Navbar Admin Active Badge */
+.cc-admin-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--cc-gold-500);
+  border-radius: var(--cc-radius-full);
+  padding: 4px 12px;
+  font-family: var(--cc-font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cc-gold-300);
+  box-shadow: 0 0 12px var(--cc-gold-glow);
+}
+
+.cc-admin-badge-pill .cc-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cc-gold-400);
+  box-shadow: 0 0 6px var(--cc-gold-400);
+}
+
+.cc-admin-signout-btn {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all var(--cc-transition-fast);
+}
+.cc-admin-signout-btn:hover {
+  background: var(--cc-crimson);
+  border-color: var(--cc-crimson);
+  color: #FFFFFF;
+}
+
+/* Admin Access Gate / Shield Card */
+.cc-admin-gate-card {
+  max-width: 540px;
+  margin: 3rem auto;
+  background: var(--cc-bg-surface-glass);
+  border: 1px solid var(--cc-border-highlight);
+  border-radius: var(--cc-radius-xl);
+  padding: 2.5rem;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cc-admin-gate-card::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, var(--cc-gold-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cc-admin-lock-icon-wrap {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.1);
+  border: 2px solid var(--cc-gold-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cc-gold-400);
+  box-shadow: 0 0 24px var(--cc-gold-glow);
+}
+
+.cc-admin-quick-login-btn {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px dashed var(--cc-gold-500);
+  color: var(--cc-gold-300);
+  padding: 8px 14px;
+  border-radius: var(--cc-radius-md);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--cc-transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1rem;
+}
+.cc-admin-quick-login-btn:hover {
+  background: var(--cc-gold-glow);
+  border-style: solid;
+  transform: translateY(-1px);
+}

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/admin_auth.css">
 </head>
 <body class="cc-bg-base">
 
@@ -29,13 +30,61 @@
       <nav>
         <ul class="cc-nav-links">
           <li><a href="index.html" class="cc-nav-link">Home</a></li>
+          <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
+          <li><a href="shop.html" class="cc-nav-link">Shop</a></li>
+          <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
+          <li><a href="crm.html" class="cc-nav-link">CRM</a></li>
           <li><a href="members.html" class="cc-nav-link">Roster (Admin)</a></li>
           <li><a href="portal.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Member Portal</a></li>
           <li><a href="dashboard.html" class="cc-nav-link is-active cc-text-gold" style="font-weight: 700;" aria-current="page">Admin Dashboard</a></li>
         </ul>
       </nav>
+
+      <div class="cc-nav-actions">
+        <!-- Injected dynamically by ClubAdminAuth -->
+      </div>
     </div>
   </header>
+
+  <!-- ACCESS RESTRICTED GATE (SHOWN WHEN NOT LOGGED IN AS ADMIN) -->
+  <div class="cc-container" id="cc-admin-access-gate" style="display: none; padding: 4rem 1rem;">
+    <div class="cc-admin-gate-card">
+      <div class="cc-admin-lock-icon-wrap">
+        <svg width="36" height="36" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+      </div>
+      <span class="cc-eyebrow" style="color: var(--cc-gold-400);">ACCESS RESTRICTED</span>
+      <h2 class="cc-h2" style="margin-top: 4px; margin-bottom: 0.5rem;">Administrator Authentication Required</h2>
+      <p class="cc-body-sm" style="color: var(--cc-text-secondary); margin-bottom: 1.5rem;">
+        The Executive &amp; Operations Dashboard contains real-time financial ledgers, member statistics, and club management controls. Please sign in with administrator credentials to unlock.
+      </p>
+
+      <form onsubmit="event.preventDefault(); ClubAdminAuth.login(document.getElementById('gate-admin-user').value, document.getElementById('gate-admin-pass').value);" style="text-align: left;">
+        <div class="cc-form-group">
+          <label class="cc-label" for="gate-admin-user">Administrator Username</label>
+          <input type="text" id="gate-admin-user" class="cc-input" placeholder="admin" value="admin" required>
+        </div>
+        <div class="cc-form-group">
+          <label class="cc-label" for="gate-admin-pass">Password</label>
+          <input type="password" id="gate-admin-pass" class="cc-input" placeholder="admin" value="admin" required>
+        </div>
+        <button type="submit" class="cc-btn cc-btn-primary cc-btn-pill" style="width: 100%; margin-top: 0.5rem;">
+          Authenticate as Administrator
+        </button>
+      </form>
+
+      <div style="margin-top: 1.5rem; border-top: 1px solid var(--cc-border-medium); padding-top: 1rem;">
+        <button type="button" class="cc-admin-quick-login-btn" onclick="ClubAdminAuth.quickDemoLogin()">
+          ⚡ 1-Click Quick Demo Admin Sign In
+        </button>
+        <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 6px;">Default credentials: admin / admin</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROTECTED ADMINISTRATIVE CONTENT -->
+  <div id="cc-admin-protected-content">
 
   <!-- Hero Header / Context Ribbon -->
   <section class="cc-dashboard-hero">
@@ -361,6 +410,9 @@
     </div>
   </div>
 
+  </div>
+  <!-- End of #cc-admin-protected-content -->
+
   <!-- Footer -->
   <footer class="cc-footer">
     <div class="cc-container">
@@ -383,6 +435,7 @@
   <script src="js/club_data_store.js"></script>
   <script src="js/club_api.js"></script>
   <script src="js/design_system.js"></script>
+  <script src="js/admin_auth.js"></script>
   <script src="js/dashboard_manager.js"></script>
 </body>
 </html>

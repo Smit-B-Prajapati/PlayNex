@@ -7,6 +7,7 @@
   <meta name="description" content="Visitor Enquiry Capture, Staff Assignment, Quotation, Follow-up, and New Member Conversion Pipeline.">
   <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/admin_auth.css">
   <style>
     .cc-crm-pipeline {
       display: grid;
@@ -94,12 +95,51 @@
       </nav>
 
       <div class="cc-nav-actions">
-        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-open-enquiry-modal">
+        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill cc-admin-only" id="btn-open-enquiry-modal">
           + New Visitor Enquiry
         </button>
       </div>
     </div>
   </header>
+
+  <!-- ACCESS RESTRICTED GATE -->
+  <div class="cc-container" id="cc-admin-access-gate" style="display: none; padding: 4rem 1rem;">
+    <div class="cc-admin-gate-card">
+      <div class="cc-admin-lock-icon-wrap">
+        <svg width="36" height="36" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+      </div>
+      <span class="cc-eyebrow" style="color: var(--cc-gold-400);">SECURITY CLEARANCE REQUIRED</span>
+      <h2 class="cc-h2" style="margin-top: 4px; margin-bottom: 0.5rem;">Staff &amp; CRM Authentication</h2>
+      <p class="cc-body-sm" style="color: var(--cc-text-secondary); margin-bottom: 1.5rem;">
+        Confidential visitor enquiry logs, quotations, follow-up history, and member conversion tools are restricted to authorized club staff.
+      </p>
+
+      <form onsubmit="event.preventDefault(); ClubAdminAuth.login(document.getElementById('gate-crm-user').value, document.getElementById('gate-crm-pass').value);" style="text-align: left;">
+        <div class="cc-form-group">
+          <label class="cc-label" for="gate-crm-user">Staff / Admin Username</label>
+          <input type="text" id="gate-crm-user" class="cc-input" placeholder="admin" value="admin" required>
+        </div>
+        <div class="cc-form-group">
+          <label class="cc-label" for="gate-crm-pass">Password</label>
+          <input type="password" id="gate-crm-pass" class="cc-input" placeholder="admin" value="admin" required>
+        </div>
+        <button type="submit" class="cc-btn cc-btn-primary cc-btn-pill" style="width: 100%; margin-top: 0.5rem;">
+          Authenticate as Staff / Admin
+        </button>
+      </form>
+
+      <div style="margin-top: 1.5rem; border-top: 1px solid var(--cc-border-medium); padding-top: 1rem;">
+        <button type="button" class="cc-admin-quick-login-btn" onclick="ClubAdminAuth.quickDemoLogin()">
+          ⚡ 1-Click Quick Demo Admin Sign In
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROTECTED CRM PIPELINE CONTENT -->
+  <div id="cc-admin-protected-content">
 
   <main class="cc-container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
 
@@ -343,10 +383,13 @@
       </div>
     </div>
   </div>
+  </div>
+  <!-- End of #cc-admin-protected-content -->
 
   <script src="js/club_data_store.js"></script>
   <script src="js/club_api.js"></script>
   <script src="js/design_system.js"></script>
+  <script src="js/admin_auth.js"></script>
   <script src="js/crm_manager.js"></script>
 </body>
 </html>

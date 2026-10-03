@@ -7,6 +7,7 @@
   <meta name="description" content="Championship Tennis, Cricket, and Badminton court booking calendar with real-time slot availability, member rate engine, and overlap lock.">
   <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/admin_auth.css">
   <style>
     .cc-slot-grid {
       display: grid;
@@ -296,9 +297,9 @@
     </div>
 
     <!-- ==========================================
-         ADMIN / FRONT DESK BOOKING LIST
+         ADMIN / FRONT DESK BOOKING LIST (ADMIN ONLY)
          ========================================== -->
-    <div style="margin-top: 4rem;">
+    <div style="margin-top: 4rem;" class="cc-admin-only" id="admin-bookings-section">
       <div class="cc-showcase-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
         <div>
           <div class="cc-eyebrow">Front Desk Roster</div>
@@ -390,6 +391,7 @@
   <script src="js/club_data_store.js"></script>
   <script src="js/club_api.js"></script>
   <script src="js/design_system.js"></script>
+  <script src="js/admin_auth.js"></script>
   <script src="js/booking_manager.js"></script>
 </body>
 </html>
