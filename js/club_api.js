@@ -314,7 +314,12 @@ const ClubAPI = (function() {
     // 5. CRM APIs
     async submitEnquiry(enquiryData) {
       const res = await rpc('/champions_club/enquiry/submit', enquiryData, { showLoader: true, loaderMsg: 'Registering CRM Lead...' });
-      if (res && res.success) {
+      if (res && res.success && res.reference) {
+        if (window.ClubDataStore && res.lead) {
+          const leads = window.ClubDataStore.getLeads();
+          leads.unshift(res.lead);
+          window.ClubDataStore.saveLeads(leads);
+        }
         showSuccess(`Enquiry registered! Reference: ${res.reference}`);
         return res;
       }

@@ -195,6 +195,7 @@ async function renderPipeline() {
 
     const card = document.createElement('div');
     card.className = `cc-lead-card ${lead.stage === 'converted' ? 'is-converted' : ''}`;
+    card.setAttribute('data-lead-id', lead.id);
     card.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <span class="cc-text-mono" style="font-size: 11px; font-weight: 700; color: var(--cc-gold-400);">${lead.id}</span>
@@ -870,10 +871,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Auto-trigger if ref query param is provided
     const requestedRef = urlParams.get('ref');
     if (requestedRef) {
-      trackInput.value = requestedRef;
+      const cleanRef = decodeURIComponent(requestedRef).trim();
+      trackInput.value = cleanRef;
       performTrack();
     }
   }
+
+  // Auto-focus and open lead in Admin View if ref query param is present
+  const requestedRef = urlParams.get('ref');
+  if (requestedRef) {
+    const cleanRef = decodeURIComponent(requestedRef).trim();
+    const normalizedRef = cleanRef.replace(/[_\s]+/g, '-').toLowerCase();
+    
+    setTimeout(async () => {
+      await fetchLeads();
+      const matchedLead = leads.find(l => {
+        const lid = (l.id || '').toLowerCase().replace(/[_\s]+/g, '-');
+        const lraw = String(l.rawId || '').toLowerCase();
+        const lphone = (l.phone || '').replace(/\D/g, '');
+        const cleanDigits = cleanRef.replace(/\D/g, '');
+        return lid === normalizedRef ||
+               lid.includes(normalizedRef) ||
+               lraw === normalizedRef ||
+               (cleanDigits.length >= 2 && lid.endsWith(cleanDigits)) ||
+               (cleanDigits.length >= 4 && lphone.includes(cleanDigits));
+      });
+
+      if (matchedLead) {
+        const isAdmin = window.ClubAdminAuth && window.ClubAdminAuth.isAdmin && window.ClubAdminAuth.isAdmin();
+        if (isAdmin) {
+          openLeadModal(matchedLead.id);
+          const cardEl = document.querySelector(`[data-lead-id="${matchedLead.id}"]`);
+          if (cardEl) {
+            cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            cardEl.style.boxShadow = '0 0 0 2px var(--cc-gold-400), 0 0 16px rgba(212,175,55,0.4)';
+          }
+        }
+      }
+    }, 350);
 
   // 4. View Switcher Helper for Staff / Public
   const btnToggleCrm = document.getElementById('btn-toggle-crm-view');

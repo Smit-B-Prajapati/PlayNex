@@ -10,9 +10,21 @@
       "endDate": "2026-12-31",
       "state": "active",
       "history": [
-        { "timestamp": "2026-01-01 10:00", "type": "signup", "desc": "Enrolled under Gold Plan (1 Year Validity)" },
-        { "timestamp": "2026-02-14 18:30", "type": "checkin", "desc": "Front desk check-in for Tennis Court 1" },
-        { "timestamp": "2026-03-20 19:15", "type": "checkin", "desc": "Front desk check-in for Friday Social Play" }
+        {
+          "timestamp": "2026-01-01 10:00",
+          "type": "signup",
+          "desc": "Enrolled under Gold Plan (1 Year Validity)"
+        },
+        {
+          "timestamp": "2026-02-14 18:30",
+          "type": "checkin",
+          "desc": "Front desk check-in for Tennis Court 1"
+        },
+        {
+          "timestamp": "2026-03-20 19:15",
+          "type": "checkin",
+          "desc": "Front desk check-in for Friday Social Play"
+        }
       ],
       "notes": "Prefers clay courts on weekend mornings."
     },
@@ -26,8 +38,16 @@
       "endDate": "2026-10-25",
       "state": "active",
       "history": [
-        { "timestamp": "2025-11-01 11:30", "type": "signup", "desc": "Enrolled under Silver Plan" },
-        { "timestamp": "2026-05-10 17:00", "type": "checkin", "desc": "Front desk check-in for Cricket practice" }
+        {
+          "timestamp": "2025-11-01 11:30",
+          "type": "signup",
+          "desc": "Enrolled under Silver Plan"
+        },
+        {
+          "timestamp": "2026-05-10 17:00",
+          "type": "checkin",
+          "desc": "Front desk check-in for Cricket practice"
+        }
       ],
       "notes": "Member requested notification upon expiry."
     },
@@ -41,8 +61,16 @@
       "endDate": "2027-02-28",
       "state": "active",
       "history": [
-        { "timestamp": "2026-03-01 14:00", "type": "signup", "desc": "Enrolled under Junior Plan (Under 18)" },
-        { "timestamp": "2026-06-12 16:00", "type": "checkin", "desc": "Front desk check-in for Badminton session" }
+        {
+          "timestamp": "2026-03-01 14:00",
+          "type": "signup",
+          "desc": "Enrolled under Junior Plan (Under 18)"
+        },
+        {
+          "timestamp": "2026-06-12 16:00",
+          "type": "checkin",
+          "desc": "Front desk check-in for Badminton session"
+        }
       ],
       "notes": "Parent contact: Chen Wei (+91 97123 90800)."
     },
@@ -56,8 +84,16 @@
       "endDate": "2026-08-01",
       "state": "expired",
       "history": [
-        { "timestamp": "2025-08-01 09:00", "type": "signup", "desc": "Enrolled under Silver Plan" },
-        { "timestamp": "2026-08-01 00:00", "type": "expiry", "desc": "Validity expired on August 1, 2026" }
+        {
+          "timestamp": "2025-08-01 09:00",
+          "type": "signup",
+          "desc": "Enrolled under Silver Plan"
+        },
+        {
+          "timestamp": "2026-08-01 00:00",
+          "type": "expiry",
+          "desc": "Validity expired on August 1, 2026"
+        }
       ],
       "notes": "Renewal follow-up pending."
     },
@@ -71,7 +107,11 @@
       "endDate": "2027-10-03",
       "state": "active",
       "history": [
-        { "timestamp": "2026-10-03 10:00", "type": "signup", "desc": "Enrolled under Gold Plan (Converted from CRM Lead CC-ENQ-0001)" }
+        {
+          "timestamp": "2026-10-03 10:00",
+          "type": "signup",
+          "desc": "Enrolled under Gold Plan (Converted from CRM Lead CC-ENQ-0001)"
+        }
       ],
       "notes": "Weekend clay court enthusiast."
     },
@@ -85,7 +125,11 @@
       "endDate": "2027-10-03",
       "state": "active",
       "history": [
-        { "timestamp": "2026-10-03 11:30", "type": "signup", "desc": "Enrolled under Junior Plan (Converted from CRM Lead CC-ENQ-0003)" }
+        {
+          "timestamp": "2026-10-03 11:30",
+          "type": "signup",
+          "desc": "Enrolled under Junior Plan (Converted from CRM Lead CC-ENQ-0003)"
+        }
       ],
       "notes": "Youth cricket team candidate."
     },
@@ -99,7 +143,11 @@
       "endDate": "2027-10-03",
       "state": "active",
       "history": [
-        { "timestamp": "2026-10-03 14:00", "type": "signup", "desc": "Enrolled under Junior Plan (Front Desk Enrollment)" }
+        {
+          "timestamp": "2026-10-03 14:00",
+          "type": "signup",
+          "desc": "Enrolled under Junior Plan (Front Desk Enrollment)"
+        }
       ],
       "notes": "Enrolled at front desk."
     }
@@ -116,7 +164,7 @@
       "bookingType": "member",
       "memberId": "CC-MEM-00101",
       "playerName": "David Vance (Gold)",
-      "rateApplied": "₹ 0.00 (Free)",
+      "rateApplied": "\u20b9 0.00 (Free)",
       "fee": 0.0,
       "isSocial": false,
       "state": "confirmed"
@@ -132,7 +180,7 @@
       "bookingType": "walkin",
       "memberId": null,
       "playerName": "Rahul Sharma (Walk-in)",
-      "rateApplied": "₹ 600.00",
+      "rateApplied": "\u20b9 600.00",
       "fee": 600.0,
       "isSocial": false,
       "state": "confirmed"
@@ -216,7 +264,13 @@
       "channel": "counter",
       "customer": "Walk-in Guest",
       "fulfillment": "Immediate Handover",
-      "items": [{ "name": "Tournament Tennis Balls (Can of 3)", "qty": 2, "price": 450 }],
+      "items": [
+        {
+          "name": "Tournament Tennis Balls (Can of 3)",
+          "qty": 2,
+          "price": 450
+        }
+      ],
       "total": 900,
       "state": "completed",
       "date": "2026-10-03"
@@ -226,17 +280,43 @@
       "channel": "online",
       "customer": "David Vance (Gold)",
       "fulfillment": "Collect at Club (Click & Collect)",
-      "items": [{ "name": "Pro Tour Carbon Tennis Racket", "qty": 1, "price": 8500 }],
+      "items": [
+        {
+          "name": "Pro Tour Carbon Tennis Racket",
+          "qty": 1,
+          "price": 8500
+        }
+      ],
       "total": 8500,
       "state": "confirmed",
       "date": "2026-10-03"
     }
   ],
   "cc_bar_tables": [
-    { "id": "t1", "name": "Courtside Table 1", "state": "occupied", "currentTab": "CC-TAB-0001" },
-    { "id": "t2", "name": "Courtside Table 2", "state": "available", "currentTab": null },
-    { "id": "t3", "name": "Veranda Table 3", "state": "available", "currentTab": null },
-    { "id": "t4", "name": "Lounge Booth 4", "state": "available", "currentTab": null }
+    {
+      "id": "t1",
+      "name": "Courtside Table 1",
+      "state": "occupied",
+      "currentTab": "CC-TAB-0001"
+    },
+    {
+      "id": "t2",
+      "name": "Courtside Table 2",
+      "state": "available",
+      "currentTab": null
+    },
+    {
+      "id": "t3",
+      "name": "Veranda Table 3",
+      "state": "available",
+      "currentTab": null
+    },
+    {
+      "id": "t4",
+      "name": "Lounge Booth 4",
+      "state": "available",
+      "currentTab": null
+    }
   ],
   "cc_bar_tabs": [
     {
@@ -247,7 +327,11 @@
       "tableName": "Courtside Table 1",
       "discountPercent": 15,
       "items": [
-        { "name": "[DEMO DATA] Post-Match Whey Protein Shake", "qty": 2, "price": 280 }
+        {
+          "name": "[DEMO DATA] Post-Match Whey Protein Shake",
+          "qty": 2,
+          "price": 280
+        }
       ],
       "subtotal": 560,
       "discountAmount": 84,
@@ -262,74 +346,190 @@
   },
   "cc_leads": [
     {
+      "id": "CC-ENQ-0039",
+      "rawId": "CC-ENQ-0039",
+      "name": "Test Visitor",
+      "phone": "+91 99999 88888",
+      "email": "test@example.com",
+      "source": "website",
+      "plan": "gold",
+      "message": "Testing enquiry",
+      "stage": "new",
+      "staff": "Pooja Patel (Membership Advisor)",
+      "quoteSent": false,
+      "quoteAmount": 24000,
+      "followups": [
+        {
+          "time": "2026-10-03 20:40",
+          "note": "Website enquiry registered from website. Stage: New Enquiry."
+        }
+      ],
+      "memberId": null
+    },
+    {
+      "id": "CC-ENQ-0038",
+      "rawId": "CC-ENQ-0038",
+      "name": "Rahul Sharma",
+      "phone": "+91 98112 34567",
+      "email": "rahul.sharma@example.com",
+      "source": "website",
+      "plan": "gold",
+      "message": "Interested in Gold membership privileges, tennis court reservations and personal coaching trial.",
+      "stage": "new",
+      "staff": "Pooja Patel (Membership Advisor)",
+      "quoteSent": false,
+      "quoteAmount": 24000,
+      "followups": [
+        {
+          "time": "2026-10-03 20:40",
+          "note": "Website enquiry registered from public portal. Stage: New Enquiry."
+        }
+      ],
+      "memberId": null
+    },
+    {
+      "id": "CC-ENQ-0005",
+      "rawId": "CC-ENQ-0005",
+      "name": "Meera Nambiar",
+      "phone": "+91 98765 43210",
+      "email": "meera.n@example.com",
+      "source": "referral",
+      "plan": "silver",
+      "message": "Referred by Rahul Sharma. Interested in badminton slot bookings and fitness center.",
+      "stage": "followup",
+      "staff": "Rohan Verma (Front Desk Lead)",
+      "quoteSent": false,
+      "quoteAmount": 14000,
+      "followups": [
+        {
+          "time": "2026-10-02 11:30",
+          "note": "Spoke with visitor; scheduled club tour and badminton trial session."
+        }
+      ],
+      "memberId": null
+    },
+    {
+      "id": "CC-ENQ-0006",
+      "rawId": "CC-ENQ-0006",
+      "name": "Rohan Kapoor",
+      "phone": "+91 99123 45678",
+      "email": "rohan.k@example.com",
+      "source": "walkin",
+      "plan": "gold",
+      "message": "Completed club tour; requested official Gold tier proposal with court benefits.",
+      "stage": "quote",
+      "staff": "Pooja Patel (Membership Advisor)",
+      "quoteSent": true,
+      "quoteAmount": 24000,
+      "followups": [
+        {
+          "time": "2026-10-02 14:00",
+          "note": "Visitor completed facility tour."
+        },
+        {
+          "time": "2026-10-03 10:15",
+          "note": "Official proposal of \u20b9 24,000 sent via WhatsApp and email."
+        }
+      ],
+      "memberId": null
+    },
+    {
       "id": "CC-ENQ-0001",
+      "rawId": "CC-ENQ-0001",
       "name": "Siddharth Rao",
       "phone": "+91 99001 22334",
       "email": "siddharth.rao@example.com",
+      "source": "website",
       "plan": "gold",
-      "sport": "tennis",
       "message": "Interested in Gold membership and court availability for weekend tennis.",
       "stage": "converted",
       "staff": "Pooja Patel (Membership Advisor)",
       "quoteSent": true,
       "quoteAmount": 24000,
       "followups": [
-        { "time": "2026-10-03 09:30", "note": "Website form submitted from public landing page." },
-        { "time": "2026-10-03 10:00", "note": "Quote accepted; converted to member CC-MEM-00105." }
+        {
+          "time": "2026-10-03 09:30",
+          "note": "Website form submitted from public landing page."
+        },
+        {
+          "time": "2026-10-03 10:00",
+          "note": "Quote accepted; converted to member CC-MEM-00105."
+        }
       ],
       "memberId": "CC-MEM-00105"
     },
     {
       "id": "CC-ENQ-0002",
+      "rawId": "CC-ENQ-0002",
       "name": "Ananya Deshmukh",
       "phone": "+91 98210 44556",
       "email": "ananya.d@example.com",
+      "source": "website",
       "plan": "silver",
-      "sport": "badminton",
       "message": "Inquiring about badminton court slots after office hours (7 PM).",
       "stage": "contacted",
       "staff": "Rohan Verma (Front Desk Lead)",
       "quoteSent": false,
       "quoteAmount": 14000,
       "followups": [
-        { "time": "2026-10-02 16:45", "note": "Phone call: Discussed Silver plan entitlements and weekday slot availability." }
+        {
+          "time": "2026-10-02 16:45",
+          "note": "Phone call: Discussed Silver plan entitlements and weekday slot availability."
+        }
       ],
       "memberId": null
     },
     {
       "id": "CC-ENQ-0003",
+      "rawId": "CC-ENQ-0003",
       "name": "Vikramaditya Bose",
       "phone": "+91 97110 33445",
       "email": "vikram.bose@example.com",
+      "source": "website",
       "plan": "junior",
-      "sport": "cricket",
       "message": "Looking for youth cricket net training for 15-year old son.",
       "stage": "converted",
       "staff": "Karan Mehra (Club Manager)",
       "quoteSent": true,
       "quoteAmount": 8000,
       "followups": [
-        { "time": "2026-10-01 11:00", "note": "Spoke with parent; sent Junior membership quote (₹ 8,000/yr)." },
-        { "time": "2026-10-02 18:00", "note": "Parent completed club tour; scheduled trial coaching session." },
-        { "time": "2026-10-03 11:30", "note": "Converted to Junior member CC-MEM-00106." }
+        {
+          "time": "2026-10-01 11:00",
+          "note": "Spoke with parent; sent Junior membership quote (\u20b9 8,000/yr)."
+        },
+        {
+          "time": "2026-10-02 18:00",
+          "note": "Parent completed club tour; scheduled trial coaching session."
+        },
+        {
+          "time": "2026-10-03 11:30",
+          "note": "Converted to Junior member CC-MEM-00106."
+        }
       ],
       "memberId": "CC-MEM-00106"
     },
     {
       "id": "CC-ENQ-0004",
+      "rawId": "CC-ENQ-0004",
       "name": "Natasha Kapoor",
       "phone": "+91 98450 99887",
       "email": "natasha.k@example.com",
+      "source": "website",
       "plan": "gold",
-      "sport": "tennis",
       "message": "Enrolled after court trial session.",
       "stage": "converted",
       "staff": "Pooja Patel (Membership Advisor)",
       "quoteSent": true,
       "quoteAmount": 24000,
       "followups": [
-        { "time": "2026-09-28 14:00", "note": "Initial enquiry regarding tennis clay courts." },
-        { "time": "2026-09-30 11:30", "note": "Quote accepted; membership profile created." }
+        {
+          "time": "2026-09-28 14:00",
+          "note": "Initial enquiry regarding tennis clay courts."
+        },
+        {
+          "time": "2026-09-30 11:30",
+          "note": "Quote accepted; membership profile created."
+        }
       ],
       "memberId": "CC-MEM-00105"
     }
