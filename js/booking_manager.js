@@ -60,13 +60,12 @@ let selectedDate = '2026-10-03';
 let selectedSlotTime = '18:00';
 let currentSportFilter = 'all';
 
-// Generate 30-minute intervals from 06:00 to 22:00
+// Generate 1-hour dedicated slots from 06:00 to 24:00 (midnight)
 function generateTimeSlots() {
   const slots = [];
-  for (let hour = 6; hour <= 21; hour++) {
+  for (let hour = 6; hour <= 23; hour++) {
     const hh = String(hour).padStart(2, '0');
     slots.push(`${hh}:00`);
-    slots.push(`${hh}:30`);
   }
   return slots;
 }
@@ -79,7 +78,8 @@ function timeToMinutes(timeStr) {
 function minutesToTime(mins) {
   const h = Math.floor(mins / 60);
   const m = mins % 60;
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  if (h === 24 && m === 0) return '00:00';
+  return `${String(h % 24).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
 // Checks if a candidate 1-hour slot (startMins to startMins + 60) overlaps with an existing booking
@@ -89,8 +89,9 @@ function checkSlotOverlap(courtId, date, slotTimeStr) {
 
   for (const b of bookingsData) {
     if (b.courtId === courtId && b.date === date && b.state === 'confirmed' && !b.isSocial) {
-      const bStart = timeToMinutes(b.startTime);
-      const bEnd = timeToMinutes(b.endTime);
+      let bStart = timeToMinutes(b.startTime);
+      let bEnd = timeToMinutes(b.endTime);
+      if (bEnd === 0 && b.endTime === '00:00') bEnd = 1440;
 
       // Overlap formula: start < bEnd AND end > bStart
       if (startMins < bEnd && endMins > bStart) {
