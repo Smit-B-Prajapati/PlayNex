@@ -99,11 +99,16 @@ access_club_enquiry_manager,club.enquiry.manager,model_club_enquiry,group_club_m
 access_club_enquiry_admin,club.enquiry.admin,model_club_enquiry,group_club_administrator,1,1,1,1
 
 # ==============================================================================
-# 10. EMPLOYEES & LEAVE REQUESTS
+# 10. EMPLOYEES, SCHEDULES & LEAVE REQUESTS
 # ==============================================================================
 access_club_employee_staff,club.employee.staff,model_club_employee,group_club_front_desk,1,0,0,0
 access_club_employee_manager,club.employee.manager,model_club_employee,group_club_manager,1,1,1,1
 access_club_employee_admin,club.employee.admin,model_club_employee,group_club_administrator,1,1,1,1
+
+access_club_staff_schedule_frontdesk,club.staff.schedule.frontdesk,model_club_staff_schedule,group_club_front_desk,1,0,0,0
+access_club_staff_schedule_bar,club.staff.schedule.bar,model_club_staff_schedule,group_club_bar_staff,1,0,0,0
+access_club_staff_schedule_manager,club.staff.schedule.manager,model_club_staff_schedule,group_club_manager,1,1,1,1
+access_club_staff_schedule_admin,club.staff.schedule.admin,model_club_staff_schedule,group_club_administrator,1,1,1,1
 
 access_club_employee_leave_staff,club.employee.leave.staff,model_club_employee_leave,group_club_front_desk,1,1,1,0
 access_club_employee_leave_manager,club.employee.leave.manager,model_club_employee_leave,group_club_manager,1,1,1,1

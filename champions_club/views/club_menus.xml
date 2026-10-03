@@ -103,6 +103,30 @@
               action="action_club_member"
               sequence="10"/>
 
+    <!-- Staff & Operations HR Category Menu -->
+    <menuitem id="menu_club_staff_root"
+              name="Staff &amp; Operations"
+              parent="menu_champions_club_root"
+              sequence="12"/>
+
+    <menuitem id="menu_club_staff_roster"
+              name="Staff Roster &amp; Profiles"
+              parent="menu_club_staff_root"
+              action="action_club_employee"
+              sequence="10"/>
+
+    <menuitem id="menu_club_staff_schedules"
+              name="Duty Schedules &amp; Shifts"
+              parent="menu_club_staff_root"
+              action="action_club_staff_schedule"
+              sequence="20"/>
+
+    <menuitem id="menu_club_staff_leaves"
+              name="Leave Requests &amp; Approvals"
+              parent="menu_club_staff_root"
+              action="action_club_employee_leave"
+              sequence="30"/>
+
     <!-- Configuration Menu -->
     <menuitem id="menu_club_config"
               name="Configuration"

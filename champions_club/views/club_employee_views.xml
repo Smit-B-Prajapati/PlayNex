@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =========================================================================
+         1. STAFF / EMPLOYEE VIEWS
+         ========================================================================= -->
+    
+    <!-- Tree View -->
+    <record id="view_club_employee_tree" model="ir.ui.view">
+        <field name="name">club.employee.tree</field>
+        <field name="model">club.employee</field>
+        <field name="arch" type="xml">
+            <tree string="Club Staff Roster" decoration-muted="not active">
+                <field name="employee_code"/>
+                <field name="name"/>
+                <field name="role" widget="badge" 
+                       decoration-info="role == 'front_desk'"
+                       decoration-warning="role == 'bar_cafe'"
+                       decoration-success="role == 'coach'"
+                       decoration-primary="role == 'management'"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="user_id"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_club_employee_form" model="ir.ui.view">
+        <field name="name">club.employee.form</field>
+        <field name="model">club.employee</field>
+        <field name="arch" type="xml">
+            <form string="Staff Member">
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Staff Member</span>
+                        <h1>
+                            <field name="name" placeholder="Full Name e.g. Pooja Patel"/>
+                        </h1>
+                        <h3>
+                            <field name="employee_code"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group string="Role &amp; Assignment">
+                            <field name="role"/>
+                            <field name="user_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Contact Details">
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Operational Schedules / Shifts" name="schedules">
+                            <field name="schedule_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="shift_date"/>
+                                    <field name="operation_type"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'completed'"
+                                           decoration-info="state == 'active'"
+                                           decoration-warning="state == 'confirmed'"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Leave History &amp; Requests" name="leaves">
+                            <field name="leave_ids">
+                                <tree editable="bottom">
+                                    <field name="leave_type"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="reason"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'approved'"
+                                           decoration-danger="state == 'refused'"
+                                           decoration-warning="state == 'requested'"/>
+                                    <field name="approver_id"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Bar Shifts &amp; Till Collections" name="bar_shifts">
+                            <field name="bar_shift_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                    <field name="total_revenue" widget="monetary"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'closed'"
+                                           decoration-info="state == 'active'"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Internal Notes" name="notes">
+                            <field name="notes" placeholder="Staff duties, certifications, shift preferences..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_club_employee" model="ir.actions.act_window">
+        <field name="name">Staff Roster &amp; Employees</field>
+        <field name="res_model">club.employee</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register Champions Club staff members and assign their roles.
+            </p>
+        </field>
+    </record>
+
+    <!-- =========================================================================
+         2. STAFF OPERATIONAL SCHEDULES / SHIFTS
+         ========================================================================= -->
+
+    <!-- Schedule Tree View -->
+    <record id="view_club_staff_schedule_tree" model="ir.ui.view">
+        <field name="name">club.staff.schedule.tree</field>
+        <field name="model">club.staff.schedule</field>
+        <field name="arch" type="xml">
+            <tree string="Staff Duty Schedules" decoration-info="state == 'active'" decoration-success="state == 'completed'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="operation_type"/>
+                <field name="shift_date"/>
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'completed'"
+                       decoration-info="state == 'active'"
+                       decoration-warning="state == 'confirmed'"
+                       decoration-muted="state == 'cancelled'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Schedule Form View -->
+    <record id="view_club_staff_schedule_form" model="ir.ui.view">
+        <field name="name">club.staff.schedule.form</field>
+        <field name="model">club.staff.schedule</field>
+        <field name="arch" type="xml">
+            <form string="Duty Schedule">
+                <header>
+                    <button name="action_start_shift" string="Start Duty" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_complete_shift" string="Complete Shift" type="object" class="oe_highlight" invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,active,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Staff Shift Assignment</span>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Staff &amp; Operation">
+                            <field name="employee_id"/>
+                            <field name="operation_type"/>
+                        </group>
+                        <group string="Shift Timing">
+                            <field name="shift_date"/>
+                            <field name="start_time"/>
+                            <field name="end_time"/>
+                        </group>
+                    </group>
+                    <group string="Handover &amp; Shift Notes">
+                        <field name="notes" nolabel="1" placeholder="Front desk key handover, till float count, court maintenance status..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_club_staff_schedule" model="ir.actions.act_window">
+        <field name="name">Duty Schedules &amp; Shifts</field>
+        <field name="res_model">club.staff.schedule</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- =========================================================================
+         3. LEAVE REQUESTS & APPROVALS
+         ========================================================================= -->
+
+    <!-- Leave Tree View -->
+    <record id="view_club_employee_leave_tree" model="ir.ui.view">
+        <field name="name">club.employee.leave.tree</field>
+        <field name="model">club.employee.leave</field>
+        <field name="arch" type="xml">
+            <tree string="Staff Leave Requests" decoration-warning="state == 'requested'" decoration-success="state == 'approved'" decoration-danger="state == 'refused'">
+                <field name="employee_id"/>
+                <field name="leave_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="reason"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'refused'"
+                       decoration-warning="state == 'requested'"/>
+                <field name="approver_id"/>
+                <field name="approval_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Leave Form View -->
+    <record id="view_club_employee_leave_form" model="ir.ui.view">
+        <field name="name">club.employee.leave.form</field>
+        <field name="model">club.employee.leave</field>
+        <field name="arch" type="xml">
+            <form string="Leave Request">
+                <header>
+                    <button name="action_submit" string="Submit for Approval" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve Leave" type="object" class="btn-success" groups="champions_club.group_club_manager,champions_club.group_club_administrator" invisible="state != 'requested'"/>
+                    <button name="action_refuse" string="Refuse Leave" type="object" class="btn-danger" groups="champions_club.group_club_manager,champions_club.group_club_administrator" invisible="state != 'requested'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,requested,approved,refused"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Staff Information">
+                            <field name="employee_id"/>
+                            <field name="leave_type"/>
+                        </group>
+                        <group string="Leave Duration">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                    </group>
+                    <group string="Reason for Leave">
+                        <field name="reason" nolabel="1" placeholder="State reason for absence..."/>
+                    </group>
+                    <group string="Approval Details" invisible="state not in ('approved', 'refused')">
+                        <group>
+                            <field name="approver_id"/>
+                            <field name="approval_date"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_club_employee_leave" model="ir.actions.act_window">
+        <field name="name">Staff Leave Requests</field>
+        <field name="res_model">club.employee.leave</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

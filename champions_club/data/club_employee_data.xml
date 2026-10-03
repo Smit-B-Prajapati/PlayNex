@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- =====================================================================
+             1. SEQUENCES FOR EMPLOYEES AND DUTY SCHEDULES
+             ===================================================================== -->
+        <record id="seq_club_employee" model="ir.sequence">
+            <field name="name">Club Employee Code</field>
+            <field name="code">club.employee</field>
+            <field name="prefix">CC-EMP-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_club_staff_schedule" model="ir.sequence">
+            <field name="name">Club Staff Schedule Reference</field>
+            <field name="code">club.staff.schedule</field>
+            <field name="prefix">CC-SCHED-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- =====================================================================
+             2. DEMO STAFF MEMBERS
+             ===================================================================== -->
+        <record id="employee_front_desk_1" model="club.employee">
+            <field name="name">Pooja Patel</field>
+            <field name="role">front_desk</field>
+            <field name="phone">+91 98201 11223</field>
+            <field name="email">pooja.patel@championsclub.example</field>
+            <field name="notes">Front Desk Supervisor. Manages court bookings, member check-ins, and guest passes.</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="employee_bar_cafe_1" model="club.employee">
+            <field name="name">Rohan Verma</field>
+            <field name="role">bar_cafe</field>
+            <field name="phone">+91 98201 44556</field>
+            <field name="email">rohan.verma@championsclub.example</field>
+            <field name="notes">Barista &amp; POS Till Operator. Responsible for cafeteria orders and bar float reconciliation.</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="employee_court_marshal_1" model="club.employee">
+            <field name="name">Vikram Singh</field>
+            <field name="role">court_marshal</field>
+            <field name="phone">+91 98201 77889</field>
+            <field name="email">vikram.singh@championsclub.example</field>
+            <field name="notes">Court Arena Coordinator. Oversees court turnarounds, floodlights, and racquets hire.</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="employee_coach_1" model="club.employee">
+            <field name="name">Ananya Sen</field>
+            <field name="role">coach</field>
+            <field name="phone">+91 98201 33445</field>
+            <field name="email">ananya.sen@championsclub.example</field>
+            <field name="notes">Certified Tennis &amp; Badminton Head Coach. Conducts junior clinics and private sessions.</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="employee_management_1" model="club.employee">
+            <field name="name">Rajesh Sharma</field>
+            <field name="role">management</field>
+            <field name="phone">+91 98201 99001</field>
+            <field name="email">rajesh.sharma@championsclub.example</field>
+            <field name="notes">General Manager &amp; Club Operations Lead. Authorized for leave and shift approvals.</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- =====================================================================
+             3. DEMO OPERATIONAL SCHEDULES / SHIFTS
+             ===================================================================== -->
+        <record id="schedule_frontdesk_today" model="club.staff.schedule">
+            <field name="employee_id" ref="employee_front_desk_1"/>
+            <field name="operation_type">front_desk</field>
+            <field name="shift_date" eval="time.strftime('%Y-%m-%d')"/>
+            <field name="start_time" eval="time.strftime('%Y-%m-%d 06:00:00')"/>
+            <field name="end_time" eval="time.strftime('%Y-%m-%d 14:30:00')"/>
+            <field name="state">active</field>
+            <field name="notes">Morning reception duty: Member arrivals, guest registration, racquet stringing drop-offs.</field>
+        </record>
+
+        <record id="schedule_bar_today" model="club.staff.schedule">
+            <field name="employee_id" ref="employee_bar_cafe_1"/>
+            <field name="operation_type">bar_cafe</field>
+            <field name="shift_date" eval="time.strftime('%Y-%m-%d')"/>
+            <field name="start_time" eval="time.strftime('%Y-%m-%d 12:00:00')"/>
+            <field name="end_time" eval="time.strftime('%Y-%m-%d 21:00:00')"/>
+            <field name="state">confirmed</field>
+            <field name="notes">Afternoon &amp; evening bar service: Member tabs, smoothie counter, post-match snacks.</field>
+        </record>
+    </data>
+</odoo>
