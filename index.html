@@ -631,17 +631,18 @@
               source: 'website'
             });
 
-            const refCode = (res && (res.reference || res.name)) || `CC-ENQ-00${Date.now().toString().slice(-2)}`;
+            const refCode = (res && (res.reference || res.name || res.id)) || `CC-ENQ-00${Date.now().toString().slice(-2)}`;
+            try { localStorage.setItem('cc_last_enquiry_ref', refCode); } catch (e) {}
 
             // Show real success message ONLY after actual record creation
             feedback.style.display = 'block';
             feedback.innerHTML = `
               <div style="background: rgba(0, 229, 153, 0.1); border: 1px solid var(--cc-neon-green); border-radius: var(--cc-radius-md); padding: 12px; color: var(--cc-neon-green); font-size: 13px;">
                 <strong>✓ Enquiry Registered Successfully in Odoo CRM!</strong><br>
-                Reference: <strong>${refCode}</strong> &bull; Assigned to: <strong>Membership Advisor</strong>.<br>
+                Reference: <strong class="cc-text-mono" style="color: var(--cc-gold-400);">${refCode}</strong> &bull; Assigned to: <strong>Membership Advisor</strong>.<br>
                 <span style="font-size: 12px; color: var(--cc-text-secondary);">Our membership team will reach out via WhatsApp/Call shortly.</span>
                 <div style="margin-top: 8px;">
-                  <a href="crm.html" class="cc-btn cc-btn-outline-gold cc-btn-sm" style="display: inline-block;">
+                  <a href="crm.html?ref=${encodeURIComponent(refCode)}" class="cc-btn cc-btn-outline-gold cc-btn-sm" style="display: inline-block;">
                     Track Enquiry Status in Portal &rarr;
                   </a>
                 </div>

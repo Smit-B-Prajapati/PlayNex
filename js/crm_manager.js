@@ -104,22 +104,32 @@ async function fetchLeads() {
     try {
       const serverLeads = await window.ClubAPI.getLeads();
       if (serverLeads && serverLeads.length > 0) {
-        leads = serverLeads.map(l => ({
-          id: l.name || `CC-ENQ-000${l.id}`,
-          rawId: l.id,
-          name: l.partner_name || l.name,
-          phone: l.phone,
-          email: l.email || '',
-          source: l.source || 'website',
-          plan: l.interested_plan_code || l.plan || 'gold',
-          message: l.message || '',
-          stage: l.stage || 'new',
-          staff: l.staff_name || l.staff || 'Pooja Patel (Advisor)',
-          quoteSent: l.quote_sent || false,
-          quoteAmount: l.quote_amount || 0,
-          followups: (l.followup_notes ? l.followup_notes.split('\n').filter(Boolean).map(n => ({ time: 'Recent', note: n })) : (l.followups || [])),
-          memberId: l.member_code || l.memberId || null
-        }));
+        leads = serverLeads.map((l, idx) => {
+          const leadId = l.id && String(l.id).startsWith('CC-ENQ-') ? l.id : 
+                         l.reference ? l.reference : 
+                         (l.name && String(l.name).startsWith('CC-ENQ-')) ? l.name : 
+                         `CC-ENQ-000${l.id || (idx + 1)}`;
+          const leadName = l.partner_name ? l.partner_name : 
+                           (l.name && !String(l.name).startsWith('CC-ENQ-')) ? l.name : 
+                           'Prospective Member';
+
+          return {
+            id: leadId,
+            rawId: l.id || (idx + 1),
+            name: leadName,
+            phone: l.phone || '',
+            email: l.email || '',
+            source: l.source || 'website',
+            plan: l.interested_plan_code || l.plan || 'gold',
+            message: l.message || '',
+            stage: l.stage || 'new',
+            staff: l.staff_name || l.staff || 'Pooja Patel (Advisor)',
+            quoteSent: l.quote_sent || l.quoteSent || false,
+            quoteAmount: l.quote_amount || l.quoteAmount || 0,
+            followups: (l.followup_notes ? l.followup_notes.split('\n').filter(Boolean).map(n => ({ time: 'Recent', note: n })) : (l.followups || [])),
+            memberId: l.member_code || l.memberId || null
+          };
+        });
         syncLeads();
         return leads;
       }
@@ -654,13 +664,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         pubForm.reset();
         if (requestedPlan && pubPlanSelect) pubPlanSelect.value = requestedPlan;
         
+        try { localStorage.setItem('cc_last_enquiry_ref', refCode); } catch (e) {}
+
         if (window.ClubAPI && window.ClubAPI.showSuccess) {
           window.ClubAPI.showSuccess(`Enquiry ${refCode} registered in CRM!`);
         }
 
-        // Auto-fill track input for ease of use
+        // Auto-fill track input for ease of use and trigger live tracking
         const trackInput = document.getElementById('pub-track-input');
-        if (trackInput) trackInput.value = refCode;
+        if (trackInput) {
+          trackInput.value = refCode;
+          const btnTrack = document.getElementById('btn-pub-track');
+          if (btnTrack) btnTrack.click();
+        }
 
       } catch (err) {
         if (feedback) {
@@ -679,58 +695,184 @@ document.addEventListener('DOMContentLoaded', async () => {
   const trackInput = document.getElementById('pub-track-input');
   const trackResult = document.getElementById('pub-track-result');
 
+  // Auto-fill last reference if available
+  try {
+    const lastRef = localStorage.getItem('cc_last_enquiry_ref');
+    if (lastRef && trackInput && !trackInput.value) {
+      trackInput.value = lastRef;
+    }
+  } catch (e) {}
+
   if (btnTrack && trackInput && trackResult) {
-    btnTrack.addEventListener('click', async () => {
-      const q = trackInput.value.trim().toLowerCase();
+    const performTrack = async () => {
+      const rawQ = trackInput.value.trim();
+      const q = rawQ.toLowerCase();
       if (!q) {
         trackResult.style.display = 'block';
-        trackResult.innerHTML = '<div style="color: var(--cc-crimson); font-size: 12px;">Please enter your reference code or phone number.</div>';
+        trackResult.innerHTML = '<div style="color: var(--cc-crimson); font-size: 12px; padding: 8px;">Please enter your reference code (e.g. CC-ENQ-0001) or phone number.</div>';
         return;
       }
 
       await fetchLeads();
-      const found = leads.find(l => 
-        (l.id && l.id.toLowerCase() === q) || 
-        (l.phone && l.phone.replace(/\D/g, '').includes(q.replace(/\D/g, ''))) ||
-        (l.email && l.email.toLowerCase() === q)
-      );
+      const digitsOnly = q.replace(/\D/g, '');
+
+      const found = leads.find(l => {
+        const leadId = (l.id || '').toLowerCase();
+        const leadPhoneDigits = (l.phone || '').replace(/\D/g, '');
+        const leadEmail = (l.email || '').toLowerCase();
+        const leadName = (l.name || '').toLowerCase();
+
+        return leadId === q ||
+               leadId.includes(q) ||
+               (digitsOnly.length >= 4 && leadPhoneDigits.includes(digitsOnly)) ||
+               (leadEmail && (leadEmail === q || leadEmail.includes(q))) ||
+               (leadName && (leadName === q || leadName.includes(q)));
+      });
 
       trackResult.style.display = 'block';
       if (!found) {
         trackResult.innerHTML = `
-          <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--cc-radius-md); padding: 12px; font-size: 12px; color: var(--cc-crimson);">
-            No enquiry record found matching "<strong>${trackInput.value}</strong>". Please verify your reference number or submit a new enquiry.
+          <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--cc-radius-md); padding: 14px; font-size: 13px; color: #fca5a5;">
+            <strong>No enquiry record found matching "${rawQ}".</strong><br>
+            <span style="font-size: 12px; color: var(--cc-text-muted);">
+              Please verify your reference number (e.g. <code>CC-ENQ-0001</code>) or submit a new enquiry using the form on the left.
+            </span>
           </div>
         `;
         return;
       }
 
-      const stageLabels = {
-        new: { label: 'New Enquiry Received', badge: 'cc-badge-junior' },
-        contacted: { label: 'Contacted by Advisor', badge: 'cc-badge-warning' },
-        followup: { label: 'Follow-up / Tour Scheduled', badge: 'cc-badge-silver' },
-        quote: { label: `Quote Sent (₹ ${Number(found.quoteAmount || 0).toLocaleString()})`, badge: 'cc-badge-gold' },
-        converted: { label: `Converted to Active Member (${found.memberId || 'Active'})`, badge: 'cc-badge-active' }
+      const stagesOrder = ['new', 'contacted', 'followup', 'quote', 'converted'];
+      const currentStageIndex = stagesOrder.indexOf(found.stage);
+
+      const stageDisplay = [
+        { key: 'new', name: 'Received', desc: 'Enquiry captured in CRM' },
+        { key: 'contacted', name: 'Contacted', desc: 'Advisor assigned' },
+        { key: 'followup', name: 'Tour / Trial', desc: 'Club tour & consultation' },
+        { key: 'quote', name: 'Quotation', desc: found.quoteAmount ? `₹ ${Number(found.quoteAmount).toLocaleString()} sent` : 'Fee proposal' },
+        { key: 'converted', name: 'Member', desc: found.memberId ? `${found.memberId} Active` : 'Enrolled' }
+      ];
+
+      const stageBadges = {
+        new: 'cc-badge-junior',
+        contacted: 'cc-badge-warning',
+        followup: 'cc-badge-silver',
+        quote: 'cc-badge-gold',
+        converted: 'cc-badge-active'
       };
 
-      const stageInfo = stageLabels[found.stage] || { label: found.stage, badge: 'cc-badge-silver' };
+      const stageLabels = {
+        new: 'Stage 1: New Enquiry Received',
+        contacted: 'Stage 2: Contacted by Membership Team',
+        followup: 'Stage 3: Club Tour & Trial Session Scheduled',
+        quote: `Stage 4: Official Quotation Sent (₹ ${Number(found.quoteAmount || 0).toLocaleString()})`,
+        converted: `Stage 5: Converted to Active Club Member (${found.memberId || 'Active'})`
+      };
+
+      const planCode = (found.plan || 'gold').toLowerCase();
+      const planBadgeClass = planCode === 'gold' ? 'cc-badge-gold' : planCode === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
 
       trackResult.innerHTML = `
-        <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-highlight); border-radius: var(--cc-radius-md); padding: 14px; font-size: 13px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <strong class="cc-text-mono" style="color: var(--cc-gold-400);">${found.id}</strong>
-            <span class="cc-badge ${stageInfo.badge}">${stageInfo.label}</span>
+        <div style="background: rgba(14, 19, 31, 0.95); border: 1px solid var(--cc-border-highlight); border-radius: var(--cc-radius-lg); padding: 1.25rem; font-size: 13px; box-shadow: var(--cc-shadow-md);">
+          
+          <!-- HEADER -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; border-bottom: 1px solid var(--cc-border-subtle); padding-bottom: 0.75rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="cc-text-mono" style="font-size: 15px; font-weight: 800; color: var(--cc-gold-400);">${found.id}</span>
+                <span class="cc-badge ${planBadgeClass}">${planCode.toUpperCase()} TIER</span>
+              </div>
+              <h4 style="margin: 4px 0 0; font-size: 15px; color: var(--cc-text-primary); font-weight: 700;">${found.name}</h4>
+            </div>
+            <span class="cc-badge ${stageBadges[found.stage] || 'cc-badge-silver'}" style="font-size: 11px;">
+              ${stageLabels[found.stage] || found.stage}
+            </span>
           </div>
-          <div style="color: var(--cc-text-primary); font-weight: 700; margin-bottom: 4px;">${found.name}</div>
-          <div style="color: var(--cc-text-secondary); font-size: 12px; margin-bottom: 6px;">
-            Tier Interest: <strong>${(found.plan || 'Gold').toUpperCase()}</strong> &bull; Advisor: <strong>${found.staff || 'Membership Team'}</strong>
+
+          <!-- 5-STEP PROGRESSION STEPPER -->
+          <div style="margin-bottom: 1.25rem;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--cc-text-muted); font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.5px;">
+              Enquiry Lifecycle Progress:
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;">
+              ${stageDisplay.map((st, idx) => {
+                const isPassed = idx <= currentStageIndex;
+                const isCurrent = idx === currentStageIndex;
+                const bg = isCurrent ? 'var(--cc-gold-500)' : isPassed ? 'var(--cc-neon-green)' : 'rgba(255,255,255,0.08)';
+                const textColor = isCurrent ? '#000000' : isPassed ? '#000000' : 'var(--cc-text-muted)';
+                const icon = isPassed && !isCurrent ? '✓' : idx + 1;
+
+                return `
+                  <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px;">
+                    <div style="width: 22px; height: 22px; border-radius: 50%; background: ${bg}; color: ${textColor}; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
+                      ${icon}
+                    </div>
+                    <span style="font-size: 10px; font-weight: 600; color: ${isPassed ? 'var(--cc-text-primary)' : 'var(--cc-text-muted)'}; line-height: 1.2;">
+                      ${st.name}
+                    </span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
           </div>
-          <div style="font-size: 11px; color: var(--cc-text-muted);">
-            Latest status: ${found.followups && found.followups.length ? found.followups[found.followups.length - 1].note : 'Enquiry registered in club CRM.'}
+
+          <!-- KEY DETAILS STRIP -->
+          <div style="background: rgba(22, 29, 46, 0.6); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 0.75rem 1rem; margin-bottom: 1rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; font-size: 12px;">
+            <div>
+              <span style="color: var(--cc-text-muted);">Assigned Advisor:</span><br>
+              <strong style="color: var(--cc-text-primary); font-size: 13px;">${found.staff || 'Pooja Patel (Membership Advisor)'}</strong>
+            </div>
+            <div>
+              <span style="color: var(--cc-text-muted);">Quoted Amount:</span><br>
+              <strong style="color: ${found.quoteSent ? 'var(--cc-neon-green)' : 'var(--cc-text-primary)'}; font-size: 13px;">
+                ${found.quoteSent ? `₹ ${Number(found.quoteAmount).toLocaleString()} / yr` : 'Under Consultation'}
+              </strong>
+            </div>
+            <div>
+              <span style="color: var(--cc-text-muted);">Contact Verified:</span><br>
+              <span style="color: var(--cc-text-secondary);">${found.phone} ${found.email ? `&bull; ${found.email}` : ''}</span>
+            </div>
+            <div>
+              <span style="color: var(--cc-text-muted);">Member ID (Upon Conversion):</span><br>
+              <strong style="color: var(--cc-gold-400);">${found.memberId || 'Pending Activation'}</strong>
+            </div>
           </div>
+
+          <!-- FOLLOW-UP TIMELINE -->
+          ${found.followups && found.followups.length ? `
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--cc-text-muted); font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.5px;">
+                Advisor Activity &amp; Next Steps:
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 0.4rem; max-height: 140px; overflow-y: auto;">
+                ${found.followups.map(f => `
+                  <div style="display: flex; gap: 8px; font-size: 11px; background: rgba(0,0,0,0.25); padding: 6px 10px; border-radius: var(--cc-radius-sm); border-left: 2px solid var(--cc-gold-500);">
+                    <span style="color: var(--cc-text-muted); white-space: nowrap;">${f.time || 'Recent'}:</span>
+                    <span style="color: var(--cc-text-secondary);">${f.note}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
         </div>
       `;
+    };
+
+    btnTrack.addEventListener('click', performTrack);
+    trackInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        performTrack();
+      }
     });
+
+    // Auto-trigger if ref query param is provided
+    const requestedRef = urlParams.get('ref');
+    if (requestedRef) {
+      trackInput.value = requestedRef;
+      performTrack();
+    }
   }
 
   // 4. View Switcher Helper for Staff / Public

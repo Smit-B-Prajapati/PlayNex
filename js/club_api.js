@@ -322,7 +322,38 @@ const ClubAPI = (function() {
         showError(res.error, 'Submission Failed');
         throw new Error(res.error);
       }
+      // Local Data Store Fallback
+      if (window.ClubDataStore) {
+        const leads = window.ClubDataStore.getLeads();
+        const refCode = `CC-ENQ-000${leads.length + 1}`;
+        const newLead = {
+          id: refCode,
+          name: enquiryData.partner_name || enquiryData.name,
+          phone: enquiryData.phone,
+          email: enquiryData.email || '',
+          plan: enquiryData.plan_code || enquiryData.plan || 'gold',
+          sport: enquiryData.sport || 'tennis',
+          message: enquiryData.message || '',
+          source: enquiryData.source || 'website',
+          stage: 'new',
+          staff: 'Pooja Patel (Membership Advisor)',
+          quoteSent: false,
+          quoteAmount: (enquiryData.plan_code === 'gold' || enquiryData.plan === 'gold') ? 24000 : (enquiryData.plan_code === 'silver' || enquiryData.plan === 'silver') ? 14000 : 8000,
+          followups: [
+            { time: new Date().toISOString().replace('T', ' ').substring(0, 16), note: `Enquiry received from ${enquiryData.source || 'Website'}.` }
+          ],
+          memberId: null
+        };
+        leads.unshift(newLead);
+        window.ClubDataStore.saveLeads(leads);
+        showSuccess(`Enquiry ${refCode} registered!`);
+        return { success: true, reference: refCode, id: refCode, name: refCode, lead: newLead };
+      }
       return null;
+    },
+
+    async createLead(enquiryData) {
+      return this.submitEnquiry(enquiryData);
     },
 
     async getLeads(stage = null) {
@@ -335,25 +366,95 @@ const ClubAPI = (function() {
 
     async assignLead(enquiryId, userId) {
       const res = await rpc('/champions_club/crm/lead/assign', { enquiry_id: enquiryId, user_id: userId }, { showLoader: true });
-      if (res && res.success) showSuccess(`Lead assigned to ${res.staff_name}.`);
+      if (res && res.success) {
+        showSuccess(`Lead assigned to ${res.staff_name}.`);
+        return res;
+      }
+      if (window.ClubDataStore) {
+        const leads = window.ClubDataStore.getLeads();
+        const lead = leads.find(l => l.id === enquiryId);
+        if (lead) {
+          lead.staff = userId;
+          window.ClubDataStore.saveLeads(leads);
+          return { success: true, staff_name: userId };
+        }
+      }
       return res;
     },
 
     async markLeadContacted(enquiryId) {
       const res = await rpc('/champions_club/crm/lead/contacted', { enquiry_id: enquiryId }, { showLoader: true });
-      if (res && res.success) showSuccess('Lead moved to Contacted stage.');
+      if (res && res.success) {
+        showSuccess('Lead moved to Contacted stage.');
+        return res;
+      }
+      if (window.ClubDataStore) {
+        const leads = window.ClubDataStore.getLeads();
+        const lead = leads.find(l => l.id === enquiryId);
+        if (lead) {
+          lead.stage = 'contacted';
+          lead.followups = lead.followups || [];
+          lead.followups.push({
+            time: new Date().toISOString().replace('T', ' ').substring(0, 16),
+            note: 'Advisor initiated contact with prospective member.'
+          });
+          window.ClubDataStore.saveLeads(leads);
+          showSuccess('Lead moved to Contacted stage.');
+          return { success: true, stage: 'contacted' };
+        }
+      }
       return res;
     },
 
     async logLeadFollowup(enquiryId, note) {
       const res = await rpc('/champions_club/crm/lead/followup', { enquiry_id: enquiryId, note }, { showLoader: true });
-      if (res && res.success) showSuccess('Follow-up logged.');
+      if (res && res.success) {
+        showSuccess('Follow-up logged.');
+        return res;
+      }
+      if (window.ClubDataStore) {
+        const leads = window.ClubDataStore.getLeads();
+        const lead = leads.find(l => l.id === enquiryId);
+        if (lead) {
+          lead.followups = lead.followups || [];
+          lead.followups.push({
+            time: new Date().toISOString().replace('T', ' ').substring(0, 16),
+            note: note
+          });
+          if (lead.stage === 'contacted' || lead.stage === 'new') {
+            lead.stage = 'followup';
+          }
+          window.ClubDataStore.saveLeads(leads);
+          showSuccess('Follow-up logged.');
+          return { success: true };
+        }
+      }
       return res;
     },
 
     async sendLeadQuote(enquiryId, quoteAmount, notes) {
       const res = await rpc('/champions_club/crm/lead/quote', { enquiry_id: enquiryId, quote_amount: quoteAmount, notes }, { showLoader: true });
-      if (res && res.success) showSuccess(`Quote of ₹ ${res.quote_amount} recorded.`);
+      if (res && res.success) {
+        showSuccess(`Quote of ₹ ${res.quote_amount} recorded.`);
+        return res;
+      }
+      if (window.ClubDataStore) {
+        const leads = window.ClubDataStore.getLeads();
+        const lead = leads.find(l => l.id === enquiryId);
+        if (lead) {
+          lead.quoteSent = true;
+          lead.quoteAmount = Number(quoteAmount);
+          lead.stage = 'quote';
+          lead.followups = lead.followups || [];
+          lead.followups.push({
+            time: new Date().toISOString().replace('T', ' ').substring(0, 16),
+            note: `Official quote of ₹ ${Number(quoteAmount).toLocaleString()} sent.`
+          });
+          window.ClubDataStore.saveLeads(leads);
+          showSuccess(`Quote of ₹ ${quoteAmount} recorded.`);
+          return { success: true, quote_amount: quoteAmount };
+        }
+      }
       return res;
     },
 
@@ -366,6 +467,45 @@ const ClubAPI = (function() {
       if (res && res.error) {
         showError(res.error, 'Conversion Blocked');
         throw new Error(res.error);
+      }
+      if (window.ClubDataStore) {
+        const leads = window.ClubDataStore.getLeads();
+        const lead = leads.find(l => l.id === enquiryId);
+        if (lead) {
+          const members = window.ClubDataStore.getMembers();
+          let member = members.find(m => (lead.phone && m.phone === lead.phone) || (lead.email && m.email && m.email.toLowerCase() === lead.email.toLowerCase()));
+          let memberCode = member ? member.id : `CC-MEM-00${100 + members.length + 1}`;
+          
+          if (!member) {
+            member = {
+              id: memberCode,
+              name: lead.name,
+              email: lead.email,
+              phone: lead.phone,
+              plan: lead.plan || 'gold',
+              startDate: '2026-10-03',
+              endDate: '2027-10-03',
+              state: 'active',
+              history: [
+                { timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16), type: 'signup', desc: `Enrolled via enquiry ${lead.id}.` }
+              ],
+              notes: `Converted lead from CRM.`
+            };
+            members.push(member);
+            window.ClubDataStore.saveMembers(members);
+          }
+
+          lead.stage = 'converted';
+          lead.memberId = memberCode;
+          lead.followups = lead.followups || [];
+          lead.followups.push({
+            time: new Date().toISOString().replace('T', ' ').substring(0, 16),
+            note: `Converted to Member ${memberCode} (${lead.name}).`
+          });
+          window.ClubDataStore.saveLeads(leads);
+          showSuccess(`Converted to Member ${memberCode} (${lead.name})!`);
+          return { success: true, member_code: memberCode, member_name: lead.name };
+        }
       }
       return null;
     },
