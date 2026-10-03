@@ -13,4 +13,5 @@ from . import club_bar_tab
 from . import club_bar_order
 from . import club_enquiry
 from . import club_employee
+from . import club_finance
 from . import club_dashboard

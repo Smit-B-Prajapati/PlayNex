@@ -127,6 +127,24 @@
               action="action_club_employee_leave"
               sequence="30"/>
 
+    <!-- Financials & Billing Category Menu -->
+    <menuitem id="menu_club_finance_root"
+              name="Financials &amp; Invoicing"
+              parent="menu_champions_club_root"
+              sequence="15"/>
+
+    <menuitem id="menu_club_invoice_list"
+              name="Invoices &amp; Corporate Billing"
+              parent="menu_club_finance_root"
+              action="action_club_invoice"
+              sequence="10"/>
+
+    <menuitem id="menu_club_payment_list"
+              name="Payments Register"
+              parent="menu_club_finance_root"
+              action="action_club_payment"
+              sequence="20"/>
+
     <!-- Configuration Menu -->
     <menuitem id="menu_club_config"
               name="Configuration"
@@ -144,4 +162,10 @@
               parent="menu_club_config"
               action="action_club_court"
               sequence="20"/>
+
+    <menuitem id="menu_club_tax_config"
+              name="Tax Configurations"
+              parent="menu_club_config"
+              action="action_club_tax"
+              sequence="30"/>
 </odoo>

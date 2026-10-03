@@ -115,7 +115,29 @@ access_club_employee_leave_manager,club.employee.leave.manager,model_club_employ
 access_club_employee_leave_admin,club.employee.leave.admin,model_club_employee_leave,group_club_administrator,1,1,1,1
 
 # ==============================================================================
-# 11. ADMINISTRATIVE DASHBOARD & REPORTING ENGINE
+# 11. FINANCIALS, INVOICES, PAYMENTS & TAX CONFIGURATION
+# ==============================================================================
+access_club_tax_frontdesk,club.tax.frontdesk,model_club_tax,group_club_front_desk,1,0,0,0
+access_club_tax_manager,club.tax.manager,model_club_tax,group_club_manager,1,1,1,0
+access_club_tax_admin,club.tax.admin,model_club_tax,group_club_administrator,1,1,1,1
+
+access_club_invoice_frontdesk,club.invoice.frontdesk,model_club_invoice,group_club_front_desk,1,1,1,0
+access_club_invoice_manager,club.invoice.manager,model_club_invoice,group_club_manager,1,1,1,1
+access_club_invoice_admin,club.invoice.admin,model_club_invoice,group_club_administrator,1,1,1,1
+
+access_club_invoice_line_frontdesk,club.invoice.line.frontdesk,model_club_invoice_line,group_club_front_desk,1,1,1,0
+access_club_invoice_line_manager,club.invoice.line.manager,model_club_invoice_line,group_club_manager,1,1,1,1
+access_club_invoice_line_admin,club.invoice.line.admin,model_club_invoice_line,group_club_administrator,1,1,1,1
+
+access_club_payment_frontdesk,club.payment.frontdesk,model_club_payment,group_club_front_desk,1,1,1,0
+access_club_payment_shop,club.payment.shop,model_club_payment,group_club_shop_staff,1,1,1,0
+access_club_payment_bar,club.payment.bar,model_club_payment,group_club_bar_staff,1,1,1,0
+access_club_payment_manager,club.payment.manager,model_club_payment,group_club_manager,1,1,1,1
+access_club_payment_admin,club.payment.admin,model_club_payment,group_club_administrator,1,1,1,1
+
+# ==============================================================================
+# 12. ADMINISTRATIVE DASHBOARD & REPORTING ENGINE
 # ==============================================================================
 access_club_dashboard_manager,club.dashboard.manager,model_club_dashboard,group_club_manager,1,1,1,1
 access_club_dashboard_admin,club.dashboard.admin,model_club_dashboard,group_club_administrator,1,1,1,1
+

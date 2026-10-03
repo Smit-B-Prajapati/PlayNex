@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- =====================================================================
+             1. SEQUENCES FOR INVOICING & PAYMENTS
+             ===================================================================== -->
+        <record id="seq_club_invoice" model="ir.sequence">
+            <field name="name">Club Invoice Reference</field>
+            <field name="code">club.invoice</field>
+            <field name="prefix">CC-INV-2026-</field>
+            <field name="padding">4</field>
+            <field name="number_next">101</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_club_payment" model="ir.sequence">
+            <field name="name">Club Payment Reference</field>
+            <field name="code">club.payment</field>
+            <field name="prefix">CC-PAY-2026-</field>
+            <field name="padding">4</field>
+            <field name="number_next">101</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- =====================================================================
+             2. TAX CONFIGURATIONS (Configurable Standard Rules)
+             ===================================================================== -->
+        <record id="tax_sports_services" model="club.tax">
+            <field name="name">GST on Sports Facility &amp; Court Hire (18%)</field>
+            <field name="tax_type">percent</field>
+            <field name="amount">18.0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="sequence">10</field>
+            <field name="description">Applicable on court bookings, membership subscriptions, and coaching services.</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="tax_pro_shop_goods" model="club.tax">
+            <field name="name">GST on Sporting Goods &amp; Gear (12%)</field>
+            <field name="tax_type">percent</field>
+            <field name="amount">12.0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="sequence">20</field>
+            <field name="description">Applicable on racquets, balls, footwear, apparel, and accessories.</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="tax_cafeteria_fb" model="club.tax">
+            <field name="name">GST on Cafeteria F&amp;B (5%)</field>
+            <field name="tax_type">percent</field>
+            <field name="amount">5.0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="sequence">30</field>
+            <field name="description">Applicable on cafe meals, smoothies, electrolytes, and snacks.</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="tax_zero_exempt" model="club.tax">
+            <field name="name">Zero Rated / Exempt Tax (0%)</field>
+            <field name="tax_type">percent</field>
+            <field name="amount">0.0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="sequence">40</field>
+            <field name="description">Exempted transactions, security deposits, and non-taxable receipts.</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

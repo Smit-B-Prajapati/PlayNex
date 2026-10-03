@@ -3,17 +3,22 @@ from odoo import models, fields, api
 
 class ClubDashboard(models.Model):
     _name = 'club.dashboard'
-    _description = 'Champions Club Administrative Dashboard & KPI Engine'
+    _description = 'Champions Club Administrative Dashboard & Financial Reporting Engine'
 
-    name = fields.Char(string='Dashboard View', default='Champions Club Operational Overview')
+    name = fields.Char(string='Dashboard View', default='Champions Club Operational & Financial Overview')
     reference_date = fields.Date(string='Reference Date', default='2026-10-03')
 
-    # Computed KPI Data from Actual Stored Records
     @api.model
     def get_dashboard_summary(self):
         """
-        Calculates KPIs strictly from existing records across models.
-        Returns 'No data available' whenever a category has 0 records.
+        Calculates operational and financial KPIs strictly from existing records across models:
+        1. Memberships (active members & subscription fee revenue)
+        2. Courts (bookings, court rates, corporate arena block invoices)
+        3. Pro Shop (counter sales, online orders, catalog revenue)
+        4. Bar / Cafeteria (POS receipts, cash/card/UPI breakdown, closed shifts)
+        5. Business Clients & Corporate Invoices (corporate memberships, bulk rentals)
+        6. Taxes (collected taxes from configured tax rules)
+        7. Unified Revenue (traceable gross sum across all streams)
         """
         # 1. Memberships
         member_model = self.env['club.member']
@@ -63,7 +68,7 @@ class ClubDashboard(models.Model):
             bookings_kpi = {
                 'count': 0,
                 'display': 'No data available',
-                'breakdown': '0 court bookings recorded for today',
+                'breakdown': '0 court bookings recorded',
                 'revenue': 0.0,
                 'source': 'club.booking table',
                 'has_data': False
@@ -118,7 +123,37 @@ class ClubDashboard(models.Model):
                 'has_data': False
             }
 
-        # 5. Shared Shelf Inventory
+        # 5. Financial Invoices & Corporate / Business Client Revenue
+        invoice_model = self.env['club.invoice']
+        invoices = invoice_model.search([('state', 'in', ['posted', 'paid'])])
+        membership_inv_rev = sum(i.amount_total for i in invoices.filtered(lambda inv: inv.invoice_type == 'membership'))
+        corporate_inv_rev = sum(i.amount_total for i in invoices.filtered(lambda inv: inv.invoice_type in ['court_corporate', 'general']))
+        total_invoiced_tax = sum(i.amount_tax for i in invoices)
+
+        if invoices:
+            invoices_kpi = {
+                'count': len(invoices),
+                'display': f"₹ {sum(i.amount_total for i in invoices):,.2f}",
+                'breakdown': f"Membership: ₹ {membership_inv_rev:,.2f} | Corporate: ₹ {corporate_inv_rev:,.2f} | Tax: ₹ {total_invoiced_tax:,.2f}",
+                'membership_revenue': membership_inv_rev,
+                'corporate_revenue': corporate_inv_rev,
+                'tax_collected': total_invoiced_tax,
+                'source': 'club.invoice records',
+                'has_data': True
+            }
+        else:
+            invoices_kpi = {
+                'count': 0,
+                'display': 'No data available',
+                'breakdown': '0 posted invoices recorded',
+                'membership_revenue': 0.0,
+                'corporate_revenue': 0.0,
+                'tax_collected': 0.0,
+                'source': 'club.invoice table',
+                'has_data': False
+            }
+
+        # 6. Shared Shelf Inventory
         product_model = self.env['club.product']
         products = product_model.search([])
         if products:
@@ -142,7 +177,7 @@ class ClubDashboard(models.Model):
                 'has_data': False
             }
 
-        # 6. CRM Enquiries & Leads
+        # 7. CRM Enquiries & Leads
         enquiry_model = self.env['club.enquiry']
         leads = enquiry_model.search([])
         if leads:
@@ -166,13 +201,27 @@ class ClubDashboard(models.Model):
                 'has_data': False
             }
 
-        # 7. Total Unified Revenue (Traceable Sum)
-        total_rev = shop_kpi.get('revenue', 0.0) + bar_kpi.get('revenue', 0.0) + bookings_kpi.get('revenue', 0.0)
+        # 8. Total Unified Revenue (Traceable Sum across all 5 streams)
+        # Streams: Courts + Shop + Bar + Memberships (via Invoices) + Corporate Clients
+        total_rev = (
+            bookings_kpi.get('revenue', 0.0) +
+            shop_kpi.get('revenue', 0.0) +
+            bar_kpi.get('revenue', 0.0) +
+            invoices_kpi.get('membership_revenue', 0.0) +
+            invoices_kpi.get('corporate_revenue', 0.0)
+        )
+
         if total_rev > 0:
             total_rev_kpi = {
                 'display': f"₹ {total_rev:,.2f}",
-                'breakdown': f"Shop: {shop_kpi.get('display')} | Bar: {bar_kpi.get('display')} | Courts: ₹ {bookings_kpi.get('revenue', 0.0):,.2f}",
-                'source': 'Sum of Shop Orders + Bar POS + Court Receipts',
+                'breakdown': (
+                    f"Courts: ₹ {bookings_kpi.get('revenue', 0.0):,.2f} | "
+                    f"Shop: ₹ {shop_kpi.get('revenue', 0.0):,.2f} | "
+                    f"Bar: ₹ {bar_kpi.get('revenue', 0.0):,.2f} | "
+                    f"Memberships: ₹ {invoices_kpi.get('membership_revenue', 0.0):,.2f} | "
+                    f"Corporate: ₹ {invoices_kpi.get('corporate_revenue', 0.0):,.2f}"
+                ),
+                'source': 'Sum of 5 Revenue Streams (Courts, Shop, Bar, Memberships, Corporate Invoices)',
                 'has_data': True
             }
         else:
@@ -188,6 +237,7 @@ class ClubDashboard(models.Model):
             'court_bookings': bookings_kpi,
             'shop_sales': shop_kpi,
             'bar_pos': bar_kpi,
+            'invoices': invoices_kpi,
             'inventory': inventory_kpi,
             'crm_enquiries': crm_kpi,
             'total_revenue': total_rev_kpi
