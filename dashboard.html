@@ -30,6 +30,7 @@
 
       <nav>
         <ul class="cc-nav-links">
+          <li><a href="dashboard.html" class="cc-nav-link is-active">ADMIN DASHBOARD</a></li>
         </ul>
       </nav>
 
@@ -79,6 +80,30 @@
   <!-- PROTECTED ADMINISTRATIVE DASHBOARD -->
   <div id="cc-admin-protected-content">
 
+    <!-- HERO HEADER SECTION -->
+    <section class="cc-dashboard-hero">
+      <div class="cc-container">
+        <div class="cc-dashboard-header-flex">
+          <div>
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
+              <span class="cc-badge cc-badge-gold">👑 OWNER'S CONTROL ROOM</span>
+              <span class="cc-badge cc-badge-active" id="sync-status-badge"><span class="cc-pulse-dot"></span> DATABASE LIVE SYNC</span>
+            </div>
+            <h1 class="cc-heading-1" style="font-size: 2.2rem; margin: 0 0 6px; font-weight: 800; letter-spacing: -0.02em;">Champions Club Admin Dashboard</h1>
+            <p class="cc-body-sm" style="color: var(--cc-text-muted); margin: 0;">Central control center for Membership, Sales (Revenue &amp; Taxes), Invoices, Enquiring, Employee Details, and Inventory.</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div style="font-size: 12px; color: var(--cc-text-muted); background: rgba(255,255,255,0.04); padding: 7px 14px; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle);">
+              Date: <strong id="dashboard-current-date" style="color: var(--cc-gold-300);">Oct 3, 2026</strong>
+            </div>
+            <button id="btn-restore-demo" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" style="font-weight: 700; padding: 7px 16px;">
+              RESTORE BASELINE RECORDS
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- STICKY CONTROL CENTER NAVIGATION BAR -->
     <div class="cc-admin-tabs-container">
       <div class="cc-container">
@@ -87,7 +112,7 @@
             👥 MEMBERSHIP <span class="cc-tab-badge" id="tab-badge-members">7</span>
           </button>
           <button class="cc-admin-tab-btn cc-admin-tab-btn-finance" data-tab="sales">
-            💰 SALES (REVENUE &amp; TAXES)
+            🔥 SALES (REVENUE &amp; TAXES)
           </button>
           <button class="cc-admin-tab-btn" data-tab="inventory">
             📦 INVENTORY <span class="cc-tab-badge" id="tab-badge-inventory">164</span>
@@ -102,19 +127,19 @@
             👔 EMPLOYEE DETAILS <span class="cc-tab-badge" style="background: rgba(245, 158, 11, 0.4); color: #fbbf24;" id="tab-badge-leaves">2</span>
           </button>
 
-          <!-- SINGLE UNIFIED QUICK ADD BUTTON BESIDE EMPLOYEE DETAILS (WITHOUT DIVIDER LINE) -->
-          <div class="cc-admin-quick-nav-actions" style="margin-left: 6px;">
+          <!-- QUICK ADD BUTTONS ON TAB BAR -->
+          <div style="margin-left: auto; display: flex; gap: 6px; align-items: center;">
+            <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm cc-btn-pill" onclick="openQuickAddModal('court')" style="font-size: 11px; padding: 4px 10px; font-weight: 600;">
+              + 🎾 ADD COURT
+            </button>
+            <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm cc-btn-pill" onclick="openQuickAddModal('product')" style="font-size: 11px; padding: 4px 10px; font-weight: 600;">
+              + 🛍️ ADD PRODUCT
+            </button>
+            <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm cc-btn-pill" onclick="openQuickAddModal('bar')" style="font-size: 11px; padding: 4px 10px; font-weight: 600;">
+              + 🍹 ADD CAFE/BAR TABLE / ITEM
+            </button>
             <button type="button" class="cc-admin-quick-add-btn" onclick="openQuickAddModal('court')" title="Quick Add: Court, Product, or Bar Table/Item" id="btn-quick-add-main">
               <span>✨ + ADD</span>
-            </button>
-          </div>
-
-          <!-- Subtle Right Utility Controls -->
-          <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
-            <span class="cc-badge cc-badge-active" id="sync-status-badge" style="display: none;">● Live Sync</span>
-            <span id="dashboard-current-date" style="display: none;">Oct 3, 2026</span>
-            <button id="btn-restore-demo" class="cc-btn cc-btn-ghost cc-btn-xs" style="color: var(--cc-text-muted); font-size: 10px;" title="Reset Demo Data">
-              ↺ Reset Demo
             </button>
           </div>
         </div>

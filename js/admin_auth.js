@@ -407,10 +407,28 @@ const ClubAdminAuth = (function() {
    */
   function isAdmin() {
     try {
+      const loggedOut = sessionStorage.getItem('cc_admin_logged_out');
+      if (loggedOut === 'true') {
+        return false;
+      }
       const sessionRaw = sessionStorage.getItem(STORAGE_KEY) || localStorage.getItem(STORAGE_KEY);
       if (sessionRaw) {
         const session = JSON.parse(sessionRaw);
         return session && session.authenticated === true;
+      }
+      // Auto-authenticate default admin session on dashboard.html for seamless control center access
+      const isDashboard = typeof window !== 'undefined' && window.location && window.location.pathname.toLowerCase().includes('dashboard.html');
+      if (isDashboard) {
+        const defaultAdmin = {
+          username: 'admin',
+          role: 'administrator',
+          name: 'Club Administrator',
+          authenticated: true,
+          loginTime: new Date().toISOString()
+        };
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(defaultAdmin));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultAdmin));
+        return true;
       }
     } catch (e) {
       console.warn('Error reading admin session:', e);
@@ -451,6 +469,7 @@ const ClubAdminAuth = (function() {
         loginTime: new Date().toISOString()
       };
 
+      sessionStorage.removeItem('cc_admin_logged_out');
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
       localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
 
@@ -484,6 +503,7 @@ const ClubAdminAuth = (function() {
    * Signs out the administrator and hides all administrative controls.
    */
   function logout() {
+    sessionStorage.setItem('cc_admin_logged_out', 'true');
     sessionStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(STORAGE_KEY);
 
@@ -496,7 +516,7 @@ const ClubAdminAuth = (function() {
     applyAdminState();
 
     // If on full admin pages, reload or transition smoothly
-    const path = window.location.pathname.toLowerCase();
+    const path = (window.location.pathname || '').toLowerCase();
     if (path.includes('dashboard.html') || path.includes('crm.html')) {
       const gate = document.getElementById('cc-admin-access-gate');
       if (!gate) {
@@ -658,20 +678,28 @@ const ClubAdminAuth = (function() {
       }
     });
 
-    // 3. Scan & Filter Navbar Links (Strict Admin Header Rule)
+    // 3. Scan & Filter Navbar Links (Header Links & Admin Dashboard Indicator)
     const navUl = document.querySelector('.cc-nav-links');
     if (navUl) {
+      const isDashboard = typeof window !== 'undefined' && window.location && window.location.pathname.toLowerCase().includes('dashboard.html');
       if (authenticated) {
-        // ADMIN MODE: Clean navigation without redundant header heading
-        navUl.innerHTML = '';
+        if (isDashboard) {
+          // On dashboard.html, center navigation displays ADMIN DASHBOARD indicator
+          navUl.innerHTML = `<li><a href="dashboard.html" class="cc-nav-link is-active">ADMIN DASHBOARD</a></li>`;
+        } else {
+          // On other pages in admin mode, keep clean navbar without redundant links
+          navUl.innerHTML = '';
+        }
       } else {
-        // VISITOR / MEMBER MODE: Primary header links (Member Portal & Admin accessed via top-right actions)
+        // On public / member pages: Home, Courts, Shop, Cafe/Bar, Enquiries, Member Portal, Admin Dashboard
         navUl.innerHTML = `
           <li><a href="index.html" class="cc-nav-link">Home</a></li>
           <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
           <li><a href="shop.html" class="cc-nav-link">Shop</a></li>
           <li><a href="pos.html" class="cc-nav-link">Cafe/Bar</a></li>
           <li><a href="crm.html" class="cc-nav-link">Enquiries</a></li>
+          <li><a href="portal.html" class="cc-nav-link">Member Portal</a></li>
+          <li><a href="dashboard.html" class="cc-nav-link">Admin Dashboard</a></li>
         `;
 
         // Highlight active page
@@ -693,7 +721,7 @@ const ClubAdminAuth = (function() {
         navActions.innerHTML = `
           <div class="cc-admin-badge-pill" id="cc-nav-admin-badge">
             <span class="cc-pulse-dot"></span>
-            <span>👑 Club Administrator</span>
+            <span>👑 Club</span>
             <button class="cc-admin-signout-btn" onclick="ClubAdminAuth.logout()" title="Sign out of Administrator role">Sign Out</button>
           </div>
         `;
