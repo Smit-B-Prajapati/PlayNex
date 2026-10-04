@@ -76,7 +76,7 @@
 
       container.innerHTML = `
         <div style="display: flex; gap: 8px; align-items: center;">
-          <div class="cc-member-nav-badge" style="display: inline-flex; align-items: center; gap: 6px; background: ${isCancelled ? 'rgba(239, 68, 68, 0.15)' : 'rgba(212, 175, 55, 0.15)'}; border: 1px solid ${isCancelled ? 'rgba(239, 68, 68, 0.4)' : 'var(--cc-gold-500)'}; padding: 4px 12px; border-radius: 20px; font-size: 11px; color: #FFFFFF; font-weight: 700;">
+          <div class="cc-member-nav-badge" style="display: inline-flex; align-items: center; gap: 6px; background: ${isCancelled ? 'rgba(239, 68, 68, 0.15)' : 'rgba(212, 175, 55, 0.15)'}; border: 1px solid ${isCancelled ? 'rgba(239, 68, 68, 0.4)' : 'var(--cc-gold-500)'}; padding: 4px 12px; border-radius: 20px; font-size: 11px; color: var(--cc-text-primary); font-weight: 700;">
             <span class="cc-pulse-dot" style="background: ${isCancelled ? 'var(--cc-crimson)' : 'var(--cc-neon-green)'}; width: 6px; height: 6px; border-radius: 50%;"></span>
             <span style="color: ${isCancelled ? '#FCA5A5' : 'var(--cc-gold-400)'};">👤 ${currentMember.name}</span>
             ${tierBadgeHtml}
@@ -562,7 +562,7 @@
               <input type="radio" name="upgrade_target_plan" value="gold" checked onchange="selectUpgradeTargetPlan('gold')" style="accent-color: var(--cc-gold-500); width: 18px; height: 18px;">
               <div>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                  <strong style="color: #FFFFFF; font-size: 15px;">Gold Membership</strong>
+                  <strong style="color: var(--cc-text-primary); font-size: 15px;">Gold Membership</strong>
                   <span class="cc-badge cc-badge-gold" style="font-size: 9px;">PREMIUM</span>
                 </div>
                 <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 2px;">
@@ -581,7 +581,7 @@
               <input type="radio" name="upgrade_target_plan" value="silver" onchange="selectUpgradeTargetPlan('silver')" style="accent-color: var(--cc-gold-500); width: 18px; height: 18px;">
               <div>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                  <strong style="color: #FFFFFF; font-size: 15px;">Silver Membership</strong>
+                  <strong style="color: var(--cc-text-primary); font-size: 15px;">Silver Membership</strong>
                   <span class="cc-badge cc-badge-silver" style="font-size: 9px;">STANDARD</span>
                 </div>
                 <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 2px;">
@@ -590,7 +590,7 @@
               </div>
             </div>
             <div style="text-align: right;">
-              <div class="cc-text-mono" style="font-weight: 800; font-size: 15px; color: #E2E8F0;">₹ 14,000 / yr</div>
+              <div class="cc-text-mono" style="font-weight: 800; font-size: 15px; color: #DB2777;">₹ 14,000 / yr</div>
               <div style="font-size: 10px; color: var(--cc-neon-green);">1-Year Validity</div>
             </div>
           </label>
@@ -603,7 +603,7 @@
               <input type="radio" name="upgrade_target_plan" value="gold" checked onchange="selectUpgradeTargetPlan('gold')" style="accent-color: var(--cc-gold-500); width: 18px; height: 18px;">
               <div>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                  <strong style="color: #FFFFFF; font-size: 15px;">Gold Membership</strong>
+                  <strong style="color: var(--cc-text-primary); font-size: 15px;">Gold Membership</strong>
                   <span class="cc-badge cc-badge-gold" style="font-size: 9px;">PREMIUM</span>
                 </div>
                 <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 2px;">
@@ -626,7 +626,7 @@
               <input type="radio" name="upgrade_target_plan" value="gold" checked onchange="selectUpgradeTargetPlan('gold')" style="accent-color: var(--cc-gold-500); width: 18px; height: 18px;">
               <div>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                  <strong style="color: #FFFFFF; font-size: 15px;">Gold Membership (1-Year Extension)</strong>
+                  <strong style="color: var(--cc-text-primary); font-size: 15px;">Gold Membership (1-Year Extension)</strong>
                   <span class="cc-badge cc-badge-gold" style="font-size: 9px;">HIGHEST TIER</span>
                 </div>
                 <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 2px;">

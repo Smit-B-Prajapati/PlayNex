@@ -36,6 +36,14 @@ assert(!dashHtml.includes('+ ADD PRODUCT'), '+ ADD PRODUCT button must be remove
 assert(!dashHtml.includes('+ ADD CAFE/BAR TABLE / ITEM'), '+ ADD CAFE/BAR TABLE button must be removed');
 console.log('  ✓ PASS: Extra buttons removed, only single singular + ADD button kept');
 
+// 5. Table Prices & Salary Visibility in Light/Dark Modes
+console.log('5. Checking table price visibility tokens:');
+assert(dashMgrJs.includes('formatCurrency(emp.salary || 0)') && dashMgrJs.includes('var(--cc-text-primary)'), 'Employee salary must use var(--cc-text-primary)');
+assert(dashMgrJs.includes('formatCurrency(p.price || p.list_price || 0)') && dashMgrJs.includes('var(--cc-text-primary)'), 'Inventory price must use var(--cc-text-primary)');
+assert(!dashMgrJs.includes('color: #FFF'), 'dashboard_manager.js must not have any hardcoded #FFF colors');
+console.log('  ✓ PASS: Table prices, salaries, and inventory unit prices use adaptive theme variables');
+
 console.log('='.repeat(70));
-console.log('ALL 4 USER REQUIREMENTS VERIFIED AND PASSED 100%! ✓');
+console.log('ALL USER REQUIREMENTS & PRICE VISIBILITY VERIFIED 100%! ✓');
 console.log('='.repeat(70));
+

@@ -342,7 +342,7 @@
           <div class="cc-timeline-dot"></div>
           <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
             <div>
-              <div style="font-size: 13px; font-weight: 700; color: #FFF;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--cc-text-primary);">
                 ${act.icon} ${act.title}
               </div>
               <div style="font-size: 12px; color: var(--cc-text-secondary); margin-top: 2px;">
@@ -548,7 +548,7 @@
                 ${initials}
               </div>
               <div>
-                <strong style="color: #FFF; font-size: 13px;">${m.name}</strong>
+                <strong style="color: var(--cc-text-primary); font-size: 13px;">${m.name}</strong>
                 <div class="cc-body-xs" style="color: var(--cc-text-muted); font-size: 11px;">${m.email || m.phone || 'No email'}</div>
               </div>
             </div>
@@ -557,7 +557,7 @@
           <td>${tierBadgeHtml}</td>
           <td><span class="cc-badge ${status.badgeClass}">${status.label}</span></td>
           <td style="font-size: 12px;">${m.startDate || m.start_date || '2026-01-01'}</td>
-          <td style="font-size: 12px;"><strong style="color: ${status.state === 'expiring' ? '#fbbf24' : status.state === 'expired' || status.state === 'cancelled' ? '#ef4444' : '#FFF'};">${m.endDate || m.end_date || '2026-12-31'}</strong></td>
+          <td style="font-size: 12px;"><strong style="color: ${status.state === 'expiring' ? '#fbbf24' : status.state === 'expired' || status.state === 'cancelled' ? '#ef4444' : 'var(--cc-text-primary)'};">${m.endDate || m.end_date || '2026-12-31'}</strong></td>
           <td style="font-size: 11px; color: var(--cc-text-secondary); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
             ${lastAct}
           </td>
@@ -661,7 +661,7 @@
           <div class="cc-timeline-item">
             <div class="cc-timeline-dot"></div>
             <div style="font-size: 11px; color: var(--cc-text-muted);">${h.timestamp || '2026-10-03'}</div>
-            <div style="font-size: 12px; color: #FFF; font-weight: 600;">${h.desc}</div>
+            <div style="font-size: 12px; color: var(--cc-text-primary); font-weight: 600;">${h.desc}</div>
           </div>
         `;
       });
@@ -851,15 +851,15 @@
       shiftBox.innerHTML = `
         <div class="cc-ledger-row">
           <span>💵 Cash Collections (Till / Drawer):</span>
-          <strong style="color: #FFF; font-family: monospace;">${formatCurrency(barRevenue.cash || 0)}</strong>
+          <strong style="color: var(--cc-text-primary); font-family: monospace;">${formatCurrency(barRevenue.cash || 0)}</strong>
         </div>
         <div class="cc-ledger-row">
           <span>💳 Card POS Terminal Settlements:</span>
-          <strong style="color: #FFF; font-family: monospace;">${formatCurrency(barRevenue.card || 0)}</strong>
+          <strong style="color: var(--cc-text-primary); font-family: monospace;">${formatCurrency(barRevenue.card || 0)}</strong>
         </div>
         <div class="cc-ledger-row">
           <span>📱 UPI Instant QR Collections:</span>
-          <strong style="color: #FFF; font-family: monospace;">${formatCurrency(barRevenue.upi || 0)}</strong>
+          <strong style="color: var(--cc-text-primary); font-family: monospace;">${formatCurrency(barRevenue.upi || 0)}</strong>
         </div>
         <div class="cc-ledger-row" style="border-top: 1px solid var(--cc-gold-500); padding-top: 8px; margin-top: 8px;">
           <span style="font-weight: 700; color: var(--cc-gold-400);">Total Daily Shift Revenue:</span>
@@ -881,7 +881,7 @@
             <div class="cc-card cc-card-glass" style="margin-bottom: 8px; padding: 12px; border-left: 3px solid var(--cc-gold-400);">
               <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
                 <div>
-                  <strong style="color: #FFF; font-size: 13px;">${tab.tableName || 'Table'} &bull; ${tab.memberName}</strong>
+                  <strong style="color: var(--cc-text-primary); font-size: 13px;">${tab.tableName || 'Table'} &bull; ${tab.memberName}</strong>
                   <div style="font-size: 11px; color: var(--cc-text-muted); font-family: monospace;">${tab.id || tab.name}</div>
                 </div>
                 <span class="cc-badge cc-badge-warning">${tab.state.toUpperCase()}</span>
@@ -1086,7 +1086,7 @@
             <tr style="background: rgba(212, 175, 55, 0.08); font-weight: 700;">
               <td><strong style="color: var(--cc-gold-400);">TOTAL COMBINED CLUB REVENUE</strong></td>
               <td><span class="cc-badge cc-badge-gold">CONSOLIDATED</span></td>
-              <td style="font-size: 11px; color: #FFF;">Cash: ₹2,440 &bull; Card: ₹5,200 &bull; UPI: ₹3,370</td>
+              <td style="font-size: 11px; color: var(--cc-text-secondary);">Cash: ₹2,440 &bull; Card: ₹5,200 &bull; UPI: ₹3,370</td>
               <td><span style="font-size: 15px; color: var(--cc-gold-400); font-family: monospace;">${formatCurrency(grandTotal)}</span></td>
               <td><span class="cc-badge cc-badge-gold">VERIFIED IMMUTABLE</span></td>
             </tr>
@@ -1192,7 +1192,7 @@
           <td><span class="cc-badge cc-badge-silver">${(p.category || 'General').toUpperCase()}</span></td>
           <td><strong style="font-size: 15px; color: ${isLow ? '#f87171' : 'var(--cc-text-primary)'}; font-family: monospace;">${stockQty} units</strong></td>
           <td><span style="color: var(--cc-text-muted); font-family: monospace;">${minAlert} units</span></td>
-          <td><strong style="color: #FFF; font-family: monospace;">${formatCurrency(p.price || p.list_price || 0)}</strong></td>
+          <td><strong style="color: var(--cc-text-primary); font-family: monospace;">${formatCurrency(p.price || p.list_price || 0)}</strong></td>
           <td><span class="cc-badge ${statusBadge}">${statusText}</span></td>
           <td style="text-align: right;">
             <button class="cc-btn cc-btn-secondary cc-btn-sm" style="padding: 3px 8px; font-size: 11px;" onclick="restockProduct('${p.id || p.sku}', 5)">
@@ -1408,7 +1408,7 @@
           <div class="cc-timeline-item">
             <div class="cc-timeline-dot"></div>
             <div style="font-size: 10px; color: var(--cc-text-muted);">${f.time || '2026-10-03'}</div>
-            <div style="font-size: 12px; color: #FFF;">${f.note}</div>
+            <div style="font-size: 12px; color: var(--cc-text-primary);">${f.note}</div>
           </div>
         `;
       });
@@ -1652,7 +1652,7 @@
           <td><span class="cc-badge cc-badge-silver">${emp.department}</span></td>
           <td style="font-size: 12px; font-family: monospace;">${emp.phone}</td>
           <td style="font-size: 12px; color: var(--cc-text-secondary);">${emp.email}</td>
-          <td><strong style="color: #FFF; font-family: monospace;">${formatCurrency(emp.salary || 0)}</strong></td>
+          <td><strong style="color: var(--cc-text-primary); font-family: monospace;">${formatCurrency(emp.salary || 0)}</strong></td>
           <td><span class="cc-badge cc-badge-active">ACTIVE</span></td>
           <td style="font-size: 12px;">${emp.joinedDate}</td>
         </tr>
@@ -1766,7 +1766,7 @@
             <td><strong style="color: var(--cc-gold-400); font-family: monospace;">${formatCurrency(st.gross)}</strong></td>
             <td><span class="cc-badge cc-badge-silver">18% GST</span></td>
             <td style="color: var(--cc-neon-green); font-family: monospace;">${formatCurrency(tax)}</td>
-            <td><strong style="color: #FFF; font-family: monospace;">${formatCurrency(netBase)}</strong></td>
+            <td><strong style="color: var(--cc-text-primary); font-family: monospace;">${formatCurrency(netBase)}</strong></td>
           </tr>
         `;
       });
@@ -1778,7 +1778,7 @@
           <td><span style="font-size: 15px; color: var(--cc-gold-400); font-family: monospace;">${formatCurrency(grossRev)}</span></td>
           <td><span class="cc-badge cc-badge-gold">GST 18%</span></td>
           <td style="color: var(--cc-neon-green); font-family: monospace;">${formatCurrency(gstTotal)}</td>
-          <td><span style="font-size: 15px; color: #FFF; font-family: monospace;">${formatCurrency(taxableBase)}</span></td>
+          <td><span style="font-size: 15px; color: var(--cc-text-primary); font-family: monospace;">${formatCurrency(taxableBase)}</span></td>
         </tr>
       `;
 
@@ -2106,7 +2106,7 @@
         ratePreview.style.color = 'var(--cc-neon-green)';
       } else {
         ratePreview.textContent = `${formatCurrency(totalFee)} (₹${hourlyRate}/hr × ${durationHours}h)`;
-        ratePreview.style.color = playerType === 'walkin' ? '#FFF' : 'var(--cc-gold-400)';
+        ratePreview.style.color = playerType === 'walkin' ? 'var(--cc-text-primary)' : 'var(--cc-gold-400)';
       }
     }
 

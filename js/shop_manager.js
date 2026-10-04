@@ -185,7 +185,7 @@ function renderShopMemberBanner() {
       if (memberDisc.isCancelled) {
         bannerContainer.style.display = 'block';
         bannerContainer.innerHTML = `
-          <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); padding: 8px 12px; border-radius: var(--cc-radius-md); font-size: 12px; color: #FFFFFF; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); padding: 8px 12px; border-radius: var(--cc-radius-md); font-size: 12px; color: var(--cc-text-primary); display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
             <span>👤 Member: <strong>${memberDisc.member.name}</strong> <span class="cc-badge cc-badge-danger" style="font-size: 9px; margin-left: 6px;">CANCELLED</span></span>
             <span style="font-size: 11px; color: var(--cc-text-muted);">Standard Walk-in Rates Apply</span>
           </div>
@@ -193,7 +193,7 @@ function renderShopMemberBanner() {
       } else {
         bannerContainer.style.display = 'block';
         bannerContainer.innerHTML = `
-          <div style="background: rgba(212, 175, 55, 0.12); border: 1px solid var(--cc-gold-500); padding: 8px 12px; border-radius: var(--cc-radius-md); font-size: 12px; color: #FFFFFF; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div style="background: rgba(212, 175, 55, 0.12); border: 1px solid var(--cc-gold-500); padding: 8px 12px; border-radius: var(--cc-radius-md); font-size: 12px; color: var(--cc-text-primary); display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
             <span>👤 Shopping as <strong>${memberDisc.member.name}</strong> (${(memberDisc.member.plan || 'Gold').toUpperCase()} Tier)</span>
             <span class="cc-badge cc-badge-gold" style="font-size: 10px;">${memberDisc.percent}% Member Discount Applied</span>
           </div>
