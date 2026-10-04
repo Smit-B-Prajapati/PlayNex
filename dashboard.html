@@ -942,16 +942,40 @@
 
     <!-- MODAL 3: RESERVE COURT SLOT -->
     <div class="cc-modal-backdrop" id="modal-new-booking" role="dialog" aria-modal="true">
-      <div class="cc-modal" style="max-width: 540px;">
+      <div class="cc-modal" style="max-width: 580px;">
         <div class="cc-modal-header">
-          <h3 class="cc-modal-title">Reserve Court / Arena Slot</h3>
+          <div>
+            <h3 class="cc-modal-title" style="display: flex; align-items: center; gap: 8px;">
+              <span>🎾</span> Reserve Court / Arena Slot
+            </h3>
+            <p class="cc-body-xs" style="color: var(--cc-text-muted); margin: 2px 0 0;">
+              Schedule match sessions with real-time interval conflict detection and membership duration validation.
+            </p>
+          </div>
           <button class="cc-modal-close" onclick="closeModal('modal-new-booking')">&times;</button>
         </div>
         <form id="form-create-booking" onsubmit="handleCreateBooking(event)">
           <div class="cc-modal-body">
+            
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="bk-player-type">Player Type *</label>
+                <select id="bk-player-type" class="cc-select" onchange="updateBookingRatePreview()">
+                  <option value="member">Active Member (Tier Rate &amp; Max Duration)</option>
+                  <option value="walkin">Walk-in Guest (Full Rate)</option>
+                </select>
+              </div>
+              <div class="cc-form-group" id="bk-member-select-group">
+                <label class="cc-label" for="bk-member-select">Member Profile *</label>
+                <select id="bk-member-select" class="cc-select" onchange="updateBookingRatePreview()">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+            </div>
+
             <div class="cc-form-group">
               <label class="cc-label" for="bk-court-select">Court / Arena *</label>
-              <select id="bk-court-select" class="cc-select" required>
+              <select id="bk-court-select" class="cc-select" onchange="updateBookingRatePreview()" required>
                 <option value="1">Tennis Court 1 (Clay)</option>
                 <option value="2">Tennis Court 2 (Hard)</option>
                 <option value="3">Cricket Pitch &amp; Net 1 (Turf)</option>
@@ -960,46 +984,86 @@
                 <option value="6">Badminton Court 2 (Indoor Mat)</option>
               </select>
             </div>
-            <div class="cc-grid cc-grid-cols-2">
+
+            <div class="cc-grid cc-grid-cols-3">
               <div class="cc-form-group">
                 <label class="cc-label" for="bk-date">Date *</label>
-                <input type="date" id="bk-date" class="cc-input" value="2026-10-03" required>
+                <input type="date" id="bk-date" class="cc-input" value="2026-10-03" onchange="updateBookingRatePreview()" required>
               </div>
               <div class="cc-form-group">
-                <label class="cc-label" for="bk-time">Start Time (30-min Interval) *</label>
-                <select id="bk-time" class="cc-select" required>
+                <label class="cc-label" for="bk-time">Start Time *</label>
+                <select id="bk-time" class="cc-select" onchange="updateBookingRatePreview()" required>
                   <option value="06:00">06:00 AM</option>
+                  <option value="06:30">06:30 AM</option>
                   <option value="07:00">07:00 AM</option>
+                  <option value="07:30">07:30 AM</option>
                   <option value="08:00">08:00 AM</option>
+                  <option value="08:30">08:30 AM</option>
+                  <option value="09:00">09:00 AM</option>
+                  <option value="09:30">09:30 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="10:30">10:30 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="11:30">11:30 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="12:30">12:30 PM</option>
+                  <option value="13:00">01:00 PM</option>
+                  <option value="13:30">01:30 PM</option>
+                  <option value="14:00">02:00 PM</option>
+                  <option value="14:30">02:30 PM</option>
+                  <option value="15:00">03:00 PM</option>
+                  <option value="15:30">03:30 PM</option>
+                  <option value="16:00">04:00 PM</option>
+                  <option value="16:30">04:30 PM</option>
                   <option value="17:00">05:00 PM</option>
+                  <option value="17:30">05:30 PM</option>
                   <option value="18:00" selected>06:00 PM</option>
+                  <option value="18:30">06:30 PM</option>
                   <option value="19:00">07:00 PM</option>
+                  <option value="19:30">07:30 PM</option>
                   <option value="20:00">08:00 PM</option>
-                </select>
-              </div>
-            </div>
-            <div class="cc-grid cc-grid-cols-2">
-              <div class="cc-form-group">
-                <label class="cc-label" for="bk-player-type">Player Type *</label>
-                <select id="bk-player-type" class="cc-select" onchange="updateBookingRatePreview()">
-                  <option value="member">Active Member (Tier Rate)</option>
-                  <option value="walkin">Walk-in Guest (Full Rate)</option>
+                  <option value="20:30">08:30 PM</option>
+                  <option value="21:00">09:00 PM</option>
+                  <option value="21:30">09:30 PM</option>
+                  <option value="22:00">10:00 PM</option>
+                  <option value="22:30">10:30 PM</option>
+                  <option value="23:00">11:00 PM</option>
                 </select>
               </div>
               <div class="cc-form-group">
-                <label class="cc-label" for="bk-member-select">Member Name / ID</label>
-                <select id="bk-member-select" class="cc-select" onchange="updateBookingRatePreview()">
-                  <!-- Populated by JS -->
+                <label class="cc-label" for="bk-duration">Duration *</label>
+                <select id="bk-duration" class="cc-select" onchange="updateBookingRatePreview()" required>
+                  <option value="0.5">30 Minutes (0.5 hr)</option>
+                  <option value="1" selected>1 Hour (60 min)</option>
+                  <option value="1.5">1.5 Hours (90 min)</option>
+                  <option value="2">2 Hours (120 min)</option>
+                  <option value="2.5">2.5 Hours (150 min)</option>
+                  <option value="3">3 Hours (180 min - Max)</option>
                 </select>
               </div>
             </div>
-            <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid var(--cc-gold-500); border-radius: var(--cc-radius-sm); padding: 10px 14px; font-size: 13px;">
-              <span>Calculated Rate: </span> <strong class="cc-text-mono" id="bk-calculated-rate" style="color: var(--cc-gold-400);">₹ 0.00 (Gold Plan Free)</strong>
+
+            <!-- Tier Entitlement & Max Duration Callout -->
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-sm); padding: 8px 12px; margin-bottom: 12px; font-size: 12px; flex-wrap: wrap; gap: 6px;">
+              <span id="bk-tier-duration-pill" style="color: var(--cc-gold-400); font-weight: 700;">★ Gold Member (Max Allowed: 3 Hours)</span>
+              <span id="bk-end-time-preview" style="color: var(--cc-text-muted); font-family: var(--cc-font-mono);">Session: 18:00 – 19:00 (1.0 hr)</span>
             </div>
+
+            <!-- Calculated Rate & Fee -->
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(212, 175, 55, 0.08); border: 1px solid var(--cc-gold-500); border-radius: var(--cc-radius-sm); padding: 10px 14px; font-size: 13px; margin-bottom: 12px;">
+              <span>Calculated Rate:</span>
+              <strong class="cc-text-mono" id="bk-calculated-rate" style="color: var(--cc-gold-400); font-size: 15px;">₹ 0.00 (Gold Plan Free Booking)</strong>
+            </div>
+
+            <!-- Live Availability Status Banner -->
+            <div id="bk-availability-status" style="padding: 10px 14px; border-radius: var(--cc-radius-sm); font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.4); color: #34D399;">
+              <span>🟢 AVAILABLE — Court slot is open and ready to lock.</span>
+            </div>
+
           </div>
           <div class="cc-modal-footer">
             <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-new-booking')">Cancel</button>
-            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Confirm Reservation</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-confirm-booking">Confirm Reservation</button>
           </div>
         </form>
       </div>

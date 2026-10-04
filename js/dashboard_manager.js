@@ -1788,6 +1788,9 @@
     if (modal) {
       modal.classList.add('is-open');
       document.body.style.overflow = 'hidden';
+      if (modalId === 'modal-new-booking') {
+        updateBookingRatePreview();
+      }
     }
   }
 
@@ -1943,29 +1946,187 @@
     }
   }
 
+  function timeToMins(timeStr) {
+    if (!timeStr) return 0;
+    const [h, m] = timeStr.split(':').map(Number);
+    return (h || 0) * 60 + (m || 0);
+  }
+
+  function minsToTimeStr(mins) {
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    if (h === 24 && m === 0) return '00:00';
+    return `${String(h % 24).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  }
+
+  function checkAdminBookingConflict(courtId, date, startTimeStr, durationHours, excludeBookingId = null) {
+    const startMins = timeToMins(startTimeStr);
+    const endMins = startMins + Math.round(durationHours * 60);
+    const endTimeStr = minsToTimeStr(endMins);
+
+    if (endMins > 1440) {
+      return {
+        hasConflict: true,
+        conflictingBooking: null,
+        endTimeStr,
+        message: 'Requested session extends past midnight facility closing time (24:00).'
+      };
+    }
+
+    const bookings = window.ClubDataStore ? window.ClubDataStore.getBookings() : [];
+    for (const b of bookings) {
+      if (excludeBookingId && b.id === excludeBookingId) continue;
+      if (String(b.courtId) === String(courtId) && b.date === date && b.state === 'confirmed' && !b.isSocial) {
+        let bStart = timeToMins(b.startTime);
+        let bEnd = timeToMins(b.endTime);
+        if (bEnd === 0 && b.endTime === '00:00') bEnd = 1440;
+        if (bEnd <= bStart && b.durationHours) bEnd = bStart + Math.round(b.durationHours * 60);
+
+        // Strict Mathematical Interval Overlap: (startMins < bEnd && endMins > bStart)
+        if (startMins < bEnd && endMins > bStart) {
+          return {
+            hasConflict: true,
+            conflictingBooking: b,
+            endTimeStr,
+            message: `Court is already booked for ${b.startTime}–${b.endTime} (${b.playerName || 'Reserved'} - ${b.id}).`
+          };
+        }
+      }
+    }
+
+    return {
+      hasConflict: false,
+      conflictingBooking: null,
+      endTimeStr,
+      message: 'Available'
+    };
+  }
+
   function updateBookingRatePreview() {
-    const playerType = document.getElementById('bk-player-type')?.value;
+    const playerType = document.getElementById('bk-player-type')?.value || 'member';
     const memId = document.getElementById('bk-member-select')?.value;
-    const preview = document.getElementById('bk-calculated-rate');
-    if (!preview) return;
+    const courtId = document.getElementById('bk-court-select')?.value || '1';
+    const date = document.getElementById('bk-date')?.value || '2026-10-03';
+    const startTime = document.getElementById('bk-time')?.value || '18:00';
+    const durationSelect = document.getElementById('bk-duration');
+    const memberSelectGroup = document.getElementById('bk-member-select-group');
+    const tierPill = document.getElementById('bk-tier-duration-pill');
+    const endPreview = document.getElementById('bk-end-time-preview');
+    const ratePreview = document.getElementById('bk-calculated-rate');
+    const statusBox = document.getElementById('bk-availability-status');
+    const submitBtn = document.getElementById('btn-confirm-booking');
+
+    const members = window.ClubDataStore ? window.ClubDataStore.getMembers() : [];
+    const plans = window.ClubDataStore ? window.ClubDataStore.getPlanBenefits() : {
+      gold: { fee: 24000, courtRate: 0 },
+      silver: { fee: 14000, courtRate: 300 },
+      junior: { fee: 8000, courtRate: 200 }
+    };
+    const courts = window.ClubDataStore ? window.ClubDataStore.getCourts() : [];
+    const selectedCourt = courts.find(c => String(c.id) === String(courtId));
+    const walkinHourlyRate = selectedCourt ? (selectedCourt.walkinRate || 600) : 600;
+
+    let maxHours = 1;
+    let hourlyRate = walkinHourlyRate;
+    let tierLabel = 'Walk-in Guest (Max Allowed: 1 Hour)';
+    let isGoldFree = false;
 
     if (playerType === 'walkin') {
-      preview.textContent = '₹ 600.00 (Standard Walk-in Rate)';
-      preview.style.color = '#FFF';
+      if (memberSelectGroup) memberSelectGroup.style.display = 'none';
+      maxHours = 1;
+      tierLabel = 'Walk-in Guest (Max Allowed: 1 Hour)';
+      hourlyRate = walkinHourlyRate;
     } else {
-      const members = window.ClubDataStore ? window.ClubDataStore.getMembers() : [];
-      const plans = window.ClubDataStore ? window.ClubDataStore.getPlanBenefits() : {};
-      const m = members.find(item => item.id === memId);
+      if (memberSelectGroup) memberSelectGroup.style.display = 'block';
+      const m = members.find(item => item.id === memId) || members[0];
       const plan = (m?.plan || 'gold').toLowerCase();
       const planInfo = plans[plan] || { courtRate: plan === 'gold' ? 0 : plan === 'silver' ? 300 : 200 };
-      const rate = planInfo.courtRate;
       
-      if (rate === 0 || rate === '0') {
-        preview.textContent = '₹ 0.00 (Gold Plan Free Booking)';
-        preview.style.color = 'var(--cc-neon-green)';
+      if (plan === 'gold') {
+        maxHours = 3;
+        tierLabel = '★ Gold Member (Max Allowed: 3 Hours)';
+        hourlyRate = planInfo.courtRate !== undefined ? planInfo.courtRate : 0;
+        isGoldFree = (hourlyRate === 0 || hourlyRate === '0');
+      } else if (plan === 'silver') {
+        maxHours = 2;
+        tierLabel = '◆ Silver Member (Max Allowed: 2 Hours)';
+        hourlyRate = planInfo.courtRate !== undefined ? planInfo.courtRate : 300;
       } else {
-        preview.textContent = `${formatCurrency(rate)} (${plan.toUpperCase()} Member Rate)`;
-        preview.style.color = plan === 'junior' ? 'var(--cc-junior-blue)' : 'var(--cc-gold-400)';
+        maxHours = 1;
+        tierLabel = '● Junior Member (Max Allowed: 1 Hour)';
+        hourlyRate = planInfo.courtRate !== undefined ? planInfo.courtRate : 200;
+      }
+    }
+
+    // Update duration dropdown options dynamically based on tier
+    if (durationSelect) {
+      const currentSelectedDur = parseFloat(durationSelect.value || 1);
+      const expectedOptions = [];
+      for (let h = 0.5; h <= maxHours; h += 0.5) {
+        expectedOptions.push(h);
+      }
+
+      const currentValues = Array.from(durationSelect.options).map(o => parseFloat(o.value));
+      const isMatch = currentValues.length === expectedOptions.length && currentValues.every((v, i) => v === expectedOptions[i]);
+
+      if (!isMatch) {
+        durationSelect.innerHTML = expectedOptions.map(h => `
+          <option value="${h}">${h === 0.5 ? '30 Minutes (0.5 hr)' : h === 1 ? '1 Hour (60 min)' : h + ' Hours (' + (h * 60) + ' min)'}${h === maxHours ? ' - Max' : ''}</option>
+        `).join('');
+
+        if (expectedOptions.includes(currentSelectedDur)) {
+          durationSelect.value = String(currentSelectedDur);
+        } else {
+          durationSelect.value = String(Math.min(1, maxHours));
+        }
+      }
+    }
+
+    const durationHours = parseFloat(durationSelect?.value || 1);
+    const totalFee = isGoldFree ? 0 : (hourlyRate * durationHours);
+
+    if (tierPill) tierPill.textContent = tierLabel;
+
+    // Check conflict
+    const conflictResult = checkAdminBookingConflict(courtId, date, startTime, durationHours);
+
+    if (endPreview) {
+      endPreview.textContent = `Session: ${startTime} – ${conflictResult.endTimeStr} (${durationHours} hr${durationHours > 1 ? 's' : ''})`;
+    }
+
+    if (ratePreview) {
+      if (isGoldFree) {
+        ratePreview.textContent = '₹ 0.00 (Gold Plan Free Booking)';
+        ratePreview.style.color = 'var(--cc-neon-green)';
+      } else {
+        ratePreview.textContent = `${formatCurrency(totalFee)} (₹${hourlyRate}/hr × ${durationHours}h)`;
+        ratePreview.style.color = playerType === 'walkin' ? '#FFF' : 'var(--cc-gold-400)';
+      }
+    }
+
+    if (statusBox) {
+      if (conflictResult.hasConflict) {
+        statusBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        statusBox.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+        statusBox.style.color = '#FCA5A5';
+        statusBox.innerHTML = `<span>🔴 <strong>SLOT UNAVAILABLE:</strong> ${conflictResult.message}</span>`;
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.5';
+          submitBtn.style.cursor = 'not-allowed';
+          submitBtn.title = 'Slot unavailable due to schedule overlap';
+        }
+      } else {
+        statusBox.style.background = 'rgba(16, 185, 129, 0.12)';
+        statusBox.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        statusBox.style.color = '#34D399';
+        statusBox.innerHTML = `<span>🟢 <strong>AVAILABLE:</strong> Court slot is open (${startTime}–${conflictResult.endTimeStr}) and ready to lock.</span>`;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          submitBtn.style.cursor = 'pointer';
+          submitBtn.title = 'Confirm reservation';
+        }
       }
     }
   }
@@ -2033,33 +2194,44 @@
 
   function handleCreateBooking(event) {
     event.preventDefault();
-    const courtId = document.getElementById('bk-court-select')?.value;
-    const date = document.getElementById('bk-date')?.value;
-    const startTime = document.getElementById('bk-time')?.value;
-    const playerType = document.getElementById('bk-player-type')?.value;
+    const courtId = document.getElementById('bk-court-select')?.value || '1';
+    const date = document.getElementById('bk-date')?.value || '2026-10-03';
+    const startTime = document.getElementById('bk-time')?.value || '18:00';
+    const durationHours = parseFloat(document.getElementById('bk-duration')?.value || 1);
+    const playerType = document.getElementById('bk-player-type')?.value || 'member';
     const memberId = document.getElementById('bk-member-select')?.value;
 
-    const courtNames = {
-      '1': 'Tennis Court 1 (Clay)',
-      '2': 'Tennis Court 2 (Hard)',
-      '3': 'Cricket Pitch & Net 1 (Turf)',
-      '4': 'Cricket Practice Net 2 (Synthetic)',
-      '5': 'Badminton Court 1 (Indoor Mat)',
-      '6': 'Badminton Court 2 (Indoor Mat)'
-    };
-    const sports = { '1': 'tennis', '2': 'tennis', '3': 'cricket', '4': 'cricket', '5': 'badminton', '6': 'badminton' };
+    const conflict = checkAdminBookingConflict(courtId, date, startTime, durationHours);
+    if (conflict.hasConflict) {
+      alert(`⚠️ Cannot Reserve Court:\n${conflict.message}\n\nPlease choose a non-overlapping time or different court arena.`);
+      return;
+    }
+
+    const courts = window.ClubDataStore ? window.ClubDataStore.getCourts() : [];
+    const courtObj = courts.find(c => String(c.id) === String(courtId));
+    const courtName = courtObj ? `${courtObj.name} (${courtObj.surface || 'Standard'})` : `Court ${courtId}`;
+    const sport = courtObj ? courtObj.sport : 'tennis';
+    const walkinRate = courtObj ? (courtObj.walkinRate || 600) : 600;
 
     const members = window.ClubDataStore ? window.ClubDataStore.getMembers() : [];
+    const plans = window.ClubDataStore ? window.ClubDataStore.getPlanBenefits() : {};
     const m = members.find(item => item.id === memberId);
-    let fee = 600;
-    let rateApplied = '₹ 600.00';
+
+    let fee = walkinRate * durationHours;
+    let rateApplied = `₹ ${walkinRate.toFixed(2)}/hr`;
     let playerName = 'Walk-in Guest';
 
     if (playerType === 'member' && m) {
       playerName = `${m.name} (${(m.plan || 'gold').toUpperCase()})`;
-      if (m.plan === 'gold') { fee = 0; rateApplied = '₹ 0.00 (Free)'; }
-      else if (m.plan === 'silver') { fee = 300; rateApplied = '₹ 300.00'; }
-      else { fee = 200; rateApplied = '₹ 200.00'; }
+      const plan = (m.plan || 'gold').toLowerCase();
+      const planInfo = plans[plan] || { courtRate: plan === 'gold' ? 0 : plan === 'silver' ? 300 : 200 };
+      const hrRate = planInfo.courtRate !== undefined ? planInfo.courtRate : 0;
+      fee = hrRate * durationHours;
+      if (hrRate === 0 || hrRate === '0') {
+        rateApplied = '₹ 0.00 (Free)';
+      } else {
+        rateApplied = `₹ ${hrRate.toFixed(2)}/hr`;
+      }
     }
 
     const bookings = window.ClubDataStore ? window.ClubDataStore.getBookings() : [];
@@ -2067,17 +2239,18 @@
 
     const newBooking = {
       id: newBkId,
-      courtId,
-      courtName: courtNames[courtId] || 'Court',
-      sport: sports[courtId] || 'tennis',
-      date,
-      startTime,
-      endTime: (parseInt(startTime.split(':')[0]) + 1).toString().padStart(2, '0') + ':00',
+      courtId: String(courtId),
+      courtName: courtName,
+      sport: sport,
+      date: date,
+      startTime: startTime,
+      endTime: conflict.endTimeStr,
+      durationHours: durationHours,
       bookingType: playerType,
-      memberId: playerType === 'member' ? memberId : null,
-      playerName,
-      rateApplied,
-      fee,
+      memberId: playerType === 'member' ? (m?.id || memberId) : null,
+      playerName: playerName,
+      rateApplied: rateApplied,
+      fee: fee,
       isSocial: false,
       state: 'confirmed'
     };
@@ -2088,7 +2261,7 @@
     closeModal('modal-new-booking');
     document.getElementById('form-create-booking')?.reset();
     renderAllSections();
-    alert(`✓ Court reserved successfully! Booking ID: ${newBkId}`);
+    alert(`✓ Court reserved successfully!\n• Booking ID: ${newBkId}\n• Facility: ${courtName}\n• Schedule: ${date} (${startTime} – ${conflict.endTimeStr})\n• Player: ${playerName}\n• Total Fee: ${formatCurrency(fee)}`);
   }
 
   function handleCreateProduct(event) {
