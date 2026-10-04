@@ -353,16 +353,17 @@ function renderShopOrders() {
   });
 }
 
-window.cancelShopOrder = function(orderId) {
+window.cancelShopOrder = async function(orderId) {
   const orders = getShopOrders();
   const order = orders.find(o => o.id === orderId);
   if (!order || order.state === 'cancelled') return;
 
   // Restore inventory to shared shelf
   order.items.forEach(item => {
-    const product = productsCache.find(p => p.name === item.name || String(p.id) === String(item.id));
+    const product = productsCache.find(p => p.name === item.name || String(p.id) === String(item.id) || p.sku === item.sku);
     if (product) {
       product.stock += item.qty;
+      if (product.qty_on_hand !== undefined) product.qty_on_hand = product.stock;
     }
   });
 
@@ -371,6 +372,14 @@ window.cancelShopOrder = function(orderId) {
     window.ClubDataStore.saveProducts(productsCache);
     window.ClubDataStore.saveShopOrders(orders);
   }
+
+  try {
+    await fetch('/champions_club/shop/order/cancel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order_id: orderId })
+    });
+  } catch (e) {}
 
   renderCatalog();
   renderShopOrders();
@@ -471,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Check and Deduct Stock from Shared Shelf
       for (const item of cart) {
-        const product = productsCache.find(p => String(p.id) === String(item.id));
+        const product = productsCache.find(p => String(p.id) === String(item.id) || p.sku === item.sku || p.name === item.name);
         if (!product || product.stock < item.qty) {
           if (errorBox) {
             errorMsg.textContent = `Insufficient stock for '${item.name}'. Only ${product ? product.stock : 0} available on the unified shelf.`;
@@ -484,24 +493,35 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         let orderRef = `CC-SO-00${String(getShopOrders().length + 1).padStart(2, '0')}`;
 
-        // Real Odoo Backend API Call
-        if (window.ClubAPI) {
-          const apiRes = await window.ClubAPI.createShopOrder({
-            channel: isOnline ? 'online' : 'counter',
-            fulfillment: fulfillment,
-            customer_name: customerName,
-            delivery_address: deliveryAddress,
-            items: cart.map(i => ({ product_id: i.id, qty: i.qty }))
-          });
-          if (apiRes && apiRes.reference) {
-            orderRef = apiRes.reference;
+        // Atomically deduct locally for immediate UI reactivity
+        for (const item of cart) {
+          const product = productsCache.find(p => String(p.id) === String(item.id) || p.sku === item.sku || p.name === item.name);
+          if (product) {
+            product.stock = Math.max(0, product.stock - item.qty);
+            if (product.qty_on_hand !== undefined) product.qty_on_hand = product.stock;
           }
         }
 
-        // Atomically deduct locally for immediate UI reactivity
-        for (const item of cart) {
-          const product = productsCache.find(p => String(p.id) === String(item.id));
-          if (product) product.stock -= item.qty;
+        // Real Backend API Call
+        if (window.ClubAPI) {
+          try {
+            const apiRes = await window.ClubAPI.createShopOrder({
+              channel: isOnline ? 'online' : 'counter',
+              fulfillment: fulfillment,
+              customer_name: customerName,
+              delivery_address: deliveryAddress,
+              member_id: memberDisc.member ? (memberDisc.member.id || memberDisc.member.member_id) : null,
+              items: cart.map(i => ({ product_id: i.id, id: i.id, sku: i.sku, name: i.name, qty: i.qty, price: i.price }))
+            });
+            if (apiRes && apiRes.reference) {
+              orderRef = apiRes.reference;
+            }
+            if (apiRes && apiRes.products && Array.isArray(apiRes.products)) {
+              productsCache = apiRes.products;
+            }
+          } catch (e) {
+            console.warn('Backend API order create fallback:', e);
+          }
         }
 
         const orders = getShopOrders();
@@ -524,7 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
           items: [...cart],
           total: totalAmount,
           state: !isOnline ? 'completed' : 'confirmed',
-          date: '2026-10-03'
+          date: '2026-10-04'
         };
 
         orders.unshift(newOrder);

@@ -743,6 +743,213 @@ class ClubRequestHandler(SimpleHTTPRequestHandler):
             self.wfile.write(payload)
             return
 
+        # Shop & Inventory Endpoints
+        if path == '/champions_club/shop/products':
+            store = load_store()
+            products = store.get('cc_products', DEFAULT_STORE.get('cc_products', []))
+            cat = data.get('category')
+            if cat and cat != 'all':
+                products = [p for p in products if p.get('category') == cat]
+            payload = json.dumps({'success': True, 'products': products}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if path == '/champions_club/shop/order/create':
+            store = load_store()
+            products = store.get('cc_products', DEFAULT_STORE.get('cc_products', []))
+            orders = store.get('cc_shop_orders', DEFAULT_STORE.get('cc_shop_orders', []))
+
+            channel = data.get('channel', 'counter')
+            fulfillment = data.get('fulfillment', 'immediate')
+            customer_name = data.get('customer_name') or data.get('customer') or 'Walk-in Customer'
+            delivery_address = data.get('delivery_address', '')
+            member_id = data.get('member_id')
+            items = data.get('items', [])
+
+            if not items:
+                payload = json.dumps({'success': False, 'error': 'Cart cannot be empty.'}).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            # Check stock availability
+            for itm in items:
+                prod_id = str(itm.get('product_id') or itm.get('id') or '')
+                prod_sku = str(itm.get('sku') or '')
+                prod_name = str(itm.get('name') or '')
+                req_qty = int(itm.get('qty', 1))
+
+                prod = None
+                for p in products:
+                    if (prod_id and str(p.get('id')) == prod_id) or \
+                       (prod_sku and p.get('sku') == prod_sku) or \
+                       (prod_name and p.get('name') == prod_name):
+                        prod = p
+                        break
+
+                if not prod or prod.get('stock', 0) < req_qty:
+                    avail = prod.get('stock', 0) if prod else 0
+                    pname = prod.get('name') if prod else prod_name or 'Product'
+                    payload = json.dumps({'success': False, 'error': f"Insufficient stock for '{pname}'. Only {avail} units available."}).encode('utf-8')
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Content-Length', str(len(payload)))
+                    self.end_headers()
+                    self.wfile.write(payload)
+                    return
+
+            # Deduct stock atomically
+            order_items_record = []
+            total_amount = 0.0
+            for itm in items:
+                prod_id = str(itm.get('product_id') or itm.get('id') or '')
+                prod_sku = str(itm.get('sku') or '')
+                prod_name = str(itm.get('name') or '')
+                req_qty = int(itm.get('qty', 1))
+
+                prod = None
+                for p in products:
+                    if (prod_id and str(p.get('id')) == prod_id) or \
+                       (prod_sku and p.get('sku') == prod_sku) or \
+                       (prod_name and p.get('name') == prod_name):
+                        prod = p
+                        break
+
+                if prod:
+                    prod['stock'] = max(0, int(prod.get('stock', 0)) - req_qty)
+                    if 'qty_on_hand' in prod:
+                        prod['qty_on_hand'] = prod['stock']
+                    price = float(prod.get('price', 0))
+                    total_amount += price * req_qty
+                    order_items_record.append({
+                        'id': prod.get('id'),
+                        'sku': prod.get('sku'),
+                        'name': prod.get('name'),
+                        'price': price,
+                        'qty': req_qty
+                    })
+
+            # Check member discount
+            discount_percent = 0
+            if member_id:
+                members = store.get('cc_members', [])
+                for m in members:
+                    if str(m.get('id')) == str(member_id) or str(m.get('member_code')) == str(member_id):
+                        plan = (m.get('plan') or 'gold').lower()
+                        discount_percent = 15 if plan == 'gold' else 10 if plan == 'silver' else 15
+                        break
+
+            disc_amt = (total_amount * discount_percent) / 100.0
+            final_total = total_amount - disc_amt
+
+            order_num = len(orders) + 1
+            order_ref = f"CC-SO-{str(order_num).zfill(4)}"
+            fulfillment_label = 'Immediate Counter Handover' if channel == 'counter' else f"Home Delivery ({deliveryAddress})" if fulfillment == 'delivery' else 'Collect at Club (Click & Collect)'
+
+            new_order = {
+                'id': order_ref,
+                'memberId': member_id or 'GUEST',
+                'channel': channel,
+                'customer': customer_name,
+                'fulfillment': fulfillment_label,
+                'items': order_items_record,
+                'total': final_total,
+                'state': 'completed' if channel == 'counter' else 'confirmed',
+                'date': '2026-10-04'
+            }
+            orders.insert(0, new_order)
+
+            store['cc_products'] = products
+            store['cc_shop_orders'] = orders
+            save_store(store)
+
+            payload = json.dumps({
+                'success': True,
+                'reference': order_ref,
+                'order_id': order_ref,
+                'order': new_order,
+                'products': products
+            }).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if path == '/champions_club/shop/order/cancel':
+            store = load_store()
+            products = store.get('cc_products', DEFAULT_STORE.get('cc_products', []))
+            orders = store.get('cc_shop_orders', DEFAULT_STORE.get('cc_shop_orders', []))
+            order_id = str(data.get('order_id', ''))
+
+            found_order = None
+            for o in orders:
+                if str(o.get('id')) == order_id:
+                    found_order = o
+                    break
+
+            if found_order and found_order.get('state') != 'cancelled':
+                found_order['state'] = 'cancelled'
+                for item in found_order.get('items', []):
+                    item_name = item.get('name')
+                    item_id = str(item.get('id', ''))
+                    item_sku = str(item.get('sku', ''))
+                    item_qty = int(item.get('qty', 1))
+
+                    for p in products:
+                        if (item_id and str(p.get('id')) == item_id) or \
+                           (item_sku and p.get('sku') == item_sku) or \
+                           (item_name and p.get('name') == item_name):
+                            p['stock'] = int(p.get('stock', 0)) + item_qty
+                            if 'qty_on_hand' in p:
+                                p['qty_on_hand'] = p['stock']
+                            break
+
+                store['cc_products'] = products
+                store['cc_shop_orders'] = orders
+                save_store(store)
+                payload = json.dumps({'success': True, 'message': 'Order cancelled and stock restored.', 'products': products}).encode('utf-8')
+            else:
+                payload = json.dumps({'success': False, 'error': f"Order '{order_id}' not found or already cancelled."}).encode('utf-8')
+
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        # Bar POS Endpoints
+        if path == '/champions_club/bar/tables':
+            store = load_store()
+            tables = store.get('cc_bar_tables', DEFAULT_STORE.get('cc_bar_tables', []))
+            payload = json.dumps({'success': True, 'tables': tables}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if path == '/champions_club/bar/tabs':
+            store = load_store()
+            tabs = store.get('cc_bar_tabs', DEFAULT_STORE.get('cc_bar_tabs', []))
+            payload = json.dumps({'success': True, 'tabs': tabs}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
         # Handle Champions Club Odoo JSON RPC endpoints
         if path == '/champions_club/membership/members':
             store = load_store()

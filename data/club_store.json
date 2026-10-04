@@ -309,6 +309,44 @@
   ],
   "cc_shop_orders": [
     {
+      "id": "CC-SO-0004",
+      "memberId": "GUEST",
+      "channel": "counter",
+      "customer": "Inventory Test Buyer",
+      "fulfillment": "Immediate Counter Handover",
+      "items": [
+        {
+          "id": "p1",
+          "sku": "CC-RCK-01",
+          "name": "Pro Tour Carbon Tennis Racket",
+          "price": 8500.0,
+          "qty": 2
+        }
+      ],
+      "total": 17000.0,
+      "state": "cancelled",
+      "date": "2026-10-04"
+    },
+    {
+      "id": "CC-SO-0003",
+      "memberId": "GUEST",
+      "channel": "counter",
+      "customer": "Inventory Test Buyer",
+      "fulfillment": "Immediate Counter Handover",
+      "items": [
+        {
+          "id": "p1",
+          "sku": "CC-RCK-01",
+          "name": "Pro Tour Carbon Tennis Racket",
+          "price": 8500.0,
+          "qty": 2
+        }
+      ],
+      "total": 17000.0,
+      "state": "cancelled",
+      "date": "2026-10-04"
+    },
+    {
       "id": "CC-SO-0001",
       "channel": "counter",
       "customer": "Walk-in Guest",
@@ -432,6 +470,39 @@
     "upi": 320.0
   },
   "cc_leads": [
+    {
+      "id": "CC-ENQ-0003",
+      "rawId": "CC-ENQ-0003",
+      "name": "Madhu",
+      "phone": "9999922222",
+      "email": "madhu@gmail.com",
+      "source": "website",
+      "plan": "gold",
+      "message": "",
+      "stage": "followup",
+      "staff": "Pooja Patel (Membership Advisor)",
+      "quoteSent": false,
+      "quoteAmount": 24000,
+      "followups": [
+        {
+          "time": "2026-10-03 20:40",
+          "note": "Website enquiry registered from website. Stage: New Enquiry."
+        },
+        {
+          "time": "2026-10-03 16:05",
+          "note": "Hiii"
+        },
+        {
+          "time": "2026-10-03 16:10",
+          "note": "Staff reached out to visitor via phone/WhatsApp."
+        },
+        {
+          "time": "2026-10-03 16:05",
+          "note": "hello"
+        }
+      ],
+      "memberId": null
+    },
     {
       "id": "CC-ENQ-0001",
       "rawId": "CC-ENQ-0001",

@@ -311,6 +311,55 @@ const ClubAPI = (function() {
       return null;
     },
 
+    // 4b. Shop & Inventory APIs
+    async getProducts(category = null) {
+      const res = await rpc('/champions_club/shop/products', { category }, { showLoader: false });
+      if (res && res.success && res.products) {
+        if (window.ClubDataStore) {
+          window.ClubDataStore.saveProducts(res.products);
+        }
+        return res.products;
+      }
+      return window.ClubDataStore ? window.ClubDataStore.getProducts() : [];
+    },
+
+    async createShopOrder(orderData) {
+      const res = await rpc('/champions_club/shop/order/create', orderData, { showLoader: true, loaderMsg: 'Processing Order & Updating Inventory Shelf...' });
+      if (res && res.success) {
+        if (res.products && window.ClubDataStore) {
+          window.ClubDataStore.saveProducts(res.products);
+        }
+        if (res.order && window.ClubDataStore) {
+          const orders = window.ClubDataStore.getShopOrders();
+          orders.unshift(res.order);
+          window.ClubDataStore.saveShopOrders(orders);
+        }
+        showSuccess(`Order ${res.reference} confirmed! Inventory stock updated.`);
+        return res;
+      }
+      if (res && res.error) {
+        showError(res.error, 'Order Failed');
+        throw new Error(res.error);
+      }
+      return res;
+    },
+
+    async cancelShopOrder(orderId) {
+      const res = await rpc('/champions_club/shop/order/cancel', { order_id: orderId }, { showLoader: true, loaderMsg: 'Cancelling Order & Restoring Stock...' });
+      if (res && res.success) {
+        if (res.products && window.ClubDataStore) {
+          window.ClubDataStore.saveProducts(res.products);
+        }
+        showSuccess('Order cancelled and shelf stock restored.');
+        return res;
+      }
+      if (res && res.error) {
+        showError(res.error, 'Cancellation Failed');
+        throw new Error(res.error);
+      }
+      return res;
+    },
+
     // 5. CRM APIs
     async submitEnquiry(enquiryData) {
       const res = await rpc('/champions_club/enquiry/submit', enquiryData, { showLoader: true, loaderMsg: 'Registering CRM Lead...' });
