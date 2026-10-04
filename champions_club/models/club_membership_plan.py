@@ -39,6 +39,13 @@ class ClubMembershipPlan(models.Model):
         help="Default number of days membership is valid upon enrollment"
     )
 
+    # Configurable Booking Duration by Membership Plan (Gold=3, Silver=2, Junior=1)
+    max_booking_hours = fields.Integer(
+        string='Max Booking Duration (Hours)',
+        default=1,
+        help="Configurable maximum consecutive booking duration allowed per session. Gold=3, Silver=2, Junior=1."
+    )
+
     # Entitlements - Court Rates (Configurable)
     court_rate_policy = fields.Selection([
         ('free', 'Zero / Free Court Access'),

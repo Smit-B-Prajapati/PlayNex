@@ -65,8 +65,7 @@ class ClubBooking(models.Model):
     duration_hours = fields.Float(
         string='Session Duration (Hours)',
         default=1.0,
-        readonly=True,
-        help="Standard court sessions last exactly one hour."
+        help="Court session duration in hours (1.0, 2.0, or 3.0 based on membership plan)."
     )
     end_time = fields.Datetime(
         string='Session End Time',
@@ -82,13 +81,13 @@ class ClubBooking(models.Model):
         help="Designated multi-player shared court session (e.g. Friday night social play)."
     )
 
-    # Configurable Pricing Applied
+    # Configurable Pricing Applied (Hourly Rate * Duration)
     rate_applied = fields.Float(
         string='Applied Rate (Configurable)',
         digits=(10, 2),
         compute='_compute_applied_rate',
         store=True,
-        help="Rate calculated dynamically from member plan or standard walk-in rate."
+        help="Rate calculated dynamically from member plan or standard walk-in rate multiplied by session duration."
     )
 
     state = fields.Selection([
@@ -116,17 +115,18 @@ class ClubBooking(models.Model):
             else:
                 record.end_time = False
 
-    @api.depends('booking_type', 'member_id', 'court_id', 'is_social_play')
+    @api.depends('booking_type', 'member_id', 'court_id', 'duration_hours', 'is_social_play')
     def _compute_applied_rate(self):
         for record in self:
+            duration = record.duration_hours or 1.0
             if record.booking_type == 'member' and record.member_id and record.member_id.plan_id:
                 plan = record.member_id.plan_id
                 if plan.court_rate_policy == 'free':
                     record.rate_applied = 0.0
                 else:
-                    record.rate_applied = plan.court_hourly_rate
+                    record.rate_applied = plan.court_hourly_rate * duration
             elif record.court_id:
-                record.rate_applied = record.court_id.walkin_hourly_rate
+                record.rate_applied = record.court_id.walkin_hourly_rate * duration
             else:
                 record.rate_applied = 0.0
 
@@ -138,18 +138,40 @@ class ClubBooking(models.Model):
             if record.booking_type == 'walkin' and not record.walkin_name:
                 raise ValidationError("Walk-in customer name is required.")
 
-    @api.constrains('start_time', 'duration_hours')
+    @api.constrains('start_time', 'duration_hours', 'booking_type', 'member_id')
     def _check_slot_timing(self):
         """
         Server-side validation:
-        1. Sessions last exactly 1 hour.
+        1. Sessions duration must be positive and not exceed tier maximum:
+           - Gold: max 3 hours
+           - Silver: max 2 hours
+           - Junior: max 1 hour
+           - Walk-in: max 1 hour
         2. New court slots open every 30 minutes (must start on :00 or :30 boundary).
         """
         for record in self:
             if not record.start_time:
                 continue
-            if record.duration_hours != 1.0:
-                raise ValidationError("Court sessions must last exactly 1 hour.")
+
+            duration = record.duration_hours or 1.0
+            if duration <= 0 or duration not in [1.0, 2.0, 3.0]:
+                raise ValidationError("Court booking duration must be 1, 2, or 3 hours.")
+
+            if record.booking_type == 'member' and record.member_id:
+                plan = record.member_id.plan_id
+                max_hours = plan.max_booking_hours if plan and plan.max_booking_hours else (
+                    3 if (plan and plan.code == 'gold') else 2 if (plan and plan.code == 'silver') else 1
+                )
+                if duration > max_hours:
+                    plan_name = plan.name if plan else 'Membership'
+                    raise ValidationError(
+                        f"Duration Limit Exceeded: '{plan_name}' allows a maximum duration of {max_hours} hour(s) per booking. "
+                        f"Requested: {int(duration)} hour(s)."
+                    )
+            elif record.booking_type == 'walkin':
+                if duration > 1.0:
+                    raise ValidationError("Walk-in guests are limited to a maximum booking duration of 1 hour.")
+
             if record.start_time.minute not in [0, 30] or record.start_time.second != 0:
                 raise ValidationError(
                     f"Invalid slot time ({record.start_time.strftime('%H:%M:%S')}). "
@@ -177,9 +199,8 @@ class ClubBooking(models.Model):
     @api.constrains('court_id', 'start_time', 'end_time', 'state', 'is_social_play')
     def _check_double_booking(self):
         """
-        Server-side validation: Two people must never end up on the same court at the same time,
-        unless the session is explicitly marked as a shared social play session.
-        Cancelled bookings must no longer block the court slot.
+        Server-side validation: Check all consecutive intervals across requested duration.
+        If ANY interval overlaps with an existing confirmed booking, REJECT without modifying or replacing existing booking.
         """
         for record in self:
             if record.state == 'cancelled' or record.is_social_play:
@@ -198,10 +219,16 @@ class ClubBooking(models.Model):
             ]
             overlapping = self.search(domain)
             if overlapping:
-                conflict_names = ", ".join(overlapping.mapped('name'))
+                conflicts = []
+                for b in overlapping:
+                    b_start = b.start_time.strftime('%H:%M') if b.start_time else 'Start'
+                    b_end = b.end_time.strftime('%H:%M') if b.end_time else 'End'
+                    conflicts.append(f"{b_start}–{b_end} ({b.name})")
+                conflict_desc = ", ".join(conflicts)
+                req_start = record.start_time.strftime('%H:%M')
+                req_end = record.end_time.strftime('%H:%M')
                 raise ValidationError(
-                    f"Conflict: Court '{record.court_id.name}' is already booked during this time window "
-                    f"({record.start_time} to {record.end_time}). Conflicting booking(s): {conflict_names}."
+                    f"Cannot book {req_start}–{req_end} because {conflict_desc} is already booked."
                 )
 
     @api.constrains('booking_type', 'member_id', 'start_time', 'state')

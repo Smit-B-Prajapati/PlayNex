@@ -232,11 +232,11 @@ class ClubMember(models.Model):
         return True
 
     def action_cancel_membership(self, reason=None):
-        """Terminates membership; active benefits are immediately revoked."""
+        """Terminates membership under strict No-Refund Policy; active benefits are immediately revoked."""
         self.ensure_one()
         self.write({'state': 'cancelled'})
         self.has_active_benefits = False
-        msg = f"Membership cancelled by staff."
+        msg = "Membership cancelled under strict No-Refund Policy (₹0.00 refund on remaining term)."
         if reason:
             msg += f" Reason: {reason}"
         self.env['club.member.history'].create({
@@ -245,6 +245,76 @@ class ClubMember(models.Model):
             'description': msg
         })
         return True
+
+    def action_upgrade_subscription(self, new_plan_id, payment_method='card'):
+        """
+        Upgrades member subscription with pro-rata discount for remaining unused term.
+        Formula:
+          - Current plan fee divided by 12 = monthly rate
+          - Remaining months = ceil((end_date - today) / 30.4375) capped between 0 and 12
+          - Unused term discount = remaining_months * (current_fee / 12)
+          - Net payable = max(0, new_plan.fee - discount)
+        Extends validity by 365 days from today, updates plan, logs history, and generates invoice.
+        """
+        self.ensure_one()
+        today = fields.Date.context_today(self)
+        current_fee = self.plan_id.fee_amount or 0.0
+        monthly_rate = current_fee / 12.0
+
+        remaining_days = (self.end_date - today).days if self.end_date and self.end_date > today else 0
+        if remaining_days <= 0 or self.state == 'cancelled':
+            remaining_months = 0
+        else:
+            import math
+            remaining_months = min(12, max(1, math.ceil(remaining_days / 30.4375)))
+
+        unused_discount = round(remaining_months * monthly_rate, 2)
+        new_plan = self.env['club.membership.plan'].browse(new_plan_id)
+        target_fee = new_plan.fee_amount or 0.0
+        net_payable = max(0.0, target_fee - unused_discount)
+
+        new_end_date = today + timedelta(days=365)
+        old_plan_name = self.plan_id.name
+
+        self.write({
+            'plan_id': new_plan_id,
+            'start_date': today,
+            'end_date': new_end_date,
+            'state': 'active'
+        })
+        self._compute_membership_status()
+        self._compute_entitlements()
+
+        self.env['club.member.history'].create({
+            'member_id': self.id,
+            'activity_type': 'plan_change',
+            'description': (
+                f"Subscription upgraded from {old_plan_name} to {new_plan.name}. "
+                f"Pro-rata discount applied: ₹{unused_discount:,.2f} ({remaining_months} months @ ₹{monthly_rate:,.2f}/mo). "
+                f"Net paid: ₹{net_payable:,.2f}. Validity extended to {new_end_date}."
+            )
+        })
+
+        # Generate invoice
+        if not self.partner_id:
+            self.partner_id = self.env['res.partner'].create({
+                'name': self.name,
+                'email': self.email or '',
+                'phone': self.phone or ''
+            })
+        invoice_vals = {
+            'move_type': 'out_invoice',
+            'partner_id': self.partner_id.id,
+            'invoice_date': today,
+            'narration': f"Subscription tier upgrade to {new_plan.name} with pro-rata term discount ₹{unused_discount:,.2f}",
+            'invoice_line_ids': [(0, 0, {
+                'name': f"Membership Upgrade: {new_plan.name} (Less ₹{unused_discount:,.2f} Pro-Rata Credit)",
+                'quantity': 1.0,
+                'price_unit': net_payable,
+            })]
+        }
+        invoice = self.env['account.move'].create(invoice_vals)
+        return invoice
 
     def action_renew_membership(self, extension_days=None):
         """Renews membership validity by plan duration or specified days."""

@@ -189,6 +189,7 @@ class ChampionsClubController(http.Controller):
         """
         court_id = post.get('court_id')
         start_time_str = post.get('start_time')
+        duration_hours = float(post.get('duration_hours') or 1.0)
         booking_type = post.get('booking_type', 'member')
         member_id = post.get('member_id')
         walkin_name = post.get('walkin_name')
@@ -200,7 +201,7 @@ class ChampionsClubController(http.Controller):
             vals = {
                 'court_id': int(court_id),
                 'start_time': start_time,
-                'duration_hours': 1.0,
+                'duration_hours': duration_hours,
                 'booking_type': booking_type,
                 'is_social_play': bool(is_social_play),
                 'state': 'confirmed'

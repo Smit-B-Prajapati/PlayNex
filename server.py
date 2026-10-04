@@ -97,6 +97,263 @@ class ClubRequestHandler(SimpleHTTPRequestHandler):
             return
 
         # Handle Champions Club Odoo JSON RPC endpoints
+        if path == '/champions_club/membership/plans':
+            plans = [
+                {
+                    'id': 1,
+                    'name': 'Gold Plan',
+                    'code': 'gold',
+                    'fee_amount': 24000.0,
+                    'court_hourly_rate': 0.0,
+                    'court_rate_policy': 'free',
+                    'shop_discount_percent': 15.0,
+                    'bar_discount_percent': 15.0,
+                    'allow_running_tab': True,
+                    'max_booking_hours': 3
+                },
+                {
+                    'id': 2,
+                    'name': 'Silver Plan',
+                    'code': 'silver',
+                    'fee_amount': 14000.0,
+                    'court_hourly_rate': 300.0,
+                    'court_rate_policy': 'discounted',
+                    'shop_discount_percent': 10.0,
+                    'bar_discount_percent': 10.0,
+                    'allow_running_tab': False,
+                    'max_booking_hours': 2
+                },
+                {
+                    'id': 3,
+                    'name': 'Junior Plan',
+                    'code': 'junior',
+                    'fee_amount': 8000.0,
+                    'court_hourly_rate': 200.0,
+                    'court_rate_policy': 'discounted',
+                    'shop_discount_percent': 15.0,
+                    'bar_discount_percent': 5.0,
+                    'allow_running_tab': False,
+                    'max_booking_hours': 1
+                }
+            ]
+            payload = json.dumps({'success': True, 'plans': plans}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if path == '/champions_club/bookings/create':
+            store = load_store()
+            bookings = store.get('cc_bookings', [])
+            members = store.get('cc_members', [])
+            courts = store.get('cc_courts', [
+                {'id': '1', 'name': 'Tennis Court 1 (Clay)', 'sport': 'tennis', 'walkinRate': 500},
+                {'id': '2', 'name': 'Tennis Court 2 (Hard)', 'sport': 'tennis', 'walkinRate': 500},
+                {'id': '3', 'name': 'Cricket Pitch & Net 1 (Turf)', 'sport': 'cricket', 'walkinRate': 600},
+                {'id': '4', 'name': 'Cricket Practice Net 2', 'sport': 'cricket', 'walkinRate': 600},
+                {'id': '5', 'name': 'Badminton Court 1 (Indoor Mat)', 'sport': 'badminton', 'walkinRate': 400},
+                {'id': '6', 'name': 'Badminton Court 2 (Indoor Mat)', 'sport': 'badminton', 'walkinRate': 400}
+            ])
+
+            court_id = str(data.get('court_id', '1'))
+            start_time_str = data.get('start_time', '')
+            duration_hours = float(data.get('duration_hours') or 1.0)
+            booking_type = data.get('booking_type', 'member')
+            member_id = data.get('member_id')
+            walkin_name = data.get('walkin_name', '')
+            is_social = bool(data.get('is_social_play', False))
+
+            court = next((c for c in courts if str(c.get('id')) == court_id), None)
+            court_name = court['name'] if court else f"Court {court_id}"
+            sport = court.get('sport', 'tennis') if court else 'tennis'
+            walkin_rate = float(court.get('walkinRate', 500) if court else 500)
+
+            # Parse start time and date
+            try:
+                parts = start_time_str.split(' ')
+                booking_date = parts[0]
+                start_slot = parts[1][:5]
+                start_h, start_m = map(int, start_slot.split(':'))
+                start_mins = start_h * 60 + start_m
+                end_mins = int(start_mins + duration_hours * 60)
+                end_h = (end_mins // 60) % 24
+                end_m = end_mins % 60
+                end_slot = f"{str(end_h).zfill(2)}:{str(end_m).zfill(2)}"
+                if end_mins == 1440:
+                    end_slot = "00:00"
+            except Exception as e:
+                payload = json.dumps({'success': False, 'error': f"Invalid start time format ({start_time_str})"}).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            # Validation 1: Membership Plan & Duration Limit
+            member = None
+            max_duration = 1.0
+            hourly_rate = walkin_rate
+            rate_label = f"₹ {walkin_rate * duration_hours:.2f}"
+
+            if booking_type == 'member' and member_id:
+                member = next((m for m in members if m.get('id') == member_id or m.get('member_code') == member_id), None)
+                if not member:
+                    payload = json.dumps({'success': False, 'error': f"Member profile '{member_id}' not found."}).encode('utf-8')
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Content-Length', str(len(payload)))
+                    self.end_headers()
+                    self.wfile.write(payload)
+                    return
+
+                if member.get('state') == 'cancelled' or member.get('state') == 'expired':
+                    max_duration = 1.0
+                    hourly_rate = walkin_rate
+                    rate_label = f"₹ {walkin_rate * duration_hours:.2f} (Expired - Standard Rate)"
+                else:
+                    plan_code = (member.get('plan') or 'silver').lower()
+                    if plan_code == 'gold':
+                        max_duration = 3.0
+                        hourly_rate = 0.0
+                        rate_label = "₹ 0.00 (Free)"
+                    elif plan_code == 'silver':
+                        max_duration = 2.0
+                        hourly_rate = 300.0
+                        rate_label = f"₹ {300.0 * duration_hours:.2f}"
+                    elif plan_code == 'junior':
+                        max_duration = 1.0
+                        hourly_rate = 200.0
+                        rate_label = f"₹ {200.0 * duration_hours:.2f}"
+
+                if duration_hours > max_duration:
+                    plan_upper = (member.get('plan') or 'Standard').upper()
+                    payload = json.dumps({'success': False, 'error': f"Duration Limit Exceeded: '{plan_upper}' plan allows a maximum booking duration of {int(max_duration)} hour(s). Requested: {int(duration_hours)} hour(s)."}).encode('utf-8')
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Content-Length', str(len(payload)))
+                    self.end_headers()
+                    self.wfile.write(payload)
+                    return
+
+                # Validation 2: Daily limit (Max 2 bookings per member per day)
+                member_day_count = sum(1 for b in bookings if b.get('bookingType') == 'member' and b.get('memberId') == member_id and b.get('date') == booking_date and b.get('state') == 'confirmed')
+                if member_day_count >= 2:
+                    payload = json.dumps({'success': False, 'error': f"Daily Limit Exceeded: Member '{member.get('name')}' already has {member_day_count} bookings on {booking_date}. Each member can play at most twice a day."}).encode('utf-8')
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Content-Length', str(len(payload)))
+                    self.end_headers()
+                    self.wfile.write(payload)
+                    return
+            else:
+                if duration_hours > 1.0:
+                    payload = json.dumps({'success': False, 'error': "Walk-in guests are limited to a maximum booking duration of 1 hour."}).encode('utf-8')
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Content-Length', str(len(payload)))
+                    self.end_headers()
+                    self.wfile.write(payload)
+                    return
+
+            # Validation 3: Overlapping Bookings Check Across All Requested Consecutive Intervals
+            if not is_social:
+                conflicting = []
+                for b in bookings:
+                    if str(b.get('courtId')) == court_id and b.get('date') == booking_date and b.get('state') == 'confirmed' and not b.get('isSocial'):
+                        try:
+                            b_start_h, b_start_m = map(int, b.get('startTime', '00:00').split(':'))
+                            b_start_mins = b_start_h * 60 + b_start_m
+                            b_end_str = b.get('endTime', '01:00')
+                            if b_end_str == '00:00':
+                                b_end_mins = 1440
+                            else:
+                                b_end_h, b_end_m = map(int, b_end_str.split(':'))
+                                b_end_mins = b_end_h * 60 + b_end_m
+
+                            # Overlap condition: start_mins < b_end_mins and end_mins > b_start_mins
+                            if start_mins < b_end_mins and end_mins > b_start_mins:
+                                conflicting.append(f"{b.get('startTime')}–{b.get('endTime')} ({b.get('id')})")
+                        except Exception:
+                            pass
+
+                if conflicting:
+                    conflict_desc = ", ".join(conflicting)
+                    payload = json.dumps({
+                        'success': False,
+                        'error': f"Cannot book {start_slot}–{end_slot} because {conflict_desc} is already booked."
+                    }).encode('utf-8')
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Content-Length', str(len(payload)))
+                    self.end_headers()
+                    self.wfile.write(payload)
+                    return
+
+            # Create new booking
+            new_id = f"CC-BK-{str(len(bookings) + 1).zfill(4)}"
+            player_name = f"{member.get('name')} ({(member.get('plan') or 'Gold').upper()})" if member else (walkin_name or "Walk-in Guest")
+            new_booking = {
+                'id': new_id,
+                'courtId': court_id,
+                'courtName': court_name,
+                'sport': sport,
+                'date': booking_date,
+                'startTime': start_slot,
+                'endTime': end_slot,
+                'duration': f"{int(duration_hours)} Hour{'s' if duration_hours > 1 else ''}",
+                'durationHours': duration_hours,
+                'bookingType': booking_type,
+                'memberId': member_id if member else None,
+                'playerName': player_name,
+                'rateApplied': rate_label,
+                'isSocial': is_social,
+                'state': 'confirmed'
+            }
+
+            bookings.insert(0, new_booking)
+            store['cc_bookings'] = bookings
+            save_store(store)
+
+            payload = json.dumps({
+                'success': True,
+                'reference': new_id,
+                'booking_id': new_id,
+                'booking': new_booking
+            }).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if path == '/champions_club/bookings/cancel':
+            store = load_store()
+            bookings = store.get('cc_bookings', [])
+            b_id = str(data.get('booking_id', ''))
+            found = False
+            for b in bookings:
+                if str(b.get('id')) == b_id:
+                    b['state'] = 'cancelled'
+                    found = True
+                    break
+            if found:
+                store['cc_bookings'] = bookings
+                save_store(store)
+                payload = json.dumps({'success': True, 'message': 'Booking cancelled and slot released.'}).encode('utf-8')
+            else:
+                payload = json.dumps({'success': False, 'error': f"Booking '{b_id}' not found."}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        # Handle Champions Club Odoo JSON RPC endpoints
         if path == '/champions_club/membership/members':
             store = load_store()
             members = store.get('cc_members', [])
