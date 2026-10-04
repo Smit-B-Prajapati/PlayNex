@@ -682,24 +682,18 @@ const ClubAdminAuth = (function() {
     const navUl = document.querySelector('.cc-nav-links');
     if (navUl) {
       const isDashboard = typeof window !== 'undefined' && window.location && window.location.pathname.toLowerCase().includes('dashboard.html');
-      if (authenticated) {
-        if (isDashboard) {
-          // On dashboard.html, center navigation displays ADMIN DASHBOARD indicator
-          navUl.innerHTML = `<li><a href="dashboard.html" class="cc-nav-link is-active">ADMIN DASHBOARD</a></li>`;
-        } else {
-          // On other pages in admin mode, keep clean navbar without redundant links
-          navUl.innerHTML = '';
-        }
+      if (isDashboard) {
+        // On dashboard.html, center navigation displays ADMIN DASHBOARD indicator
+        navUl.innerHTML = `<li><a href="dashboard.html" class="cc-nav-link is-active">ADMIN DASHBOARD</a></li>`;
       } else {
-        // On public / member pages: Home, Courts, Shop, Cafe/Bar, Enquiries, Member Portal, Admin Dashboard
+        // On public / member / admin pages: Home, Courts, Shop, Cafe/Bar, Enquiries (Member Portal and Admin Dashboard removed from header)
+        // navUl.innerHTML = '';
         navUl.innerHTML = `
           <li><a href="index.html" class="cc-nav-link">Home</a></li>
           <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
           <li><a href="shop.html" class="cc-nav-link">Shop</a></li>
           <li><a href="pos.html" class="cc-nav-link">Cafe/Bar</a></li>
           <li><a href="crm.html" class="cc-nav-link">Enquiries</a></li>
-          <li><a href="portal.html" class="cc-nav-link">Member Portal</a></li>
-          <li><a href="dashboard.html" class="cc-nav-link">Admin Dashboard</a></li>
         `;
 
         // Highlight active page
