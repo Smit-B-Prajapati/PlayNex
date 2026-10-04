@@ -176,6 +176,114 @@
         }
       ],
       "notes": "Silver Tier member."
+    },
+    {
+      "id": "CC-MEM-00109",
+      "name": "Roger Federer",
+      "email": "roger@tennis.org",
+      "phone": "+91 99001 00001",
+      "plan": "gold",
+      "startDate": "2026-10-01",
+      "endDate": "2027-10-01",
+      "state": "active",
+      "history": [
+        {
+          "timestamp": "2026-10-03 10:00",
+          "type": "signup",
+          "desc": "Enrolled under GOLD Plan"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "CC-MEM-00110",
+      "name": "Rafael Nadal",
+      "email": "rafa@tennis.org",
+      "phone": "+91 99001 00002",
+      "plan": "gold",
+      "startDate": "2026-10-01",
+      "endDate": "2027-10-01",
+      "state": "active",
+      "history": [
+        {
+          "timestamp": "2026-10-03 10:00",
+          "type": "signup",
+          "desc": "Enrolled under GOLD Plan"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "CC-MEM-00111",
+      "name": "Roger Federer",
+      "email": "roger@tennis.org",
+      "phone": "+91 99001 00001",
+      "plan": "gold",
+      "startDate": "2026-10-01",
+      "endDate": "2027-10-01",
+      "state": "active",
+      "history": [
+        {
+          "timestamp": "2026-10-03 10:00",
+          "type": "signup",
+          "desc": "Enrolled under GOLD Plan"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "CC-MEM-00112",
+      "name": "Rafael Nadal",
+      "email": "rafa@tennis.org",
+      "phone": "+91 99001 00002",
+      "plan": "gold",
+      "startDate": "2026-10-01",
+      "endDate": "2027-10-01",
+      "state": "active",
+      "history": [
+        {
+          "timestamp": "2026-10-03 10:00",
+          "type": "signup",
+          "desc": "Enrolled under GOLD Plan"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "CC-MEM-00113",
+      "name": "Elena Rostova",
+      "email": "elena.silver@example.com",
+      "phone": "+91 98200 11002",
+      "plan": "silver",
+      "startDate": "2026-10-01",
+      "endDate": "2027-10-01",
+      "state": "active",
+      "history": [
+        {
+          "timestamp": "2026-10-03 10:00",
+          "type": "signup",
+          "desc": "Enrolled under SILVER Plan"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "CC-MEM-00114",
+      "name": "Leo Chen",
+      "email": "leo.junior@example.com",
+      "phone": "+91 98200 11003",
+      "plan": "junior",
+      "startDate": "2026-10-01",
+      "endDate": "2027-10-01",
+      "state": "active",
+      "history": [
+        {
+          "timestamp": "2026-10-03 10:00",
+          "type": "signup",
+          "desc": "Enrolled under JUNIOR Plan"
+        }
+      ],
+      "notes": ""
     }
   ],
   "cc_courts": [
@@ -481,7 +589,143 @@
   ],
   "cc_bookings": [
     {
-      "id": "CC-BK-0008",
+      "id": "CC-BK-0022",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-10-15",
+      "startTime": "18:00",
+      "endTime": "19:00",
+      "duration": "1 Hour",
+      "durationHours": 1.0,
+      "bookingType": "walkin",
+      "memberId": null,
+      "playerName": "User Beta",
+      "rateApplied": "\u20b9 500.00",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0021",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-10-15",
+      "startTime": "18:00",
+      "endTime": "19:00",
+      "duration": "1 Hour",
+      "durationHours": 1.0,
+      "bookingType": "walkin",
+      "memberId": null,
+      "playerName": "User Alpha",
+      "rateApplied": "\u20b9 500.00",
+      "isSocial": false,
+      "state": "cancelled"
+    },
+    {
+      "id": "CC-BK-0020",
+      "courtId": "3",
+      "courtName": "Cricket Pitch & Net 1 (Turf)",
+      "sport": "cricket",
+      "date": "2026-10-15",
+      "startTime": "14:00",
+      "endTime": "15:00",
+      "duration": "1 Hour",
+      "durationHours": 1.0,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00114",
+      "playerName": "Leo Chen (JUNIOR)",
+      "rateApplied": "\u20b9 200.00",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0019",
+      "courtId": "6",
+      "courtName": "Badminton Court 2 (Indoor Mat)",
+      "sport": "badminton",
+      "date": "2026-10-15",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "duration": "2 Hours",
+      "durationHours": 2.0,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00113",
+      "playerName": "Elena Rostova (SILVER)",
+      "rateApplied": "\u20b9 600.00",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0018",
+      "courtId": "5",
+      "courtName": "Badminton Court 1 (Indoor Mat)",
+      "sport": "badminton",
+      "date": "2026-10-15",
+      "startTime": "11:00",
+      "endTime": "12:00",
+      "duration": "1 Hour",
+      "durationHours": 1.0,
+      "bookingType": "walkin",
+      "memberId": null,
+      "playerName": "Existing Middle Player",
+      "rateApplied": "\u20b9 400.00",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0017",
+      "courtId": "4",
+      "courtName": "Cricket Practice Net 2",
+      "sport": "cricket",
+      "date": "2026-10-15",
+      "startTime": "10:00",
+      "endTime": "13:00",
+      "duration": "3 Hours",
+      "durationHours": 3.0,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00111",
+      "playerName": "Roger Federer (GOLD)",
+      "rateApplied": "\u20b9 0.00 (Free)",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0016",
+      "courtId": "2",
+      "courtName": "Tennis Court 2 (Hard)",
+      "sport": "tennis",
+      "date": "2026-10-15",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "duration": "2 Hours",
+      "durationHours": 2.0,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00101",
+      "playerName": "David Vance (GOLD)",
+      "rateApplied": "\u20b9 0.00 (Free)",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0015",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-10-15",
+      "startTime": "08:00",
+      "endTime": "09:00",
+      "duration": "1 Hour",
+      "durationHours": 1.0,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00101",
+      "playerName": "David Vance (GOLD)",
+      "rateApplied": "\u20b9 0.00 (Free)",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0014",
       "courtId": "1",
       "courtName": "Tennis Court 1 (Clay)",
       "sport": "tennis",
@@ -498,7 +742,7 @@
       "state": "confirmed"
     },
     {
-      "id": "CC-BK-0007",
+      "id": "CC-BK-0013",
       "courtId": "5",
       "courtName": "Badminton Court 1 (Indoor Mat)",
       "sport": "badminton",
@@ -515,7 +759,7 @@
       "state": "confirmed"
     },
     {
-      "id": "CC-BK-0006",
+      "id": "CC-BK-0012",
       "courtId": "3",
       "courtName": "Cricket Pitch & Net 1 (Turf)",
       "sport": "cricket",
@@ -532,7 +776,7 @@
       "state": "confirmed"
     },
     {
-      "id": "CC-BK-0005",
+      "id": "CC-BK-0011",
       "courtId": "2",
       "courtName": "Tennis Court 2 (Hard)",
       "sport": "tennis",
@@ -549,7 +793,7 @@
       "state": "confirmed"
     },
     {
-      "id": "CC-BK-0004",
+      "id": "CC-BK-0010",
       "courtId": "1",
       "courtName": "Tennis Court 1 (Clay)",
       "sport": "tennis",
@@ -566,19 +810,112 @@
       "state": "cancelled"
     },
     {
-      "id": "CC-BK-0003",
+      "id": "CC-BK-0009",
       "courtId": "1",
       "courtName": "Tennis Court 1 (Clay)",
       "sport": "tennis",
       "date": "2026-10-04",
       "startTime": "06:00",
       "endTime": "07:00",
+      "durationHours": 1,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00102",
+      "playerName": "Elena Rostova (SILVER)",
+      "rateApplied": "\u20b9 300.00",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0009",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-10-04",
+      "startTime": "11:00",
+      "endTime": "12:00",
+      "durationHours": 1,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00102",
+      "playerName": "Elena Rostova (SILVER)",
+      "rateApplied": "\u20b9 300.00",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0015",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-10-03",
+      "startTime": "19:00",
+      "endTime": "22:00",
+      "durationHours": 3,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00101",
+      "playerName": "Aditya Varma (GOLD)",
+      "rateApplied": "\u20b9 0.00 (Free)",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0006",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-10-10",
+      "startTime": "08:00",
+      "endTime": "09:00",
       "duration": "1 Hour",
-      "durationHours": 1.0,
+      "durationHours": 1,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00101",
+      "playerName": "Aditya Varma (GOLD)",
+      "rateApplied": "\u20b9 0.00 (Free)",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0005",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-10-03",
+      "startTime": "08:00",
+      "endTime": "09:00",
+      "bookingType": "member",
+      "memberId": "CC-MEM-00102",
+      "playerName": "Mevawala Hetal Jiteshkumar (GOLD)",
+      "rateApplied": "\u20b9 500.00",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0004",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-10-03",
+      "startTime": "13:00",
+      "endTime": "14:00",
       "bookingType": "member",
       "memberId": "CC-MEM-00103",
-      "playerName": "Leo Chen (JUNIOR)",
-      "rateApplied": "\u20b9 200.00",
+      "playerName": "David Vance (GOLD)",
+      "rateApplied": "\u20b9 0.00 (Free)",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0003",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-10-03",
+      "startTime": "12:00",
+      "endTime": "13:00",
+      "bookingType": "member",
+      "memberId": "CC-MEM-00103",
+      "playerName": "David Vance (GOLD)",
+      "rateApplied": "\u20b9 0.00 (Free)",
       "isSocial": false,
       "state": "confirmed"
     },
@@ -590,12 +927,11 @@
       "date": "2026-10-03",
       "startTime": "18:00",
       "endTime": "19:00",
-      "duration": "1 Hour",
-      "durationHours": 1,
       "bookingType": "member",
       "memberId": "CC-MEM-00101",
-      "playerName": "David Vance (GOLD)",
+      "playerName": "David Vance (Gold)",
       "rateApplied": "\u20b9 0.00 (Free)",
+      "fee": 0,
       "isSocial": false,
       "state": "confirmed"
     },
@@ -607,12 +943,11 @@
       "date": "2026-10-03",
       "startTime": "17:00",
       "endTime": "18:00",
-      "duration": "1 Hour",
-      "durationHours": 1,
       "bookingType": "walkin",
       "memberId": null,
       "playerName": "Rahul Sharma (Walk-in)",
       "rateApplied": "\u20b9 600.00",
+      "fee": 600,
       "isSocial": false,
       "state": "confirmed"
     }

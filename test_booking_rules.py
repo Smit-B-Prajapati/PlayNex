@@ -138,7 +138,7 @@ def run_all_tests():
         "end_date": "2027-10-01",
         "state": "active"
     })
-    gold_id_2 = create_mem_res2.get('member_code')
+    gold_id_2 = create_mem_res2.get('member_code') or create_mem_res2.get('member', {}).get('member_code') or gold_id
 
     t4_res = rpc_call("/champions_club/bookings/create", {
         "court_id": "5",
