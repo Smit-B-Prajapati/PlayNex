@@ -1151,6 +1151,15 @@
     }
 
     let html = '';
+    const categoryDefaults = {
+      rackets: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80',
+      balls: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80',
+      cricket: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80',
+      shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80',
+      apparel: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=400&q=80',
+      accessories: 'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=400&q=80'
+    };
+
     products.forEach(p => {
       const stockQty = p.stock !== undefined ? p.stock : (p.qty_on_hand || 0);
       const minAlert = p.minAlert !== undefined ? p.minAlert : (p.min_stock_alert_level || 5);
@@ -1158,10 +1167,21 @@
       const isOut = stockQty <= 0;
       const statusBadge = isOut ? 'cc-badge-danger' : isLow ? 'cc-badge-warning' : 'cc-badge-active';
       const statusText = isOut ? 'OUT OF STOCK' : isLow ? 'LOW STOCK' : 'IN STOCK';
+      const imgSrc = p.image || categoryDefaults[p.category] || categoryDefaults.rackets;
+      const fallbackSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" rx="8" fill="%23121826"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="18">📦</text></svg>`;
 
       html += `
         <tr>
-          <td><strong>${p.name}</strong><br><span class="cc-body-xs" style="color: var(--cc-text-muted);">${p.desc || ''}</span></td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 40px; height: 40px; min-width: 40px; border-radius: 8px; overflow: hidden; background: rgba(10,14,23,0.85); border: 1px solid rgba(212,175,55,0.25); display: flex; align-items: center; justify-content: center;">
+                <img src="${imgSrc}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='${fallbackSvg}';">
+              </div>
+              <div>
+                <strong>${p.name}</strong><br><span class="cc-body-xs" style="color: var(--cc-text-muted);">${p.desc || ''}</span>
+              </div>
+            </div>
+          </td>
           <td><strong style="color: var(--cc-gold-400); font-family: monospace;">${p.sku || p.default_code}</strong></td>
           <td><span class="cc-badge cc-badge-silver">${(p.category || 'General').toUpperCase()}</span></td>
           <td><strong style="font-size: 15px; color: ${isLow ? '#f87171' : 'var(--cc-text-primary)'}; font-family: monospace;">${stockQty} units</strong></td>
@@ -2073,14 +2093,29 @@
 
   function handleCreateProduct(event) {
     event.preventDefault();
-    const name = document.getElementById('prod-name')?.value;
-    const category = document.getElementById('prod-category')?.value;
-    const price = parseFloat(document.getElementById('prod-price')?.value || 0);
-    const stock = parseInt(document.getElementById('prod-stock')?.value || 0);
-    const minAlert = parseInt(document.getElementById('prod-alert')?.value || 5);
+    const name = document.getElementById('prod-name')?.value?.trim() || document.getElementById('qadd-prod-name')?.value?.trim();
+    const category = document.getElementById('prod-category')?.value || document.getElementById('qadd-prod-category')?.value || 'rackets';
+    const price = parseFloat(document.getElementById('prod-price')?.value || document.getElementById('qadd-prod-price')?.value || 0);
+    const stock = parseInt(document.getElementById('prod-stock')?.value || document.getElementById('qadd-prod-stock')?.value || 0);
+    const minAlert = parseInt(document.getElementById('prod-alert')?.value || document.getElementById('qadd-prod-alert')?.value || 5);
+    let image = document.getElementById('prod-image')?.value?.trim() || document.getElementById('qadd-prod-image')?.value?.trim();
+
+    const categoryDefaults = {
+      rackets: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80',
+      balls: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80',
+      cricket: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80',
+      shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80',
+      apparel: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=400&q=80',
+      accessories: 'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=400&q=80'
+    };
+
+    if (!image) {
+      image = categoryDefaults[category] || categoryDefaults.rackets;
+    }
 
     const products = window.ClubDataStore ? window.ClubDataStore.getProducts() : [];
-    const newSku = `CC-${category.substring(0, 3).toUpperCase()}-0${products.length + 1}`;
+    const skuPrefix = category === 'rackets' ? 'RCK' : category === 'balls' ? 'BAL' : category === 'shoes' ? 'SHOE' : category === 'apparel' ? 'APP' : 'ACC';
+    const newSku = `CC-${skuPrefix}-0${products.length + 1}`;
 
     const newProd = {
       id: `p${products.length + 1}`,
@@ -2090,16 +2125,50 @@
       price,
       stock,
       minAlert,
-      desc: 'Shared shelf retail inventory.'
+      desc: 'Shared shelf retail inventory.',
+      image
     };
 
     products.push(newProd);
     window.ClubDataStore.saveProducts(products);
 
     closeModal('modal-new-product');
+    closeModal('modal-quick-add-hub');
     document.getElementById('form-create-product')?.reset();
+    document.getElementById('form-qadd-product')?.reset();
+    updateDashboardImagePreview('dash-prod-preview', '');
+    updateDashboardImagePreview('qadd-prod-preview', '');
     renderAllSections();
     alert(`✓ Product "${name}" (${newSku}) added to shelf!`);
+  }
+
+  function updateDashboardImagePreview(previewPrefix, url) {
+    const img = document.getElementById(`${previewPrefix}-img`);
+    const placeholder = document.getElementById(`${previewPrefix}-placeholder`);
+    if (!img || !placeholder) return;
+    if (url && url.trim()) {
+      img.src = url.trim();
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+    } else {
+      img.style.display = 'none';
+      placeholder.style.display = 'block';
+    }
+  }
+
+  function setDashboardImagePreset(inputId, previewPrefix, catKey) {
+    const categoryDefaults = {
+      rackets: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80',
+      balls: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80',
+      cricket: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80',
+      shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80',
+      apparel: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=400&q=80',
+      accessories: 'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=400&q=80'
+    };
+    const url = categoryDefaults[catKey] || categoryDefaults.rackets;
+    const input = document.getElementById(inputId);
+    if (input) input.value = url;
+    updateDashboardImagePreview(previewPrefix, url);
   }
 
   function handleCreateInvoice(event) {
@@ -2415,6 +2484,8 @@
   window.handleCreateBooking = handleCreateBooking;
   window.handleCreateCourt = handleCreateCourt;
   window.handleCreateProduct = handleCreateProduct;
+  window.updateDashboardImagePreview = updateDashboardImagePreview;
+  window.setDashboardImagePreset = setDashboardImagePreset;
   window.toggleBarModalMode = toggleBarModalMode;
   window.handleCreateBarAsset = handleCreateBarAsset;
   window.populateCourtDropdowns = populateCourtDropdowns;

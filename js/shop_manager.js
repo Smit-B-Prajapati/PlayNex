@@ -42,6 +42,36 @@ function saveShopOrders(orders) {
 let cart = [];
 let currentCategoryFilter = 'all';
 
+const CATEGORY_DEFAULT_IMAGES = {
+  rackets: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80',
+  balls: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80',
+  cricket: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80',
+  shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80',
+  apparel: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=400&q=80',
+  accessories: 'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=400&q=80'
+};
+
+function getProductFallbackSvg(category) {
+  const icon = category === 'rackets' ? '🏸' : category === 'balls' ? '🎾' : category === 'shoes' ? '👟' : category === 'apparel' ? '👕' : category === 'accessories' ? '🎽' : '📦';
+  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" rx="16" fill="%23121826"/><rect x="2" y="2" width="116" height="116" rx="14" fill="none" stroke="%23d4af37" stroke-width="1.5" stroke-opacity="0.35"/><circle cx="60" cy="60" r="32" fill="%23d4af37" fill-opacity="0.08"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="36">${icon}</text></svg>`;
+}
+
+function updateCategoryFilterCounts(allProducts) {
+  const counts = {
+    all: allProducts.length,
+    rackets: allProducts.filter(p => p.category === 'rackets').length,
+    balls: allProducts.filter(p => p.category === 'balls').length,
+    shoes: allProducts.filter(p => p.category === 'shoes').length,
+    apparel: allProducts.filter(p => p.category === 'apparel').length,
+    accessories: allProducts.filter(p => p.category === 'accessories').length
+  };
+
+  for (const [cat, count] of Object.entries(counts)) {
+    const el = document.getElementById(`chip-count-${cat}`);
+    if (el) el.textContent = count;
+  }
+}
+
 async function renderCatalog() {
   const container = document.getElementById('product-grid-container');
   if (!container) return;
@@ -52,7 +82,9 @@ async function renderCatalog() {
     </div>
   `;
 
-  const products = await getProductsAsync(currentCategoryFilter);
+  const products = await getProductsAsync(null);
+  updateCategoryFilterCounts(products);
+
   container.innerHTML = '';
 
   const filtered = products.filter(p => {
@@ -64,8 +96,8 @@ async function renderCatalog() {
     container.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--cc-text-muted); background: rgba(22, 29, 46, 0.4); border-radius: var(--cc-radius-lg); border: 1px dashed var(--cc-border-medium);">
         <div style="font-size: 24px; margin-bottom: 6px;">📦</div>
-        <strong style="display: block; font-size: 15px; color: var(--cc-text-primary);">No data available</strong>
-        <span style="font-size: 13px;">No products currently found in category '${currentCategoryFilter}'.</span>
+        <strong style="display: block; font-size: 15px; color: var(--cc-text-primary);">No products found</strong>
+        <span style="font-size: 13px;">No items currently listed under '${currentCategoryFilter}'.</span>
       </div>
     `;
     return;
@@ -75,34 +107,44 @@ async function renderCatalog() {
     const isLowStock = product.stock <= (product.min_alert || product.minAlert || 5) && product.stock > 0;
     const isOutOfStock = product.stock <= 0;
 
+    let imgSrc = product.image;
+    if (!imgSrc || imgSrc.trim() === '') {
+      imgSrc = CATEGORY_DEFAULT_IMAGES[product.category] || CATEGORY_DEFAULT_IMAGES.rackets;
+    }
+    const fallbackSvg = getProductFallbackSvg(product.category);
+
     const card = document.createElement('div');
     card.className = 'cc-product-card';
     card.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-        <div class="cc-product-icon-box">
-          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-          </svg>
+      <div style="display: flex; gap: 14px; align-items: flex-start; margin-bottom: 0.75rem;">
+        <!-- Small Product Image Thumbnail Beside Listing -->
+        <div class="cc-product-thumb-box">
+          <img src="${imgSrc}" alt="${product.name}" class="cc-product-thumb-img" onerror="this.onerror=null; this.src='${fallbackSvg}';">
         </div>
-        <div>
-          ${isOutOfStock ? `
-            <span class="cc-badge cc-badge-danger">Out of Stock</span>
-          ` : isLowStock ? `
-            <span class="cc-badge cc-badge-warning"><span class="cc-pulse-dot"></span> Low Stock (${product.stock} Left)</span>
-          ` : `
-            <span class="cc-badge cc-badge-active">In Stock (${product.stock})</span>
-          `}
+        
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; gap: 6px;">
+            <span class="cc-eyebrow" style="font-size: 10px; margin-bottom: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.sku} &bull; ${product.category.toUpperCase()}</span>
+            <div>
+              ${isOutOfStock ? `
+                <span class="cc-badge cc-badge-danger" style="font-size: 9px; padding: 2px 6px;">Out of Stock</span>
+              ` : isLowStock ? `
+                <span class="cc-badge cc-badge-warning" style="font-size: 9px; padding: 2px 6px;"><span class="cc-pulse-dot"></span> Low (${product.stock})</span>
+              ` : `
+                <span class="cc-badge cc-badge-active" style="font-size: 9px; padding: 2px 6px;">In Stock (${product.stock})</span>
+              `}
+            </div>
+          </div>
+          <h3 class="cc-heading-4" style="margin-bottom: 0; font-size: 15px; font-weight: 700; line-height: 1.3; color: var(--cc-text-primary);">${product.name}</h3>
         </div>
       </div>
 
-      <div class="cc-eyebrow" style="font-size: 10px; margin-bottom: 4px;">${product.sku} &bull; ${product.category.toUpperCase()}</div>
-      <h3 class="cc-heading-4" style="margin-bottom: 0.5rem;">${product.name}</h3>
-      <p class="cc-body-xs" style="color: var(--cc-text-muted); margin-bottom: 1rem; flex-grow: 1;">${product.description || product.desc || 'Premium sports equipment.'}</p>
+      <p class="cc-body-xs" style="color: var(--cc-text-muted); margin-bottom: 1rem; flex-grow: 1; font-size: 12px; line-height: 1.45;">${product.description || product.desc || 'Premium sports equipment on shared shelf.'}</p>
 
       <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--cc-border-subtle); padding-top: 0.75rem;">
         <div>
-          <span style="font-size: 11px; color: var(--cc-text-muted);">Sales Price</span>
-          <div class="cc-text-mono" style="font-size: 1.15rem; font-weight: 800; color: var(--cc-gold-400);">₹ ${product.price.toLocaleString()}</div>
+          <span style="font-size: 10px; color: var(--cc-text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">Sales Price</span>
+          <div class="cc-text-mono" style="font-size: 1.18rem; font-weight: 800; color: var(--cc-gold-400);">₹ ${product.price.toLocaleString()}</div>
         </div>
         <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill ${isOutOfStock ? 'is-disabled' : ''}" 
                 onclick="addToCart('${product.id}')" ${isOutOfStock ? 'disabled' : ''}>
@@ -523,4 +565,86 @@ document.addEventListener('DOMContentLoaded', () => {
   // Expose globally
   window.renderShopMemberBanner = renderShopMemberBanner;
 });
+
+// ==========================================
+// ADD PRODUCT MODAL, IMAGE PRESETS & LIVE PREVIEW
+// ==========================================
+window.openShopAddProductModal = function() {
+  const modal = document.getElementById('modal-shop-new-product');
+  if (modal) {
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+window.setShopImagePreset = function(presetKey) {
+  const url = CATEGORY_DEFAULT_IMAGES[presetKey] || CATEGORY_DEFAULT_IMAGES.rackets;
+  const input = document.getElementById('shop-new-prod-image');
+  if (input) input.value = url;
+  updateShopImagePreview(url);
+};
+
+window.updateShopImagePreview = function(url) {
+  const imgEl = document.getElementById('shop-new-prod-preview-img');
+  const placeholderEl = document.getElementById('shop-new-prod-preview-placeholder');
+  if (!imgEl || !placeholderEl) return;
+  if (url && url.trim()) {
+    imgEl.src = url.trim();
+    imgEl.style.display = 'block';
+    placeholderEl.style.display = 'none';
+  } else {
+    imgEl.style.display = 'none';
+    placeholderEl.style.display = 'block';
+  }
+};
+
+window.handleCreateShopProduct = function(event) {
+  event.preventDefault();
+  const name = document.getElementById('shop-new-prod-name')?.value?.trim();
+  const category = document.getElementById('shop-new-prod-category')?.value || 'rackets';
+  const price = parseFloat(document.getElementById('shop-new-prod-price')?.value || 0);
+  const stock = parseInt(document.getElementById('shop-new-prod-stock')?.value || 0);
+  const minAlert = parseInt(document.getElementById('shop-new-prod-alert')?.value || 4);
+  const desc = document.getElementById('shop-new-prod-desc')?.value?.trim() || 'Premium sports equipment on shared shelf.';
+  let image = document.getElementById('shop-new-prod-image')?.value?.trim();
+  if (!image) {
+    image = CATEGORY_DEFAULT_IMAGES[category] || CATEGORY_DEFAULT_IMAGES.rackets;
+  }
+
+  if (!name || price <= 0) {
+    alert('Please enter a valid product name and price.');
+    return;
+  }
+
+  const products = window.ClubDataStore ? window.ClubDataStore.getProducts() : [];
+  const skuPrefix = category === 'rackets' ? 'RCK' : category === 'balls' ? 'BAL' : category === 'shoes' ? 'SHOE' : category === 'apparel' ? 'APP' : 'ACC';
+  const newSku = `CC-${skuPrefix}-0${products.length + 1}`;
+
+  const newProd = {
+    id: `p${products.length + 1}`,
+    sku: newSku,
+    name,
+    category,
+    price,
+    stock,
+    minAlert,
+    desc,
+    image
+  };
+
+  products.push(newProd);
+  if (window.ClubDataStore) {
+    window.ClubDataStore.saveProducts(products);
+  }
+
+  const modal = document.getElementById('modal-shop-new-product');
+  if (modal) modal.classList.remove('is-open');
+  document.body.style.overflow = '';
+  document.getElementById('form-shop-create-product')?.reset();
+  updateShopImagePreview('');
+
+  renderCatalog();
+  alert(`✓ Product "${name}" (${newSku}) has been added to the shared shelf!`);
+};
+
 

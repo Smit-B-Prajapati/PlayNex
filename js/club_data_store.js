@@ -175,7 +175,8 @@ const ClubDataStore = (function() {
         price: 8500,
         stock: 12,
         minAlert: 4,
-        desc: 'High-modulus graphite frame with synthetic gut stringing.'
+        desc: 'High-modulus graphite frame with synthetic gut stringing.',
+        image: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80'
       },
       {
         id: 'p2',
@@ -185,7 +186,8 @@ const ClubDataStore = (function() {
         price: 4200,
         stock: 3, // LOW STOCK ALERT
         minAlert: 5,
-        desc: 'Lightweight head-heavy balance racket for rapid smashes.'
+        desc: 'Lightweight head-heavy balance racket for rapid smashes.',
+        image: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&w=400&q=80'
       },
       {
         id: 'p3',
@@ -195,7 +197,8 @@ const ClubDataStore = (function() {
         price: 450,
         stock: 65,
         minAlert: 15,
-        desc: 'ITF approved championship extra-duty felt tennis balls.'
+        desc: 'ITF approved championship extra-duty felt tennis balls.',
+        image: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80'
       },
       {
         id: 'p4',
@@ -205,7 +208,8 @@ const ClubDataStore = (function() {
         price: 750,
         stock: 22,
         minAlert: 8,
-        desc: 'Alum tanned English leather with hand-stitched seam.'
+        desc: 'Alum tanned English leather with hand-stitched seam.',
+        image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80'
       },
       {
         id: 'p5',
@@ -215,7 +219,8 @@ const ClubDataStore = (function() {
         price: 5800,
         stock: 4,
         minAlert: 3,
-        desc: 'Non-marking herringbone gum rubber outsole for all court surfaces.'
+        desc: 'Non-marking herringbone gum rubber outsole for all court surfaces.',
+        image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80'
       },
       {
         id: 'p6',
@@ -225,7 +230,8 @@ const ClubDataStore = (function() {
         price: 350,
         stock: 40,
         minAlert: 10,
-        desc: 'Super absorbent polyurethane overgrips with club vibration dampeners.'
+        desc: 'Super absorbent polyurethane overgrips with club vibration dampeners.',
+        image: 'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=400&q=80'
       },
       {
         id: 'p7',
@@ -235,7 +241,8 @@ const ClubDataStore = (function() {
         price: 1800,
         stock: 18,
         minAlert: 5,
-        desc: 'Moisture-wicking breathable athletic polyester club jersey.'
+        desc: 'Moisture-wicking breathable athletic polyester club jersey.',
+        image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=400&q=80'
       }
     ],
     shopOrders: [
