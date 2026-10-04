@@ -5,16 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CHAMPIONS CLUB — Member Self-Service Portal</title>
   <meta name="description" content="Secure, authenticated member portal for Champions Club. View your membership status, court bookings, shop orders, and bar tab history.">
-  <link rel="stylesheet" href="css/design_system.css">
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/admin_auth.css">
+
+  <!-- Immediate Theme Initialization (Prevent Flash) -->
+  <script>
+    (function(){try{var t=localStorage.getItem('cc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+  </script>
   <style>
     .cc-portal-login-card {
       max-width: 440px;
       margin: 4rem auto;
       padding: 2.5rem;
-      background: var(--cc-navy-800);
+      background: var(--cc-bg-surface);
       border: 1px solid var(--cc-border-medium);
       border-radius: var(--cc-radius-lg);
       box-shadow: var(--cc-shadow-card);
@@ -68,10 +77,11 @@
       transform: scale(1) translateY(0) !important;
     }
     .cc-modal {
-      background: #0F172A !important;
+      background: var(--cc-bg-surface) !important;
+      color: var(--cc-text-primary) !important;
       border: 1px solid var(--cc-gold-500) !important;
       border-radius: 16px !important;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(212,175,55,0.15) !important;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 20px rgba(212,175,55,0.15) !important;
       transform: scale(0.95) translateY(10px) !important;
       transition: transform 0.2s ease !important;
       max-height: 90vh !important;
@@ -106,8 +116,22 @@
         </ul>
       </nav>
 
-      <div class="cc-nav-actions" id="portal-nav-actions">
-        <!-- Auth status button / logout -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- Theme Toggle Control -->
+        <button id="cc-theme-toggle-btn" class="cc-theme-pill-toggle" type="button" aria-label="Switch to light theme" title="Switch between Light and Dark mode">
+          <span class="cc-theme-opt cc-theme-opt-dark is-active">
+            <span class="cc-theme-icon">🌙</span>
+            <span class="cc-theme-text">Dark</span>
+          </span>
+          <span class="cc-theme-opt cc-theme-opt-light">
+            <span class="cc-theme-icon">☀️</span>
+            <span class="cc-theme-text">Light</span>
+          </span>
+        </button>
+
+        <div class="cc-nav-actions" id="portal-nav-actions">
+          <!-- Auth status button / logout -->
+        </div>
       </div>
     </div>
   </header>

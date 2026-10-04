@@ -326,3 +326,54 @@
   flex-direction: column;
   align-items: center;
 }
+
+/* Light Theme overrides for Landing Page */
+[data-theme="light"] .cc-facility-card {
+  background: #FFFFFF;
+  border-color: #DDD9CF;
+  box-shadow: 0 4px 18px rgba(32, 35, 43, 0.06);
+}
+
+[data-theme="light"] .cc-facility-card:hover {
+  border-color: #C9A227;
+  box-shadow: 0 10px 25px rgba(201, 162, 39, 0.15);
+}
+
+[data-theme="light"] .cc-tier-card {
+  background: #FFFFFF;
+  border-color: #DDD9CF;
+  box-shadow: 0 4px 18px rgba(32, 35, 43, 0.06);
+}
+
+[data-theme="light"] .cc-tier-card:hover {
+  box-shadow: 0 10px 25px rgba(32, 35, 43, 0.12);
+}
+
+[data-theme="light"] .cc-tier-card.is-featured {
+  background: linear-gradient(180deg, rgba(201, 162, 39, 0.1) 0%, #FFFFFF 100%);
+  border-color: #C9A227;
+  box-shadow: 0 10px 30px rgba(201, 162, 39, 0.15);
+}
+
+[data-theme="light"] .cc-tier-price-box {
+  background: #FAF9F6;
+  border-color: #DDD9CF;
+}
+
+[data-theme="light"] .cc-shop-cat-card {
+  background: #FFFFFF;
+  border-color: #DDD9CF;
+  box-shadow: 0 4px 18px rgba(32, 35, 43, 0.06);
+}
+
+[data-theme="light"] .cc-shop-cat-card:hover {
+  background: #FAF9F6;
+  border-color: #C9A227;
+}
+
+[data-theme="light"] .cc-cta-section {
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.12) 0%, #FFFFFF 60%, #FAF9F6 100%);
+  border-color: #C9A227;
+  box-shadow: 0 10px 30px rgba(201, 162, 39, 0.12);
+}
+

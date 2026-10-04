@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/admin_auth.css">
+
+  <!-- Immediate Theme Initialization (Prevent Flash) -->
+  <script>
+    (function(){try{var t=localStorage.getItem('cc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+  </script>
   <style>
     .cc-crm-pipeline {
       display: grid;
@@ -90,13 +95,27 @@
         </ul>
       </nav>
 
-      <div class="cc-nav-actions">
-        <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-toggle-crm-view" style="font-size: 11px; padding: 5px 12px;">
-          🔒 Staff Pipeline
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- Theme Toggle Control -->
+        <button id="cc-theme-toggle-btn" class="cc-theme-pill-toggle" type="button" aria-label="Switch to light theme" title="Switch between Light and Dark mode">
+          <span class="cc-theme-opt cc-theme-opt-dark is-active">
+            <span class="cc-theme-icon">🌙</span>
+            <span class="cc-theme-text">Dark</span>
+          </span>
+          <span class="cc-theme-opt cc-theme-opt-light">
+            <span class="cc-theme-icon">☀️</span>
+            <span class="cc-theme-text">Light</span>
+          </span>
         </button>
-        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill cc-admin-only" id="btn-open-enquiry-modal">
-          + New Visitor Enquiry
-        </button>
+
+        <div class="cc-nav-actions">
+          <button class="cc-btn cc-btn-outline-gold cc-btn-sm" id="btn-toggle-crm-view" style="font-size: 11px; padding: 5px 12px;">
+            🔒 Staff Pipeline
+          </button>
+          <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill cc-admin-only" id="btn-open-enquiry-modal">
+            + New Visitor Enquiry
+          </button>
+        </div>
       </div>
     </div>
   </header>

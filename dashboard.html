@@ -14,6 +14,11 @@
   <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/admin_auth.css">
+
+  <!-- Immediate Theme Initialization (Prevent Flash) -->
+  <script>
+    (function(){try{var t=localStorage.getItem('cc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+  </script>
 </head>
 <body class="cc-bg-base">
 
@@ -34,8 +39,22 @@
         </ul>
       </nav>
 
-      <div class="cc-nav-actions">
-        <!-- Injected dynamically: 👑 Club / Sign Out -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- Theme Toggle Control -->
+        <button id="cc-theme-toggle-btn" class="cc-theme-pill-toggle" type="button" aria-label="Switch to light theme" title="Switch between Light and Dark mode">
+          <span class="cc-theme-opt cc-theme-opt-dark is-active">
+            <span class="cc-theme-icon">🌙</span>
+            <span class="cc-theme-text">Dark</span>
+          </span>
+          <span class="cc-theme-opt cc-theme-opt-light">
+            <span class="cc-theme-icon">☀️</span>
+            <span class="cc-theme-text">Light</span>
+          </span>
+        </button>
+
+        <div class="cc-nav-actions">
+          <!-- Injected dynamically: 👑 Club / Sign Out -->
+        </div>
       </div>
     </div>
   </header>

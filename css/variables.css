@@ -1,11 +1,14 @@
 /**
- * CHAMPIONS CLUB — Design System Tokens
+ * CHAMPIONS CLUB — Design System Tokens & Dual-Theme Architecture
  * Brand: CHAMPIONS CLUB | Tagline: PLAY. PERFORM. BELONG.
+ * Themes: Luxury Dark (Default) & Luxury Light
  */
 
-:root {
+:root,
+[data-theme="dark"],
+body[data-theme="dark"] {
   /* ==========================================================================
-     1. COLOR PALETTE (Luxury Athletic Palette: Obsidian, Pure Gold, Electric Turf)
+     1. COLOR PALETTE (Luxury Dark Theme: Obsidian & Pure Gold)
      ========================================================================== */
 
   /* Backgrounds & Surfaces (Obsidian & Deep Carbon) */
@@ -13,10 +16,12 @@
   --cc-bg-secondary: #0E131F;
   --cc-bg-tertiary: #161D2E;
   --cc-bg-elevated: #1C2438;
+  --cc-bg-surface: #121826;
+  --cc-bg-card: #0E131F;
   --cc-bg-surface-glass: rgba(18, 24, 38, 0.75);
   --cc-bg-surface-glass-hover: rgba(26, 35, 54, 0.85);
 
-  /* Gold & Warm Metallic Accents (Premium / Gold Tier) */
+  /* Gold & Warm Metallic Accents (Primary Brand Gold) */
   --cc-gold-100: #FFF6E5;
   --cc-gold-200: #FDE8BD;
   --cc-gold-300: #F8D384;
@@ -27,7 +32,7 @@
   --cc-gold-glow: rgba(212, 175, 55, 0.25);
   --cc-gold-glow-intense: rgba(212, 175, 55, 0.5);
 
-  /* Athletic Performance Accents (Electric Court Neon & Turf Green) */
+  /* Athletic Performance & Status Accents */
   --cc-neon-green: #00E599;
   --cc-neon-green-glow: rgba(0, 229, 153, 0.25);
   --cc-electric-blue: #00B4D8;
@@ -35,6 +40,11 @@
   --cc-crimson: #EF4444;
   --cc-crimson-glow: rgba(239, 68, 68, 0.25);
   --cc-amber: #F59E0B;
+  --cc-navy: #252936;
+  --cc-success: #00E599;
+  --cc-warning: #F59E0B;
+  --cc-danger: #EF4444;
+  --cc-info: #00B4D8;
 
   /* Silver Tier Palette */
   --cc-silver-100: #F8FAFC;
@@ -59,6 +69,33 @@
   --cc-border-highlight: rgba(212, 175, 55, 0.35);
   --cc-border-focus: #D4AF37;
 
+  /* Component Specific Tokens */
+  --cc-table-header-bg: rgba(22, 29, 46, 0.5);
+  --cc-table-row-hover: rgba(255, 255, 255, 0.03);
+  --cc-input-bg: rgba(14, 19, 31, 0.85);
+  --cc-modal-bg: #0E131F;
+  --cc-modal-footer-bg: #161D2E;
+  --cc-navbar-bg: rgba(8, 11, 16, 0.85);
+  --cc-hero-bg: linear-gradient(180deg, rgba(20, 20, 24, 0.95) 0%, rgba(10, 10, 12, 1) 100%);
+  --cc-tab-bar-bg: rgba(14, 19, 31, 0.95);
+  --cc-tab-btn-bg: rgba(255, 255, 255, 0.04);
+  --cc-card-bg: #0E131F;
+  --cc-card-highlight-bg: linear-gradient(180deg, rgba(212, 175, 55, 0.08) 0%, rgba(14, 19, 31, 0.95) 100%);
+
+  /* Generic Design Tokens */
+  --bg-primary: var(--cc-bg-primary);
+  --bg-secondary: var(--cc-bg-secondary);
+  --bg-surface: var(--cc-bg-surface);
+  --bg-card: var(--cc-bg-card);
+  --text-primary: var(--cc-text-primary);
+  --text-secondary: var(--cc-text-secondary);
+  --text-muted: var(--cc-text-muted);
+  --border-color: var(--cc-border-medium);
+  --accent-primary: var(--cc-gold-500);
+  --accent-hover: var(--cc-gold-600);
+  --table-header: var(--cc-table-header-bg);
+  --table-row-hover: var(--cc-table-row-hover);
+
   /* Gradients */
   --cc-grad-gold: linear-gradient(135deg, #F9D976 0%, #D4AF37 50%, #A37A17 100%);
   --cc-grad-gold-soft: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.03) 100%);
@@ -66,9 +103,14 @@
   --cc-grad-glow-mesh: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
   --cc-grad-neon: linear-gradient(135deg, #00E599 0%, #00B4D8 100%);
 
-  /* ==========================================================================
-     2. SPACING SYSTEM (4px base)
-     ========================================================================== */
+  /* Elevations & Shadows */
+  --cc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --cc-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
+  --cc-shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.65);
+  --cc-shadow-gold: 0 0 30px rgba(212, 175, 55, 0.25);
+  --cc-shadow-neon: 0 0 25px rgba(0, 229, 153, 0.25);
+
+  /* Spacing System */
   --cc-space-1: 4px;
   --cc-space-2: 8px;
   --cc-space-3: 12px;
@@ -83,14 +125,11 @@
   --cc-space-24: 96px;
   --cc-space-32: 128px;
 
-  /* ==========================================================================
-     3. TYPOGRAPHY SYSTEM
-     ========================================================================== */
+  /* Typography System */
   --cc-font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --cc-font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --cc-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  /* Font Sizes */
   --cc-text-xs: 0.75rem;    /* 12px */
   --cc-text-sm: 0.875rem;   /* 14px */
   --cc-text-base: 1rem;     /* 16px */
@@ -103,32 +142,19 @@
   --cc-text-6xl: 3.75rem;   /* 60px */
   --cc-text-7xl: 4.5rem;    /* 72px */
 
-  /* Line Heights */
   --cc-leading-none: 1;
   --cc-leading-tight: 1.15;
   --cc-leading-snug: 1.35;
   --cc-leading-normal: 1.6;
   --cc-leading-relaxed: 1.75;
 
-  /* Letter Spacing */
   --cc-tracking-tight: -0.03em;
   --cc-tracking-normal: 0em;
   --cc-tracking-wide: 0.05em;
   --cc-tracking-wider: 0.1em;
   --cc-tracking-widest: 0.2em;
 
-  /* ==========================================================================
-     4. ELEVATIONS & SHADOWS
-     ========================================================================== */
-  --cc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --cc-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
-  --cc-shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.65);
-  --cc-shadow-gold: 0 0 30px rgba(212, 175, 55, 0.25);
-  --cc-shadow-neon: 0 0 25px rgba(0, 229, 153, 0.25);
-
-  /* ==========================================================================
-     5. BORDER RADIUS & BLUR
-     ========================================================================== */
+  /* Border Radius & Blur */
   --cc-radius-xs: 4px;
   --cc-radius-sm: 6px;
   --cc-radius-md: 10px;
@@ -140,18 +166,14 @@
   --cc-blur-md: blur(16px);
   --cc-blur-lg: blur(24px);
 
-  /* ==========================================================================
-     6. TRANSITIONS & TIMINGS
-     ========================================================================== */
+  /* Transitions & Timings */
   --cc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --cc-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --cc-transition-fast: 150ms var(--cc-ease-out);
-  --cc-transition-base: 250ms var(--cc-ease-out);
-  --cc-transition-slow: 400ms var(--cc-ease-out);
+  --cc-transition-base: 200ms var(--cc-ease-out);
+  --cc-transition-slow: 350ms var(--cc-ease-out);
 
-  /* ==========================================================================
-     7. Z-INDEX LAYERING
-     ========================================================================== */
+  /* Z-Index Layering */
   --cc-z-base: 1;
   --cc-z-dropdown: 50;
   --cc-z-sticky: 100;
@@ -159,4 +181,115 @@
   --cc-z-modal-backdrop: 500;
   --cc-z-modal: 600;
   --cc-z-toast: 1000;
+}
+
+/* ==========================================================================
+   2. LUXURY LIGHT THEME OVERRIDES ([data-theme="light"])
+   Exact Champions Club Specified Palette:
+   BACKGROUND: #F5F3EE | CARD: #FFFFFF | SURFACE: #FAF9F6 | PRIMARY TEXT: #20232B
+   SECONDARY TEXT: #62656D | MUTED: #7B7D84 | BORDER: #DDD9CF
+   CHAMPIONS GOLD: #C9A227 | GOLD HOVER: #A98212 | DARK NAVY: #252936
+   SUCCESS: #16805B | WARNING: #D68B16 | DANGER: #C94A4A | INFO: #3B82B6
+   ========================================================================== */
+[data-theme="light"],
+:root[data-theme="light"],
+body[data-theme="light"] {
+  /* Backgrounds & Surfaces (Ivory & Pure White) */
+  --cc-bg-primary: #F5F3EE;
+  --cc-bg-secondary: #FFFFFF;
+  --cc-bg-tertiary: #FAF9F6;
+  --cc-bg-elevated: #FAF9F6;
+  --cc-bg-surface: #FFFFFF;
+  --cc-bg-card: #FFFFFF;
+  --cc-bg-surface-glass: rgba(255, 255, 255, 0.92);
+  --cc-bg-surface-glass-hover: rgba(250, 249, 246, 0.98);
+
+  /* Gold & Warm Metallic Accents */
+  --cc-gold-100: #FAF4DF;
+  --cc-gold-200: #F3E5AE;
+  --cc-gold-300: #E6CE78;
+  --cc-gold-400: #C9A227;
+  --cc-gold-500: #C9A227; /* Champions Gold */
+  --cc-gold-600: #A98212; /* Gold Hover */
+  --cc-gold-700: #84640A;
+  --cc-gold-glow: rgba(201, 162, 39, 0.2);
+  --cc-gold-glow-intense: rgba(201, 162, 39, 0.35);
+
+  /* Athletic Performance & Status Accents */
+  --cc-neon-green: #16805B;
+  --cc-neon-green-glow: rgba(22, 128, 91, 0.2);
+  --cc-electric-blue: #3B82B6;
+  --cc-electric-blue-glow: rgba(59, 130, 182, 0.2);
+  --cc-crimson: #C94A4A;
+  --cc-crimson-glow: rgba(201, 74, 74, 0.2);
+  --cc-amber: #D68B16;
+  --cc-navy: #252936;
+  --cc-success: #16805B;
+  --cc-warning: #D68B16;
+  --cc-danger: #C94A4A;
+  --cc-info: #3B82B6;
+
+  /* Silver Tier Palette */
+  --cc-silver-100: #F1F5F9;
+  --cc-silver-300: #64748B;
+  --cc-silver-500: #475569;
+  --cc-silver-700: #334155;
+
+  /* Junior Tier Palette */
+  --cc-junior-blue: #0284C7;
+  --cc-junior-glow: rgba(2, 132, 199, 0.2);
+
+  /* Typography / Monochromes */
+  --cc-text-primary: #20232B;
+  --cc-text-secondary: #62656D;
+  --cc-text-muted: #7B7D84;
+  --cc-text-inverse: #FFFFFF;
+  --cc-text-gold: #A98212;
+
+  /* Borders & Dividers */
+  --cc-border-subtle: #DDD9CF;
+  --cc-border-medium: #DDD9CF;
+  --cc-border-highlight: rgba(201, 162, 39, 0.45);
+  --cc-border-focus: #C9A227;
+
+  /* Component Specific Tokens */
+  --cc-table-header-bg: #FAF9F6;
+  --cc-table-row-hover: #F6F4EE;
+  --cc-input-bg: #FFFFFF;
+  --cc-modal-bg: #FFFFFF;
+  --cc-modal-footer-bg: #FAF9F6;
+  --cc-navbar-bg: rgba(245, 243, 238, 0.95);
+  --cc-hero-bg: linear-gradient(180deg, #FAF9F6 0%, #F5F3EE 100%);
+  --cc-tab-bar-bg: rgba(245, 243, 238, 0.96);
+  --cc-tab-btn-bg: #FFFFFF;
+  --cc-card-bg: #FFFFFF;
+  --cc-card-highlight-bg: linear-gradient(180deg, rgba(201, 162, 39, 0.08) 0%, #FFFFFF 100%);
+
+  /* Generic Design Tokens */
+  --bg-primary: #F5F3EE;
+  --bg-secondary: #EAE7DF;
+  --bg-surface: #FAF9F6;
+  --bg-card: #FFFFFF;
+  --text-primary: #20232B;
+  --text-secondary: #62656D;
+  --text-muted: #7B7D84;
+  --border-color: #DDD9CF;
+  --accent-primary: #C9A227;
+  --accent-hover: #A98212;
+  --table-header: #FAF9F6;
+  --table-row-hover: #F6F4EE;
+
+  /* Gradients */
+  --cc-grad-gold: linear-gradient(135deg, #DFBE52 0%, #C9A227 50%, #A98212 100%);
+  --cc-grad-gold-soft: linear-gradient(135deg, rgba(201, 162, 39, 0.12) 0%, rgba(201, 162, 39, 0.02) 100%);
+  --cc-grad-dark-surface: linear-gradient(180deg, #FFFFFF 0%, #FAF9F6 100%);
+  --cc-grad-glow-mesh: radial-gradient(circle at 50% 0%, rgba(201, 162, 39, 0.08) 0%, transparent 70%);
+  --cc-grad-neon: linear-gradient(135deg, #16805B 0%, #3B82B6 100%);
+
+  /* Elevations & Shadows (Subtle, Elevated Luxury Feel) */
+  --cc-shadow-sm: 0 2px 8px rgba(32, 35, 43, 0.04);
+  --cc-shadow-md: 0 4px 18px rgba(32, 35, 43, 0.06);
+  --cc-shadow-lg: 0 8px 28px rgba(32, 35, 43, 0.08);
+  --cc-shadow-gold: 0 2px 14px rgba(201, 162, 39, 0.2);
+  --cc-shadow-neon: 0 2px 14px rgba(22, 128, 91, 0.2);
 }
