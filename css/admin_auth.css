@@ -5,7 +5,8 @@
    ========================================================================== */
 
 /* Utility class for hiding unauthorized elements */
-.cc-hidden-unauthorized {
+.cc-hidden-unauthorized,
+html.cc-unauthorized-admin #cc-admin-protected-content {
   display: none !important;
 }
 
@@ -109,3 +110,42 @@
   border-style: solid;
   transform: translateY(-1px);
 }
+
+/* Unified Login Modal Tab Switcher */
+.cc-login-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 14px;
+  font-family: var(--cc-font-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cc-text-muted);
+  cursor: pointer;
+  transition: all var(--cc-transition-fast);
+}
+.cc-login-tab-btn:hover {
+  color: var(--cc-text-primary);
+}
+.cc-login-tab-btn.is-active {
+  color: var(--cc-gold-400);
+  border-bottom-color: var(--cc-gold-500);
+}
+
+[data-theme="light"] .cc-login-tab-btn.is-active {
+  color: #A98212;
+  border-bottom-color: #C9A227;
+}
+[data-theme="light"] .cc-admin-badge-pill {
+  background: rgba(201, 162, 39, 0.12);
+  border-color: #C9A227;
+  color: #84640A;
+  box-shadow: 0 2px 8px rgba(201, 162, 39, 0.15);
+}
+[data-theme="light"] .cc-admin-gate-card {
+  background: #FFFFFF;
+  border-color: #DDD9CF;
+  box-shadow: 0 10px 30px rgba(32, 35, 43, 0.08);
+}
+

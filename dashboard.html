@@ -18,6 +18,20 @@
   <!-- Immediate Theme Initialization (Prevent Flash) -->
   <script>
     (function(){try{var t=localStorage.getItem('cc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+    (function(){try{
+      var loggedOut = sessionStorage.getItem('cc_admin_logged_out');
+      var raw = sessionStorage.getItem('cc_admin_session') || localStorage.getItem('cc_admin_session');
+      var isAdmin = false;
+      if (loggedOut !== 'true' && raw) {
+        var s = JSON.parse(raw);
+        if (s && s.authenticated === true && (s.role === 'administrator' || s.role === 'admin')) {
+          isAdmin = true;
+        }
+      }
+      if (!isAdmin) {
+        document.documentElement.classList.add('cc-unauthorized-admin');
+      }
+    }catch(e){}})();
   </script>
 </head>
 <body class="cc-bg-base">

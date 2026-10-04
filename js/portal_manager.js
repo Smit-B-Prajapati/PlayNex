@@ -82,9 +82,6 @@
             ${tierBadgeHtml}
           </div>
           <button class="cc-btn cc-btn-secondary cc-btn-sm" id="btn-portal-logout" style="font-size: 11px; padding: 4px 10px;">Sign Out</button>
-          <button id="btn-nav-admin-login" class="cc-btn cc-btn-outline-gold cc-btn-sm" style="font-size: 11px; padding: 4px 12px;" onclick="if(window.ClubAdminAuth) window.ClubAdminAuth.openLoginModal()">
-            🔒 Staff / Admin Login
-          </button>
         </div>
       `;
       const btnLogout = document.getElementById('btn-portal-logout');
@@ -102,11 +99,8 @@
     } else {
       container.innerHTML = `
         <div style="display: flex; gap: 8px; align-items: center;">
-          <button id="btn-nav-member-login" class="cc-btn cc-btn-primary cc-btn-sm" style="font-size: 11px; padding: 5px 12px; font-weight: 700;" onclick="if(window.ClubMemberAuth) window.ClubMemberAuth.openLoginModal()">
-            👤 Member Login
-          </button>
-          <button id="btn-nav-admin-login" class="cc-btn cc-btn-outline-gold cc-btn-sm" style="font-size: 11px; padding: 4px 12px;" onclick="if(window.ClubAdminAuth) window.ClubAdminAuth.openLoginModal()">
-            🔒 Staff / Admin Login
+          <button id="btn-nav-login" class="cc-btn cc-btn-primary cc-btn-sm" style="font-size: 11px; padding: 5px 14px; font-weight: 700;" onclick="if(window.ClubAuth) window.ClubAuth.openLoginModal()">
+            👤 Login
           </button>
         </div>
       `;

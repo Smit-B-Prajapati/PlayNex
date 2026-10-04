@@ -2667,6 +2667,8 @@
   window.handleCreateInvoice = handleCreateInvoice;
   window.handleCreateEnquiry = handleCreateEnquiry;
   window.handleCreateEmployee = handleCreateEmployee;
+  window.renderAllSections = renderAllSections;
+  window.switchDashboardTab = switchDashboardTab;
 
   document.addEventListener('DOMContentLoaded', () => {
     // 1. Initial Master Render

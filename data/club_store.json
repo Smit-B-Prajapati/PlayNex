@@ -417,6 +417,25 @@
   ],
   "cc_shop_orders": [
     {
+      "id": "CC-SO-0003",
+      "memberId": "CC-MEM-00102",
+      "channel": "online",
+      "customer": "Elena Rostova",
+      "fulfillment": "Collect at Club (Click & Collect)",
+      "items": [
+        {
+          "id": "p1",
+          "sku": "CC-RCK-01",
+          "name": "Pro Tour Carbon Tennis Racket",
+          "price": 8500,
+          "qty": 1
+        }
+      ],
+      "total": 7650,
+      "state": "confirmed",
+      "date": "2026-10-03"
+    },
+    {
       "id": "CC-SO-0001",
       "channel": "counter",
       "customer": "Walk-in Guest",
@@ -613,6 +632,91 @@
     }
   ],
   "cc_bookings": [
+    {
+      "id": "CC-BK-0032",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-12-17",
+      "startTime": "06:00",
+      "endTime": "07:00",
+      "duration": "1 Hour",
+      "durationHours": 1.0,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00105",
+      "playerName": "Siddharth Rao (GOLD)",
+      "rateApplied": "\u20b9 0.00 (Free)",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0031",
+      "courtId": "5",
+      "courtName": "Badminton Court 1 (Indoor Mat)",
+      "sport": "badminton",
+      "date": "2026-12-17",
+      "startTime": "14:00",
+      "endTime": "15:00",
+      "duration": "1 Hour",
+      "durationHours": 1.0,
+      "bookingType": "walkin",
+      "memberId": null,
+      "playerName": "Novak Djokovic",
+      "rateApplied": "\u20b9 400.00",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0030",
+      "courtId": "3",
+      "courtName": "Cricket Pitch & Net 1 (Turf)",
+      "sport": "cricket",
+      "date": "2026-12-17",
+      "startTime": "09:00",
+      "endTime": "12:00",
+      "duration": "3 Hours",
+      "durationHours": 3.0,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00101",
+      "playerName": "David Vance (GOLD)",
+      "rateApplied": "\u20b9 0.00 (Free)",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0029",
+      "courtId": "2",
+      "courtName": "Tennis Court 2 (Hard)",
+      "sport": "tennis",
+      "date": "2026-12-17",
+      "startTime": "07:00",
+      "endTime": "09:00",
+      "duration": "2 Hours",
+      "durationHours": 2.0,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00102",
+      "playerName": "Elena Rostova (SILVER)",
+      "rateApplied": "\u20b9 600.00",
+      "isSocial": false,
+      "state": "confirmed"
+    },
+    {
+      "id": "CC-BK-0028",
+      "courtId": "1",
+      "courtName": "Tennis Court 1 (Clay)",
+      "sport": "tennis",
+      "date": "2026-12-17",
+      "startTime": "06:00",
+      "endTime": "07:00",
+      "duration": "1 Hour",
+      "durationHours": 1.0,
+      "bookingType": "member",
+      "memberId": "CC-MEM-00103",
+      "playerName": "Leo Chen (JUNIOR)",
+      "rateApplied": "\u20b9 200.00",
+      "isSocial": false,
+      "state": "cancelled"
+    },
     {
       "id": "CC-BK-0027",
       "courtId": "1",
