@@ -191,7 +191,6 @@ async function renderPipeline() {
 
     const planCode = lead.plan || 'gold';
     const planBadgeClass = planCode === 'gold' ? 'cc-badge-gold' : planCode === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
-    const sourceLabel = lead.source === 'website' ? 'Web' : lead.source === 'walkin' ? 'Walk-in' : lead.source === 'phone' ? 'Phone' : lead.source === 'referral' ? 'Referral' : 'Staff';
 
     const card = document.createElement('div');
     card.className = `cc-lead-card ${lead.stage === 'converted' ? 'is-converted' : ''}`;
@@ -200,7 +199,6 @@ async function renderPipeline() {
       <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <span class="cc-text-mono" style="font-size: 11px; font-weight: 700; color: var(--cc-gold-400);">${lead.id}</span>
         <div style="display: flex; gap: 4px;">
-          <span class="cc-badge cc-badge-silver" style="font-size: 9px; padding: 1px 4px;">${sourceLabel}</span>
           <span class="cc-badge ${planBadgeClass}" style="font-size: 9px; padding: 1px 5px;">${planCode.toUpperCase()}</span>
         </div>
       </div>

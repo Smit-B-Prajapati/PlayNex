@@ -176,6 +176,25 @@
         }
       ],
       "notes": "Silver Tier member."
+    },
+    {
+      "id": "CC-MEM-00109",
+      "member_code": "CC-MEM-00109",
+      "name": "Madhu",
+      "phone": "+91 9999922222",
+      "email": "madhu@example.com",
+      "plan": "gold",
+      "startDate": "2026-10-04",
+      "endDate": "2027-10-04",
+      "state": "active",
+      "history": [
+        {
+          "timestamp": "2026-10-04 03:19",
+          "type": "signup",
+          "desc": "Authenticated via mobile verification (+91 9999922222)."
+        }
+      ],
+      "notes": "Authenticated member profile."
     }
   ],
   "cc_courts": [
@@ -308,6 +327,25 @@
     }
   ],
   "cc_shop_orders": [
+    {
+      "id": "CC-SO-0005",
+      "memberId": "GUEST",
+      "channel": "counter",
+      "customer": "Inventory Test Buyer",
+      "fulfillment": "Immediate Counter Handover",
+      "items": [
+        {
+          "id": "p1",
+          "sku": "CC-RCK-01",
+          "name": "Pro Tour Carbon Tennis Racket",
+          "price": 8500.0,
+          "qty": 2
+        }
+      ],
+      "total": 17000.0,
+      "state": "cancelled",
+      "date": "2026-10-04"
+    },
     {
       "id": "CC-SO-0004",
       "memberId": "GUEST",
@@ -470,6 +508,27 @@
     "upi": 320.0
   },
   "cc_leads": [
+    {
+      "id": "CC-ENQ-0004",
+      "rawId": "CC-ENQ-0004",
+      "name": "Madhu",
+      "phone": "9999922222",
+      "email": "madhu@gmail.com",
+      "source": "website",
+      "plan": "gold",
+      "message": "",
+      "stage": "new",
+      "staff": "Pooja Patel (Membership Advisor)",
+      "quoteSent": false,
+      "quoteAmount": 24000,
+      "followups": [
+        {
+          "time": "2026-10-03 20:40",
+          "note": "Website enquiry registered from website. Stage: New Enquiry."
+        }
+      ],
+      "memberId": null
+    },
     {
       "id": "CC-ENQ-0003",
       "rawId": "CC-ENQ-0003",
