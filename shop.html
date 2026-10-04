@@ -35,6 +35,7 @@
       width: 68px;
       height: 68px;
       min-width: 68px;
+      max-width: 68px;
       border-radius: 14px;
       background: rgba(8, 11, 18, 0.85);
       border: 1px solid rgba(212, 175, 55, 0.25);
@@ -43,6 +44,7 @@
       justify-content: center;
       overflow: hidden;
       position: relative;
+      flex-shrink: 0;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
       transition: all 0.3s ease;
     }
@@ -54,6 +56,9 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
+      color: transparent;
+      font-size: 0;
       transition: transform 0.35s ease;
     }
     .cc-product-card:hover .cc-product-thumb-img {
@@ -204,7 +209,7 @@
           <li><a href="index.html" class="cc-nav-link">Home</a></li>
           <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
           <li><a href="shop.html" class="cc-nav-link is-active">Shop</a></li>
-          <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
+          <li><a href="pos.html" class="cc-nav-link">Cafe/Bar</a></li>
           <li><a href="crm.html" class="cc-nav-link">Enquiries</a></li>
         </ul>
       </nav>

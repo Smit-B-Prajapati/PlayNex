@@ -670,7 +670,7 @@ const ClubAdminAuth = (function() {
           <li><a href="index.html" class="cc-nav-link">Home</a></li>
           <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
           <li><a href="shop.html" class="cc-nav-link">Shop</a></li>
-          <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
+          <li><a href="pos.html" class="cc-nav-link">Cafe/Bar</a></li>
           <li><a href="crm.html" class="cc-nav-link">Enquiries</a></li>
         `;
 

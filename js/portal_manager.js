@@ -347,7 +347,7 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><strong class="cc-text-mono" style="color: var(--cc-gold-400);">${t.id || t.name}</strong></td>
-        <td>${t.tableName || t.table_name || 'Bar Counter'}</td>
+        <td>${t.tableName || t.table_name || 'Cafe/Bar Counter'}</td>
         <td><span class="cc-body-xs" style="color: var(--cc-text-secondary);">${itemsDesc || 'Tab orders'}</span></td>
         <td><span class="cc-text-mono" style="color: var(--cc-gold-400);">${t.discountPercent || t.discount_percent || 0}%</span></td>
         <td><strong class="cc-text-mono" style="color: var(--cc-neon-green);">₹ ${Number(t.amount_total || t.netTotal || 0).toFixed(2)}</strong></td>
@@ -572,7 +572,7 @@
                   <span class="cc-badge cc-badge-gold" style="font-size: 9px;">PREMIUM</span>
                 </div>
                 <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 2px;">
-                  Free Courts &bull; 15% Shop &amp; Bar &bull; Bar Tab Privilege &bull; 4 Guest Passes
+                  Free Courts &bull; 15% Shop &amp; Cafe/Bar &bull; Cafe/Bar Tab Privilege &bull; 4 Guest Passes
                 </div>
               </div>
             </div>
@@ -591,7 +591,7 @@
                   <span class="cc-badge cc-badge-silver" style="font-size: 9px;">STANDARD</span>
                 </div>
                 <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 2px;">
-                  ₹ 300/hr Courts &bull; 10% Shop &amp; Bar Discounts &bull; 1 Guest Pass
+                  ₹ 300/hr Courts &bull; 10% Shop &amp; Cafe/Bar Discounts &bull; 1 Guest Pass
                 </div>
               </div>
             </div>
@@ -613,7 +613,7 @@
                   <span class="cc-badge cc-badge-gold" style="font-size: 9px;">PREMIUM</span>
                 </div>
                 <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 2px;">
-                  Free Courts &bull; 15% Shop &amp; Bar &bull; Bar Tab Privilege &bull; 4 Guest Passes
+                  Free Courts &bull; 15% Shop &amp; Cafe/Bar &bull; Cafe/Bar Tab Privilege &bull; 4 Guest Passes
                 </div>
               </div>
             </div>

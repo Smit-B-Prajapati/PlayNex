@@ -1,5 +1,5 @@
 /**
- * CHAMPIONS CLUB — Bar & Cafeteria POS Controller
+ * CHAMPIONS CLUB — Cafe/Bar POS Controller
  * Connected to Odoo Backend POS models (club.bar.table, club.bar.tab, club.bar.order)
  * with graceful fallback to synchronized ClubDataStore.
  * Handles table seating, DEMO DATA menu ordering, automatic member tier discounts,
@@ -8,13 +8,13 @@
 
 // DEMO DATA - Menu Items (Explicitly labeled in accordance with DATA RULE)
 const menuItems = [
-  { id: 'm1', name: '[DEMO DATA] Post-Match Whey Protein Shake', cat: 'nutrition', price: 280 },
-  { id: 'm2', name: '[DEMO DATA] Triple-Decker Club Sandwich', cat: 'food', price: 320 },
-  { id: 'm3', name: '[DEMO DATA] Fresh Lime Mint Sparkling Soda', cat: 'beverage', price: 120 },
-  { id: 'm4', name: '[DEMO DATA] Chilled Tender Coconut Water', cat: 'beverage', price: 90 },
-  { id: 'm5', name: '[DEMO DATA] Artisan Roast Cappuccino', cat: 'beverage', price: 180 },
-  { id: 'm6', name: '[DEMO DATA] Electrolyte Hydration Energy Drink', cat: 'nutrition', price: 150 },
-  { id: 'm7', name: '[DEMO DATA] Grilled Chicken & Avocado Salad', cat: 'food', price: 360 }
+  { id: 'm1', name: '[DEMO DATA] Post-Match Whey Protein Shake', cat: 'nutrition', price: 280, icon: '🥤' },
+  { id: 'm2', name: '[DEMO DATA] Triple-Decker Club Sandwich', cat: 'food', price: 320, icon: '🥪' },
+  { id: 'm3', name: '[DEMO DATA] Fresh Lime Mint Sparkling Soda', cat: 'beverage', price: 120, icon: '🍋' },
+  { id: 'm4', name: '[DEMO DATA] Chilled Tender Coconut Water', cat: 'beverage', price: 90, icon: '🥥' },
+  { id: 'm5', name: '[DEMO DATA] Artisan Roast Cappuccino', cat: 'beverage', price: 180, icon: '☕' },
+  { id: 'm6', name: '[DEMO DATA] Electrolyte Hydration Energy Drink', cat: 'nutrition', price: 150, icon: '⚡' },
+  { id: 'm7', name: '[DEMO DATA] Grilled Chicken & Avocado Salad', cat: 'food', price: 360, icon: '🥗' }
 ];
 
 // Member Discount Tiers
@@ -29,6 +29,19 @@ const memberTiers = {
 let selectedTableId = 't1';
 let currentMenuCategory = 'all';
 let currentTicketItems = [];
+
+function updateMenuCategoryFilterCounts() {
+  const counts = {
+    all: menuItems.length,
+    beverage: menuItems.filter(m => m.cat === 'beverage').length,
+    food: menuItems.filter(m => m.cat === 'food').length,
+    nutrition: menuItems.filter(m => m.cat === 'nutrition').length
+  };
+  for (const [cat, count] of Object.entries(counts)) {
+    const el = document.getElementById(`chip-bar-${cat}`);
+    if (el) el.textContent = count;
+  }
+}
 
 async function getTables() {
   if (window.ClubAPI) {
@@ -132,6 +145,7 @@ async function renderTables() {
 function renderMenuItems() {
   const container = document.getElementById('menu-items-container');
   if (!container) return;
+  updateMenuCategoryFilterCounts();
   container.innerHTML = '';
 
   const filtered = menuItems.filter(m => {
@@ -148,10 +162,17 @@ function renderMenuItems() {
     const card = document.createElement('div');
     card.className = 'cc-menu-item-card';
     card.innerHTML = `
-      <div style="font-size: 13px; font-weight: 700; color: var(--cc-text-primary);">${item.name}</div>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
-        <span class="cc-text-mono" style="font-weight: 800; color: var(--cc-gold-400);">₹ ${item.price}</span>
-        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" style="padding: 4px 10px; font-size: 11px;">+ Add</button>
+      <div style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.5rem;">
+        <div style="width: 36px; height: 36px; min-width: 36px; border-radius: 10px; background: rgba(8, 11, 18, 0.85); border: 1px solid rgba(212, 175, 55, 0.25); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">
+          ${item.icon || '☕'}
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--cc-text-primary); line-height: 1.35;">${item.name}</div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.06);">
+        <span class="cc-text-mono" style="font-weight: 800; font-size: 14px; color: var(--cc-gold-400);">₹ ${item.price}</span>
+        <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" style="padding: 3px 10px; font-size: 11px;">+ Add</button>
       </div>
     `;
     card.addEventListener('click', () => {

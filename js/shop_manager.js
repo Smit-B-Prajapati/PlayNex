@@ -43,7 +43,7 @@ let cart = [];
 let currentCategoryFilter = 'all';
 
 const CATEGORY_DEFAULT_IMAGES = {
-  rackets: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80',
+  rackets: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=400&q=80',
   balls: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80',
   cricket: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80',
   shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80',
@@ -53,7 +53,8 @@ const CATEGORY_DEFAULT_IMAGES = {
 
 function getProductFallbackSvg(category) {
   const icon = category === 'rackets' ? '🏸' : category === 'balls' ? '🎾' : category === 'shoes' ? '👟' : category === 'apparel' ? '👕' : category === 'accessories' ? '🎽' : '📦';
-  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" rx="16" fill="%23121826"/><rect x="2" y="2" width="116" height="116" rx="14" fill="none" stroke="%23d4af37" stroke-width="1.5" stroke-opacity="0.35"/><circle cx="60" cy="60" r="32" fill="%23d4af37" fill-opacity="0.08"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="36">${icon}</text></svg>`;
+  const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" rx="16" fill="#121826"/><rect x="2" y="2" width="116" height="116" rx="14" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-opacity="0.35"/><circle cx="60" cy="60" r="32" fill="#d4af37" fill-opacity="0.08"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="34">${icon}</text></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgStr)}`;
 }
 
 function updateCategoryFilterCounts(allProducts) {

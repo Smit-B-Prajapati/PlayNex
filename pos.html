@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CHAMPIONS CLUB — Bar & Cafeteria POS Terminal</title>
-  <meta name="description" content="Cafeteria & Bar POS Terminal with automatic member tier discounts, running tabs, tables management, and multi-payment processing (Cash, Card, UPI).">
+  <title>CHAMPIONS CLUB — Cafe/Bar POS Terminal</title>
+  <meta name="description" content="Cafe & Bar POS Terminal with automatic member tier discounts, running tabs, tables management, and multi-payment processing (Cash, Card, UPI).">
   <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/admin_auth.css">
@@ -17,25 +17,27 @@
     }
     .cc-menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
       gap: 1rem;
     }
     .cc-menu-item-card {
-      background: var(--cc-bg-secondary);
-      border: 1px solid var(--cc-border-subtle);
-      border-radius: var(--cc-radius-md);
-      padding: 1rem;
+      background: rgba(18, 25, 41, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--cc-radius-lg);
+      padding: 0.9rem;
       cursor: pointer;
-      transition: all var(--cc-transition-fast);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 110px;
+      min-height: 115px;
     }
     .cc-menu-item-card:hover {
-      border-color: var(--cc-gold-500);
-      transform: translateY(-2px);
-      background: var(--cc-bg-tertiary);
+      border-color: rgba(212, 175, 55, 0.5);
+      transform: translateY(-3px);
+      background: rgba(26, 36, 58, 0.85);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), 0 0 16px rgba(212, 175, 55, 0.15);
     }
     .cc-table-pill-btn {
       background: rgba(22, 29, 46, 0.6);
@@ -69,6 +71,66 @@
       position: sticky;
       top: 90px;
     }
+    
+    /* Ultra-Premium Filter Pills */
+    .cc-filter-pill-container {
+      background: rgba(14, 19, 31, 0.7);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--cc-radius-xl);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+    .cc-filter-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .cc-filter-pill {
+      background: rgba(22, 29, 46, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      padding: 7px 14px;
+      color: var(--cc-text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+    }
+    .cc-filter-pill:hover {
+      background: rgba(32, 42, 66, 0.85);
+      border-color: rgba(212, 175, 55, 0.4);
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+    .cc-filter-pill.is-active {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.12) 100%);
+      border-color: var(--cc-gold-400);
+      color: var(--cc-gold-300);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+    }
+    .cc-filter-count-chip {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      padding: 1px 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cc-text-muted);
+      transition: all 0.25s ease;
+    }
+    .cc-filter-pill.is-active .cc-filter-count-chip {
+      background: var(--cc-gold-400);
+      color: #0c1017;
+      border-color: var(--cc-gold-400);
+    }
   </style>
 </head>
 <body>
@@ -91,7 +153,7 @@
           <li><a href="index.html" class="cc-nav-link">Home</a></li>
           <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
           <li><a href="shop.html" class="cc-nav-link">Shop</a></li>
-          <li><a href="pos.html" class="cc-nav-link is-active">Bar POS</a></li>
+          <li><a href="pos.html" class="cc-nav-link is-active">Cafe/Bar</a></li>
           <li><a href="crm.html" class="cc-nav-link">Enquiries</a></li>
         </ul>
       </nav>
@@ -109,7 +171,7 @@
     <!-- SHIFT & REVENUE KPI STRIP -->
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
       <div>
-        <div class="cc-eyebrow">Cafeteria &amp; Bar Operations</div>
+        <div class="cc-eyebrow">Cafe &amp; Bar Operations</div>
         <h1 class="cc-heading-1">POS Terminal &amp; Tabs Hub</h1>
         <p class="cc-body-sm" style="margin-top: 2px;">
           Active Shift: <strong style="color: var(--cc-text-primary);">Evening Shift (Staff: Rohit M.)</strong> &bull; Automatic member discount engine &bull; Cash / Card / UPI
@@ -145,7 +207,7 @@
         <!-- Table Matrix -->
         <div class="cc-card cc-card-glass">
           <div class="cc-card-header" style="margin-bottom: 0.75rem;">
-            <h3 class="cc-card-title">1. Cafeteria Tables</h3>
+            <h3 class="cc-card-title">1. Cafe/Bar Tables</h3>
             <span class="cc-badge cc-badge-gold">Live Seating</span>
           </div>
           <div style="display: flex; flex-wrap: wrap; gap: 0.6rem;" id="table-buttons-container">
@@ -158,13 +220,29 @@
           <div class="cc-card-header" style="margin-bottom: 0.75rem;">
             <div>
               <h3 class="cc-card-title">2. Select Menu Items</h3>
-              <p class="cc-body-xs" style="color: var(--cc-text-muted);">[DEMO DATA] Post-match nutrition, cafeteria food and drinks.</p>
+              <p class="cc-body-xs" style="color: var(--cc-text-muted);">[DEMO DATA] Post-match nutrition, cafe food and drinks.</p>
             </div>
-            <div style="display: flex; gap: 0.5rem;" id="bar-menu-filters">
-              <button class="cc-filter-pill is-active" data-cat="all" style="padding: 4px 10px; font-size: 11px;">All</button>
-              <button class="cc-filter-pill" data-cat="beverage" style="padding: 4px 10px; font-size: 11px;">Drinks</button>
-              <button class="cc-filter-pill" data-cat="food" style="padding: 4px 10px; font-size: 11px;">Food</button>
-              <button class="cc-filter-pill" data-cat="nutrition" style="padding: 4px 10px; font-size: 11px;">Nutrition</button>
+          </div>
+
+          <!-- Ultra-Premium Filter Pills -->
+          <div class="cc-filter-pill-container">
+            <div class="cc-filter-pill-row" id="bar-menu-filters">
+              <button class="cc-filter-pill is-active" data-cat="all">
+                <span>✨ All Items</span>
+                <span class="cc-filter-count-chip" id="chip-bar-all">7</span>
+              </button>
+              <button class="cc-filter-pill" data-cat="beverage">
+                <span>🥤 Drinks &amp; Smoothies</span>
+                <span class="cc-filter-count-chip" id="chip-bar-beverage">3</span>
+              </button>
+              <button class="cc-filter-pill" data-cat="food">
+                <span>🥪 Food &amp; Snacks</span>
+                <span class="cc-filter-count-chip" id="chip-bar-food">2</span>
+              </button>
+              <button class="cc-filter-pill" data-cat="nutrition">
+                <span>⚡ Sports Nutrition</span>
+                <span class="cc-filter-count-chip" id="chip-bar-nutrition">2</span>
+              </button>
             </div>
           </div>
 
@@ -277,14 +355,14 @@
   </main>
 
   <!-- ==========================================
-       MODAL: DAILY BAR REVENUE RECONCILIATION REPORT
+       MODAL: DAILY CAFE/BAR REVENUE RECONCILIATION REPORT
        ========================================== -->
   <div class="cc-modal-backdrop" id="modal-daily-revenue" role="dialog" aria-modal="true">
     <div class="cc-modal" style="max-width: 580px;">
       <div class="cc-modal-header">
         <div>
           <span class="cc-eyebrow">Closing Time Reconciliation</span>
-          <h3 class="cc-modal-title">Daily Bar &amp; Cafeteria Revenue</h3>
+          <h3 class="cc-modal-title">Daily Cafe &amp; Bar Revenue</h3>
         </div>
         <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,7 +372,7 @@
       </div>
       <div class="cc-modal-body">
         <p class="cc-body-sm" style="margin-bottom: 1.25rem;">
-          Consolidated earnings for today across direct table orders, bar counter sales, and settled member tabs.
+          Consolidated earnings for today across direct table orders, cafe/bar counter sales, and settled member tabs.
         </p>
 
         <div class="cc-grid cc-grid-cols-3" style="gap: 1rem; margin-bottom: 1.5rem;">
@@ -314,7 +392,7 @@
 
         <div style="background: rgba(22, 29, 46, 0.8); border: 1px solid var(--cc-gold-500); border-radius: var(--cc-radius-md); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <div style="font-size: 12px; color: var(--cc-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Total Daily Bar Earnings</div>
+            <div style="font-size: 12px; color: var(--cc-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Total Daily Cafe/Bar Earnings</div>
             <div style="font-size: 12px; color: var(--cc-neon-green); font-weight: 600;">Shift Reconciled &bull; 100% Balanced</div>
           </div>
           <div class="cc-text-mono" id="report-total" style="font-size: 1.75rem; font-weight: 900; color: var(--cc-gold-400);">₹ 0.00</div>

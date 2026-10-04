@@ -1107,7 +1107,7 @@
       + "Stream,Category,Cash,Card,UPI,Total\n"
       + "Court Bookings,Courts,200,250,150,600\n"
       + "Pro Shop Retail,Shop,2000,4500,2900,9400\n"
-      + "Bar and Cafeteria,Bar POS,240,450,320,1010\n"
+      + "Bar and Cafeteria,Cafe/Bar,240,450,320,1010\n"
       + "TOTAL CONSOLIDATED,All Streams,2440,5200,3370,11010\n";
 
     const encodedUri = encodeURI(csvContent);
@@ -1152,7 +1152,7 @@
 
     let html = '';
     const categoryDefaults = {
-      rackets: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80',
+      rackets: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=400&q=80',
       balls: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80',
       cricket: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80',
       shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80',
@@ -1168,7 +1168,7 @@
       const statusBadge = isOut ? 'cc-badge-danger' : isLow ? 'cc-badge-warning' : 'cc-badge-active';
       const statusText = isOut ? 'OUT OF STOCK' : isLow ? 'LOW STOCK' : 'IN STOCK';
       const imgSrc = p.image || categoryDefaults[p.category] || categoryDefaults.rackets;
-      const fallbackSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" rx="8" fill="%23121826"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="18">📦</text></svg>`;
+      const fallbackSvg = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" rx="8" fill="#121826"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="18">📦</text></svg>')}`;
 
       html += `
         <tr>
@@ -2101,7 +2101,7 @@
     let image = document.getElementById('prod-image')?.value?.trim() || document.getElementById('qadd-prod-image')?.value?.trim();
 
     const categoryDefaults = {
-      rackets: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80',
+      rackets: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=400&q=80',
       balls: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80',
       cricket: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80',
       shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80',
@@ -2158,7 +2158,7 @@
 
   function setDashboardImagePreset(inputId, previewPrefix, catKey) {
     const categoryDefaults = {
-      rackets: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80',
+      rackets: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=400&q=80',
       balls: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80',
       cricket: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=400&q=80',
       shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80',

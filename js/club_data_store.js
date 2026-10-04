@@ -176,7 +176,7 @@ const ClubDataStore = (function() {
         stock: 12,
         minAlert: 4,
         desc: 'High-modulus graphite frame with synthetic gut stringing.',
-        image: 'https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80'
+        image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=400&q=80'
       },
       {
         id: 'p2',
