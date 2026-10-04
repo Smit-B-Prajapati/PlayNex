@@ -81,6 +81,17 @@
       position: sticky;
       top: 90px;
     }
+    .cc-cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--cc-border-subtle);
+      font-size: 13px;
+    }
+    [data-theme="light"] .cc-cart-item {
+      border-bottom-color: #DDD9CF;
+    }
     
     /* Ultra-Premium Filter Pills */
     .cc-filter-pill-container {
@@ -141,6 +152,82 @@
       color: #0c1017;
       border-color: var(--cc-gold-400);
     }
+    /* POS Bill Summary Styles */
+    .cc-pos-bill-summary {
+      background: rgba(14, 19, 31, 0.9);
+      border: 1px solid var(--cc-border-medium);
+      border-radius: var(--cc-radius-lg);
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+    .cc-bill-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .cc-bill-label {
+      color: var(--cc-text-muted);
+      font-weight: 500;
+    }
+    .cc-bill-value {
+      color: var(--cc-text-primary);
+      font-weight: 700;
+    }
+    .cc-bill-discount .cc-bill-label,
+    .cc-bill-discount .cc-bill-value {
+      color: var(--cc-gold-400);
+      font-weight: 700;
+    }
+    .cc-bill-total {
+      font-size: 1.25rem;
+      font-weight: 800;
+      border-top: 1px solid var(--cc-border-medium);
+      padding-top: 0.65rem;
+      margin-top: 0.25rem;
+    }
+    .cc-bill-total .cc-bill-label {
+      color: var(--cc-text-primary);
+      font-weight: 800;
+    }
+    .cc-bill-total .cc-bill-value {
+      color: #22C55E;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    [data-theme="light"] .cc-pos-bill-summary {
+      background: #FAF9F6;
+      border: 1px solid #DDD9CF;
+      box-shadow: 0 2px 10px rgba(32, 35, 43, 0.04);
+    }
+    [data-theme="light"] .cc-bill-label {
+      color: #62656D;
+    }
+    [data-theme="light"] .cc-bill-value {
+      color: #20232B;
+    }
+    [data-theme="light"] .cc-bill-discount .cc-bill-label,
+    [data-theme="light"] .cc-bill-discount .cc-bill-value {
+      color: #A98212;
+      font-weight: 700;
+    }
+    [data-theme="light"] .cc-bill-total {
+      border-top: 1px solid #DDD9CF;
+    }
+    [data-theme="light"] .cc-bill-total .cc-bill-label {
+      color: #20232B;
+      font-weight: 800;
+    }
+    [data-theme="light"] .cc-bill-total .cc-bill-value {
+      color: #16805B;
+      font-weight: 800;
+      font-size: 1.3rem;
+    }
     [data-theme="light"] .cc-menu-item-card {
       background: #FFFFFF;
       border-color: #DDD9CF;
@@ -150,6 +237,14 @@
       background: #FFFFFF;
       border-color: #C9A227;
       box-shadow: 0 10px 25px rgba(201, 162, 39, 0.15);
+    }
+    [data-theme="light"] .cc-menu-item-card .cc-text-mono {
+      color: #A98212 !important;
+      font-weight: 800;
+    }
+    [data-theme="light"] .cc-menu-item-icon-wrap {
+      background: #FAF9F6 !important;
+      border-color: #DDD9CF !important;
     }
     [data-theme="light"] .cc-ticket-box {
       background: #FFFFFF;
@@ -377,18 +472,18 @@
           </div>
 
           <!-- Totals Breakdown -->
-          <div style="background: rgba(8, 11, 16, 0.6); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; font-size: 13px; margin-bottom: 1.25rem;">
-            <div style="display: flex; justify-content: space-between;">
-              <span style="color: var(--cc-text-muted);">Subtotal:</span>
-              <span class="cc-text-mono" id="ticket-subtotal">₹ 0.00</span>
+          <div class="cc-pos-bill-summary" id="pos-bill-box">
+            <div class="cc-bill-row">
+              <span class="cc-bill-label">Subtotal:</span>
+              <span class="cc-bill-value cc-text-mono" id="ticket-subtotal">₹ 0.00</span>
             </div>
-            <div style="display: flex; justify-content: space-between; color: var(--cc-gold-400);">
-              <span id="ticket-disc-label">Member Discount (15%):</span>
-              <span class="cc-text-mono" id="ticket-discount">- ₹ 0.00</span>
+            <div class="cc-bill-row cc-bill-discount">
+              <span class="cc-bill-label" id="ticket-disc-label">Member Discount (10%):</span>
+              <span class="cc-bill-value cc-text-mono" id="ticket-discount">- ₹ 0.00</span>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800; border-top: 1px solid var(--cc-border-medium); padding-top: 0.5rem; color: var(--cc-neon-green);">
-              <span>Total Due:</span>
-              <span class="cc-text-mono" id="ticket-total">₹ 0.00</span>
+            <div class="cc-bill-row cc-bill-total">
+              <span class="cc-bill-label">Total Due:</span>
+              <span class="cc-bill-value cc-text-mono" id="ticket-total">₹ 0.00</span>
             </div>
           </div>
 

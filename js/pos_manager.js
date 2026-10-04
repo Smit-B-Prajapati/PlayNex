@@ -17,11 +17,11 @@ const menuItems = [
   { id: 'm7', name: '[DEMO DATA] Grilled Chicken & Avocado Salad', cat: 'food', price: 360, icon: '🥗' }
 ];
 
-// Member Discount Tiers
+// Member Discount Tiers Reference
 const memberTiers = {
-  gold: { name: 'David Vance', tier: 'Gold', discount: 15 },
-  silver: { name: 'Elena Rostova', tier: 'Silver', discount: 10 },
-  junior: { name: 'Leo Chen', tier: 'Junior', discount: 5 },
+  gold: { name: 'Gold Member', tier: 'Gold', discount: 15 },
+  silver: { name: 'Silver Member', tier: 'Silver', discount: 10 },
+  junior: { name: 'Junior Member', tier: 'Junior', discount: 5 },
   guest: { name: 'Walk-in Guest', tier: 'Guest', discount: 0 }
 };
 
@@ -163,7 +163,7 @@ function renderMenuItems() {
     card.className = 'cc-menu-item-card';
     card.innerHTML = `
       <div style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.5rem;">
-        <div style="width: 36px; height: 36px; min-width: 36px; border-radius: 10px; background: rgba(8, 11, 18, 0.85); border: 1px solid rgba(212, 175, 55, 0.25); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">
+        <div class="cc-menu-item-icon-wrap" style="width: 36px; height: 36px; min-width: 36px; border-radius: 10px; background: rgba(8, 11, 18, 0.85); border: 1px solid rgba(212, 175, 55, 0.25); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">
           ${item.icon || '☕'}
         </div>
         <div style="flex: 1; min-width: 0;">
@@ -197,6 +197,41 @@ function addItemToTicket(item) {
   renderTicket();
 }
 
+function getCurrentMemberInfo() {
+  if (window.ClubMemberAuth && window.ClubMemberAuth.isMember()) {
+    const mem = window.ClubMemberAuth.getMember();
+    const plan = (mem.plan || mem.tier_code || 'gold').toLowerCase();
+    const discount = plan === 'gold' ? 15 : plan === 'silver' ? 10 : plan === 'junior' ? 5 : 0;
+    const tierName = plan.charAt(0).toUpperCase() + plan.slice(1);
+    return {
+      id: mem.id || mem.member_code,
+      name: mem.name,
+      plan: plan,
+      tier: tierName,
+      discount: discount,
+      isMember: true
+    };
+  }
+
+  const sel = document.getElementById('pos-customer-select');
+  const opt = sel ? sel.options[sel.selectedIndex] : null;
+  if (opt) {
+    const disc = parseInt(opt.getAttribute('data-disc') || '0', 10);
+    const name = opt.getAttribute('data-name') || opt.text;
+    const val = opt.value;
+    const tier = val.charAt(0).toUpperCase() + val.slice(1);
+    return {
+      id: null,
+      name: name,
+      plan: val,
+      tier: tier,
+      discount: disc,
+      isMember: val !== 'guest'
+    };
+  }
+  return { id: null, name: 'Walk-in Guest', plan: 'guest', tier: 'Guest', discount: 0, isMember: false };
+}
+
 function renderTicket() {
   const container = document.getElementById('ticket-items-container');
   if (!container) return;
@@ -223,18 +258,22 @@ function renderTicket() {
     });
   }
 
-  // Calculate Subtotal & Automatic Member Discount
+  // Calculate Subtotal & Automatic Member Discount based on logged-in member
   const subtotal = currentTicketItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const memberKey = document.getElementById('pos-customer-select')?.value || 'gold';
-  const memberInfo = memberTiers[memberKey] || memberTiers.guest;
-  const discountPercent = memberInfo.discount;
+  const memInfo = getCurrentMemberInfo();
+  const discountPercent = memInfo.discount;
   const discountAmount = (subtotal * discountPercent) / 100.0;
   const totalDue = subtotal - discountAmount;
 
-  document.getElementById('ticket-subtotal').textContent = `₹ ${subtotal.toFixed(2)}`;
-  document.getElementById('ticket-disc-label').textContent = `Member Discount (${discountPercent}%):`;
-  document.getElementById('ticket-discount').textContent = `- ₹ ${discountAmount.toFixed(2)}`;
-  document.getElementById('ticket-total').textContent = `₹ ${totalDue.toFixed(2)}`;
+  const subtotalEl = document.getElementById('ticket-subtotal');
+  const discLabelEl = document.getElementById('ticket-disc-label');
+  const discEl = document.getElementById('ticket-discount');
+  const totalEl = document.getElementById('ticket-total');
+
+  if (subtotalEl) subtotalEl.textContent = `₹ ${subtotal.toFixed(2)}`;
+  if (discLabelEl) discLabelEl.textContent = `Member Discount (${discountPercent}%):`;
+  if (discEl) discEl.textContent = `- ₹ ${discountAmount.toFixed(2)}`;
+  if (totalEl) totalEl.textContent = `₹ ${totalDue.toFixed(2)}`;
 }
 
 window.changeTicketQty = function(itemId, delta) {
@@ -267,9 +306,12 @@ function updateKPIs() {
       kpiDaily.classList.remove('no-data');
     }
   }
-  document.getElementById('kpi-cash-total').textContent = `₹ ${(revenueLedger.cash || 0).toLocaleString()}`;
-  document.getElementById('kpi-card-total').textContent = `₹ ${(revenueLedger.card || 0).toLocaleString()}`;
-  document.getElementById('kpi-upi-total').textContent = `₹ ${(revenueLedger.upi || 0).toLocaleString()}`;
+  const cashEl = document.getElementById('kpi-cash-total');
+  const cardEl = document.getElementById('kpi-card-total');
+  const upiEl = document.getElementById('kpi-upi-total');
+  if (cashEl) cashEl.textContent = `₹ ${(revenueLedger.cash || 0).toLocaleString()}`;
+  if (cardEl) cardEl.textContent = `₹ ${(revenueLedger.card || 0).toLocaleString()}`;
+  if (upiEl) upiEl.textContent = `₹ ${(revenueLedger.upi || 0).toLocaleString()}`;
 }
 
 async function renderActiveTabs() {
@@ -365,9 +407,8 @@ window.processDirectPayment = function(method) {
   }
 
   const subtotal = currentTicketItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const memberKey = document.getElementById('pos-customer-select').value;
-  const memberInfo = memberTiers[memberKey] || memberTiers.guest;
-  const discountAmount = (subtotal * memberInfo.discount) / 100.0;
+  const memInfo = getCurrentMemberInfo();
+  const discountAmount = (subtotal * memInfo.discount) / 100.0;
   const totalDue = subtotal - discountAmount;
 
   const revenueLedger = getRevenue();
@@ -379,14 +420,42 @@ window.processDirectPayment = function(method) {
   renderTicket();
   updateKPIs();
   if (window.ClubAPI) {
-    window.ClubAPI.showSuccess(`Payment of ₹ ${totalDue.toFixed(2)} received via ${method.toUpperCase()}. Order complete!`);
+    window.ClubAPI.showSuccess(`Payment of ₹ ${totalDue.toFixed(2)} received via ${method.toUpperCase()} for ${memInfo.name}. Order complete!`);
   }
 };
+
+function renderPOSMemberInfo() {
+  const sel = document.getElementById('pos-customer-select');
+  const discText = document.getElementById('discount-indicator-text');
+  if (!sel) return;
+
+  if (window.ClubMemberAuth && window.ClubMemberAuth.isMember()) {
+    const mem = window.ClubMemberAuth.getMember();
+    const plan = (mem.plan || mem.tier_code || 'gold').toLowerCase();
+    const discountPercent = plan === 'gold' ? 15 : plan === 'silver' ? 10 : plan === 'junior' ? 5 : 0;
+    const tierName = plan.charAt(0).toUpperCase() + plan.slice(1);
+
+    // Show ONLY the logged-in member
+    sel.innerHTML = `<option value="${plan}" data-name="${mem.name}" data-disc="${discountPercent}" selected>${mem.name} — ${tierName} Member (${discountPercent}% Auto-Discount)</option>`;
+
+    if (discText) {
+      discText.innerHTML = `✨ <strong>${discountPercent}% discount</strong> automatically applied from ${tierName} Tier.`;
+    }
+  } else {
+    // Walk-in guest mode when no member is authenticated
+    sel.innerHTML = `<option value="guest" data-name="Walk-in Guest" data-disc="0" selected>Walk-in Guest (0% Discount)</option>`;
+    if (discText) {
+      discText.innerHTML = `Standard pricing applied (Walk-in Guest). <a href="javascript:void(0)" onclick="if(window.ClubAuth) window.ClubAuth.openLoginModal()" style="color: var(--cc-gold-400); text-decoration: underline; font-weight: 700;">Sign in as Member</a> for automatic discounts.`;
+    }
+  }
+
+  renderTicket();
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   await renderTables();
   renderMenuItems();
-  renderTicket();
+  renderPOSMemberInfo();
   await renderActiveTabs();
   updateKPIs();
 
@@ -401,18 +470,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Customer Select Change
+  // Customer Select Change handler
   const custSelect = document.getElementById('pos-customer-select');
-  const discText = document.getElementById('discount-indicator-text');
   if (custSelect) {
     custSelect.addEventListener('change', () => {
-      const key = custSelect.value;
-      const info = memberTiers[key] || memberTiers.guest;
-      if (discText) {
-        discText.textContent = info.discount > 0 
-          ? `✨ ${info.discount}% discount automatically applied from ${info.tier} Tier.`
-          : 'Standard pricing applied (Guest / Non-member).';
-      }
       renderTicket();
     });
   }
@@ -426,31 +487,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
-      const memberKey = custSelect.value;
-      if (memberKey === 'guest') {
+      const memInfo = getCurrentMemberInfo();
+      if (!memInfo.isMember || memInfo.plan === 'guest') {
         if (window.ClubAPI) window.ClubAPI.showError("Running tabs are available exclusively for registered Club Members.", "Member Tab Restricted");
         return;
       }
 
       const table = await getTable(selectedTableId);
-      const memberInfo = memberTiers[memberKey] || memberTiers.gold;
       const activeTabs = await getTabs();
 
       // Check if existing open tab for member
-      let existingTab = activeTabs.find(t => t.memberKey === memberKey && t.state === 'open');
+      let existingTab = activeTabs.find(t => (t.memberId === memInfo.id || t.memberName.includes(memInfo.name)) && t.state === 'open');
       if (existingTab) {
         existingTab.items.push(...currentTicketItems);
       } else {
         const newTabId = `CC-TAB-000${activeTabs.length + 1}`;
-        const currentAuthMem = (window.ClubMemberAuth && window.ClubMemberAuth.isMember()) ? window.ClubMemberAuth.getMember() : null;
         activeTabs.unshift({
           id: newTabId,
-          memberId: currentAuthMem ? (currentAuthMem.id || currentAuthMem.member_id) : memberKey,
-          memberKey: memberKey,
-          memberName: currentAuthMem ? `${currentAuthMem.name} (${(currentAuthMem.plan || 'Gold').toUpperCase()})` : `${memberInfo.name} (${memberInfo.tier})`,
+          memberId: memInfo.id || `CC-MEM-${memInfo.name.replace(/\s+/g, '')}`,
+          memberKey: memInfo.plan,
+          memberName: `${memInfo.name} (${memInfo.tier.toUpperCase()})`,
           tableId: table.id,
           tableName: table.name,
-          discountPercent: memberInfo.discount,
+          discountPercent: memInfo.discount,
           items: [...currentTicketItems],
           state: 'open'
         });
@@ -463,25 +522,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       await renderTables();
       await renderActiveTabs();
       if (window.ClubAPI) {
-        window.ClubAPI.showSuccess(`Items successfully charged to running tab for ${memberInfo.name}.`);
+        window.ClubAPI.showSuccess(`Items successfully charged to running tab for ${memInfo.name}.`);
       }
     });
   }
-
-  function renderPOSMemberInfo() {
-    if (window.ClubMemberAuth && window.ClubMemberAuth.isMember()) {
-      const mem = window.ClubMemberAuth.getMember();
-      const plan = (mem.plan || mem.tier_code || 'gold').toLowerCase();
-      const sel = document.getElementById('pos-customer-select');
-      if (sel) {
-        sel.value = plan === 'silver' ? 'silver' : plan === 'junior' ? 'junior' : 'gold';
-      }
-      renderTicket();
-    }
-  }
-
-  renderPOSMemberInfo();
-  window.renderPOSMemberInfo = renderPOSMemberInfo;
 
   // Daily Revenue Report Modal
   const btnReport = document.getElementById('btn-open-daily-report');
@@ -501,3 +545,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// Expose globally
+window.renderPOSMemberInfo = renderPOSMemberInfo;
