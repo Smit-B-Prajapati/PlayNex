@@ -482,9 +482,10 @@ async function renderMembers() {
         <span class="cc-text-mono" style="font-weight: 700; color: var(--cc-text-secondary); font-size: 13px;">${m.id}</span>
       </td>
       <td>
-        <span class="cc-badge ${planInfo.badgeClass}">
-          ${planKey === 'gold' ? '★ Gold' : planKey === 'silver' ? '◆ Silver' : '● Junior'}
-        </span>
+        ${status.state === 'cancelled'
+          ? `<span class="cc-badge cc-badge-danger" style="font-size: 10px;">Cancelled</span>`
+          : `<span class="cc-badge ${planInfo.badgeClass}">${planKey === 'gold' ? '★ Gold' : planKey === 'silver' ? '◆ Silver' : '● Junior'}</span>`
+        }
       </td>
       <td>
         <span class="cc-badge ${status.badgeClass}">
@@ -590,12 +591,18 @@ window.openMemberDetail = async function(memberId) {
   // 1. Digital Membership Card presentation
   const digitalCard = document.getElementById('digital-card-container');
   if (digitalCard) {
-    digitalCard.className = `cc-digital-card ${planInfo.cardClass}`;
+    digitalCard.className = `cc-digital-card ${status.state === 'cancelled' ? 'cc-card-glass' : planInfo.cardClass}`;
   }
 
   const cardTierBadge = document.getElementById('card-tier-badge');
   if (cardTierBadge) {
-    cardTierBadge.textContent = planKey === 'gold' ? '★ GOLD MEMBER' : planKey === 'silver' ? '◆ SILVER MEMBER' : '● JUNIOR MEMBER';
+    if (status.state === 'cancelled') {
+      cardTierBadge.textContent = '✕ CANCELLED';
+      cardTierBadge.className = 'cc-badge cc-badge-danger';
+    } else {
+      cardTierBadge.textContent = planKey === 'gold' ? '★ GOLD MEMBER' : planKey === 'silver' ? '◆ SILVER MEMBER' : '● JUNIOR MEMBER';
+      cardTierBadge.className = 'cc-badge';
+    }
   }
 
   const cardMemberName = document.getElementById('card-member-name');

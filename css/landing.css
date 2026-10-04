@@ -152,11 +152,13 @@
   background: var(--cc-bg-secondary);
   border: 1px solid var(--cc-border-subtle);
   border-radius: var(--cc-radius-xl);
-  padding: var(--cc-space-8);
+  padding: 1.75rem;
   display: flex;
   flex-direction: column;
   position: relative;
   transition: all var(--cc-transition-base);
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .cc-tier-card:hover {
@@ -170,11 +172,12 @@
   box-shadow: var(--cc-shadow-gold);
 }
 
-.cc-tier-featured-pill {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
+.cc-tier-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 28px;
+  margin-bottom: 0.75rem;
 }
 
 .cc-tier-name {
@@ -182,34 +185,62 @@
   font-size: var(--cc-text-2xl);
   font-weight: 800;
   color: var(--cc-text-primary);
-  margin-bottom: var(--cc-space-2);
+  margin: 0 0 0.4rem 0;
+  line-height: 1.2;
+  height: 30px;
+}
+
+.cc-tier-desc {
+  font-size: var(--cc-text-sm);
+  color: var(--cc-text-secondary);
+  line-height: 1.45;
+  height: 48px;
+  min-height: 48px;
+  margin: 0 0 1.25rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cc-tier-price-box {
-  background: rgba(8, 11, 16, 0.6);
-  border: 1px dashed var(--cc-border-medium);
-  border-radius: var(--cc-radius-md);
-  padding: var(--cc-space-3) var(--cc-space-4);
-  margin: var(--cc-space-4) 0 var(--cc-space-6);
-  text-align: center;
+  background: rgba(8, 11, 16, 0.7);
+  border: 1px solid var(--cc-border-medium);
+  border-radius: var(--cc-radius-lg);
+  padding: 12px 16px;
+  margin: 0 0 1.5rem 0;
+  height: 74px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
 }
 
-.cc-tier-price-label {
-  font-family: var(--cc-font-display);
-  font-size: var(--cc-text-xs);
+.cc-tier-price-amount {
+  font-family: var(--cc-font-mono, monospace);
+  font-size: 1.55rem;
   font-weight: 800;
-  letter-spacing: var(--cc-tracking-widest);
-  text-transform: uppercase;
-  color: var(--cc-gold-400);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.cc-tier-price-sub {
+  font-size: 11px;
+  color: var(--cc-text-muted);
+  font-weight: 500;
+  margin-top: 4px;
+  display: block;
 }
 
 .cc-tier-benefits-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 var(--cc-space-8);
+  margin: 0 0 1.75rem 0;
   display: flex;
   flex-direction: column;
-  gap: var(--cc-space-3);
+  gap: 0.75rem;
   flex-grow: 1;
 }
 

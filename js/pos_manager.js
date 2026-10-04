@@ -421,10 +421,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         existingTab.items.push(...currentTicketItems);
       } else {
         const newTabId = `CC-TAB-000${activeTabs.length + 1}`;
+        const currentAuthMem = (window.ClubMemberAuth && window.ClubMemberAuth.isMember()) ? window.ClubMemberAuth.getMember() : null;
         activeTabs.unshift({
           id: newTabId,
+          memberId: currentAuthMem ? (currentAuthMem.id || currentAuthMem.member_id) : memberKey,
           memberKey: memberKey,
-          memberName: `${memberInfo.name} (${memberInfo.tier})`,
+          memberName: currentAuthMem ? `${currentAuthMem.name} (${(currentAuthMem.plan || 'Gold').toUpperCase()})` : `${memberInfo.name} (${memberInfo.tier})`,
           tableId: table.id,
           tableName: table.name,
           discountPercent: memberInfo.discount,
@@ -445,6 +447,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  function renderPOSMemberInfo() {
+    if (window.ClubMemberAuth && window.ClubMemberAuth.isMember()) {
+      const mem = window.ClubMemberAuth.getMember();
+      const plan = (mem.plan || mem.tier_code || 'gold').toLowerCase();
+      const sel = document.getElementById('pos-customer-select');
+      if (sel) {
+        sel.value = plan === 'silver' ? 'silver' : plan === 'junior' ? 'junior' : 'gold';
+      }
+      renderTicket();
+    }
+  }
+
+  renderPOSMemberInfo();
+  window.renderPOSMemberInfo = renderPOSMemberInfo;
+
   // Daily Revenue Report Modal
   const btnReport = document.getElementById('btn-open-daily-report');
   const modalReport = document.getElementById('modal-daily-revenue');
@@ -462,3 +479,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
+

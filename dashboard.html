@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Administrative Dashboard | CHAMPIONS CLUB</title>
-  <meta name="description" content="CHAMPIONS CLUB Administrative Dashboard. Live operational metrics calculated strictly from actual stored system records with 100% audit traceability.">
+  <title>Admin Dashboard | CHAMPIONS CLUB Control Center</title>
+  <meta name="description" content="CHAMPIONS CLUB Centralized ERP & Administrative Control Center. Unified management of Membership, Sales, Revenue, Taxes, Invoices, Enquiring, Employee Details, and Inventory.">
 
   <!-- Design System CSS -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/admin_auth.css">
 </head>
@@ -19,7 +20,7 @@
   <!-- Global Header Navigation -->
   <header class="cc-navbar" id="dashboard-navbar">
     <div class="cc-navbar-container">
-      <a href="index.html" class="cc-brand">
+      <a href="dashboard.html" class="cc-brand">
         <div class="cc-brand-logo-mark">C</div>
         <div class="cc-brand-text">
           <span class="cc-brand-name">CHAMPIONS CLUB</span>
@@ -29,19 +30,11 @@
 
       <nav>
         <ul class="cc-nav-links">
-          <li><a href="index.html" class="cc-nav-link">Home</a></li>
-          <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
-          <li><a href="shop.html" class="cc-nav-link">Shop</a></li>
-          <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
-          <li><a href="crm.html" class="cc-nav-link">CRM</a></li>
-          <li><a href="members.html" class="cc-nav-link">Roster (Admin)</a></li>
-          <li><a href="portal.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Member Portal</a></li>
-          <li><a href="dashboard.html" class="cc-nav-link is-active cc-text-gold" style="font-weight: 700;" aria-current="page">Admin Dashboard</a></li>
         </ul>
       </nav>
 
       <div class="cc-nav-actions">
-        <!-- Injected dynamically by ClubAdminAuth -->
+        <!-- Injected dynamically: 👑 Club / Sign Out -->
       </div>
     </div>
   </header>
@@ -57,7 +50,7 @@
       <span class="cc-eyebrow" style="color: var(--cc-gold-400);">ACCESS RESTRICTED</span>
       <h2 class="cc-h2" style="margin-top: 4px; margin-bottom: 0.5rem;">Administrator Authentication Required</h2>
       <p class="cc-body-sm" style="color: var(--cc-text-secondary); margin-bottom: 1.5rem;">
-        The Executive &amp; Operations Dashboard contains real-time financial ledgers, member statistics, and club management controls. Please sign in with administrator credentials to unlock.
+        The Champions Club Control Center contains live financial ledgers, member management, and club operations. Please sign in with administrator credentials.
       </p>
 
       <form onsubmit="event.preventDefault(); ClubAdminAuth.login(document.getElementById('gate-admin-user').value, document.getElementById('gate-admin-pass').value);" style="text-align: left;">
@@ -83,332 +76,1649 @@
     </div>
   </div>
 
-  <!-- PROTECTED ADMINISTRATIVE CONTENT -->
+  <!-- PROTECTED ADMINISTRATIVE DASHBOARD -->
   <div id="cc-admin-protected-content">
 
-  <!-- Hero Header / Context Ribbon -->
-  <section class="cc-dashboard-hero">
-    <div class="cc-container">
-      <div class="cc-dashboard-header-flex">
-        <div>
-          <span class="cc-badge cc-badge-gold" style="margin-bottom: 8px;">ADMINISTRATIVE CONTROL CENTER</span>
-          <h1 class="cc-h2" style="margin: 6px 0 10px;">Executive &amp; Operations Dashboard</h1>
-          <p class="cc-body-sm" style="color: var(--cc-text-secondary); max-width: 680px; margin: 0;">
-            Real-time management metrics computed strictly from active stored records across Memberships, Court Bookings, Pro Shop, Bar POS, and Visitor Leads.
-          </p>
-        </div>
+    <!-- STICKY CONTROL CENTER NAVIGATION BAR -->
+    <div class="cc-admin-tabs-container">
+      <div class="cc-container">
+        <div class="cc-admin-tabs-nav" id="admin-tabs-nav">
+          <button class="cc-admin-tab-btn is-active" data-tab="memberships">
+            👥 MEMBERSHIP <span class="cc-tab-badge" id="tab-badge-members">7</span>
+          </button>
+          <button class="cc-admin-tab-btn cc-admin-tab-btn-finance" data-tab="sales">
+            💰 SALES (REVENUE &amp; TAXES)
+          </button>
+          <button class="cc-admin-tab-btn" data-tab="inventory">
+            📦 INVENTORY <span class="cc-tab-badge" id="tab-badge-inventory">164</span>
+          </button>
+          <button class="cc-admin-tab-btn" data-tab="crm">
+            🎯 ENQUIRING <span class="cc-tab-badge" id="tab-badge-crm">10</span>
+          </button>
+          <button class="cc-admin-tab-btn" data-tab="invoices">
+            📄 INVOICES
+          </button>
+          <button class="cc-admin-tab-btn" data-tab="employees">
+            👔 EMPLOYEE DETAILS <span class="cc-tab-badge" style="background: rgba(245, 158, 11, 0.4); color: #fbbf24;" id="tab-badge-leaves">2</span>
+          </button>
 
-        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-sm); padding: 8px 14px; font-size: 13px;">
-            <span style="color: var(--cc-text-muted);">System Date:</span>
-            <strong style="color: var(--cc-gold-400); margin-left: 4px;" id="dashboard-current-date">Oct 3, 2026</strong>
+          <!-- SINGLE UNIFIED QUICK ADD BUTTON BESIDE EMPLOYEE DETAILS (WITHOUT DIVIDER LINE) -->
+          <div class="cc-admin-quick-nav-actions" style="margin-left: 6px;">
+            <button type="button" class="cc-admin-quick-add-btn" onclick="openQuickAddModal('court')" title="Quick Add: Court, Product, or Bar Table/Item" id="btn-quick-add-main">
+              <span>✨ + ADD</span>
+            </button>
           </div>
-          <button id="btn-toggle-traceability" class="cc-btn cc-btn-secondary" style="padding: 10px 18px; font-size: 12px;">
-            Trace Data Sources: ON
-          </button>
-          <button id="btn-toggle-empty-state" class="cc-btn cc-btn-secondary" style="padding: 10px 18px; font-size: 12px; border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;">
-            Test Empty State ("No data available")
-          </button>
-          <button id="btn-restore-demo" class="cc-btn cc-btn-primary" style="padding: 10px 18px; font-size: 12px;">
-            Restore Baseline Records
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Main Dashboard Content -->
-  <main class="cc-container" style="padding: 32px 0 64px;">
-
-    <!-- Traceability & Anti-Hallucination Notice -->
-    <div class="cc-traceability-banner" id="traceability-info-banner">
-      <div>
-        <p>
-          <strong>STRICT DATA AUDIT RULE ACTIVE:</strong>
-          Every KPI, total, and figure below is computed dynamically from actual stored records.
-          No invented numbers (such as arbitrary revenue or made-up member counts) are used.
-          If no records exist for a category, <em>"No data available"</em> is displayed.
-        </p>
-      </div>
-      <div style="font-family: monospace; font-size: 11px; color: var(--cc-gold-400);">
-        Active Database Sync: Ready
-      </div>
-    </div>
-
-    <!-- Time Period Filter Navigation Bar -->
-    <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-medium); border-radius: var(--cc-radius-lg); padding: 12px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-        <span style="font-size: 12px; color: var(--cc-text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Time Period:</span>
-        <button class="cc-filter-pill is-active cc-time-filter-pill" data-period="today">Today</button>
-        <button class="cc-filter-pill cc-time-filter-pill" data-period="week">This Week</button>
-        <button class="cc-filter-pill cc-time-filter-pill" data-period="month">This Month</button>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 11px; color: var(--cc-text-muted);">Active Scope:</span>
-        <span class="cc-badge cc-badge-gold" id="dashboard-period-badge" style="font-size: 11px;">Today (Oct 3, 2026)</span>
-      </div>
-    </div>
-
-    <!-- Module Filter Navigation Pills -->
-    <div class="cc-filter-pill-bar">
-      <button class="cc-filter-pill is-active" data-module="all">All Modules</button>
-      <button class="cc-filter-pill" data-module="membership">Memberships</button>
-      <button class="cc-filter-pill" data-module="courts">Court Bookings</button>
-      <button class="cc-filter-pill" data-module="shop">Pro Shop Sales</button>
-      <button class="cc-filter-pill" data-module="bar">Bar &amp; Cafeteria POS</button>
-      <button class="cc-filter-pill" data-module="revenue">Revenue Ledger</button>
-      <button class="cc-filter-pill" data-module="inventory">Shared Inventory</button>
-      <button class="cc-filter-pill" data-module="crm">Enquiries &amp; Leads</button>
-    </div>
-
-    <!-- =========================================================================
-         EXECUTIVE SUMMARY KPIS (100% Calculated from Actual Records)
-         ========================================================================= -->
-    <div class="cc-kpi-grid">
-      <!-- 1. Membership Information -->
-      <div class="cc-kpi-card" data-module-card="membership">
-        <div class="cc-kpi-card-header">
-          <h3 class="cc-kpi-title">Memberships</h3>
-          <span class="cc-badge cc-badge-active" id="kpi-members-status-badge">Active</span>
-        </div>
-        <div class="cc-kpi-value" id="kpi-total-members">--</div>
-        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-members-sub">--</div>
-        <div class="cc-kpi-source-tag" title="Source in stored system data">
-          <span>Source:</span> <span id="kpi-members-source">localStorage['cc_members'] (club.member)</span>
-        </div>
-      </div>
-
-      <!-- 2. Court Bookings -->
-      <div class="cc-kpi-card" data-module-card="courts">
-        <div class="cc-kpi-card-header">
-          <h3 class="cc-kpi-title">Court Bookings</h3>
-          <span class="cc-badge cc-badge-gold">Oct 3, 2026</span>
-        </div>
-        <div class="cc-kpi-value" id="kpi-total-bookings">--</div>
-        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-bookings-sub">--</div>
-        <div class="cc-kpi-source-tag" title="Source in stored system data">
-          <span>Source:</span> <span id="kpi-bookings-source">localStorage['cc_bookings'] (club.booking)</span>
-        </div>
-      </div>
-
-      <!-- 3. Pro Shop Sales -->
-      <div class="cc-kpi-card" data-module-card="shop">
-        <div class="cc-kpi-card-header">
-          <h3 class="cc-kpi-title">Pro Shop Sales</h3>
-          <span class="cc-badge cc-badge-silver">Orders</span>
-        </div>
-        <div class="cc-kpi-value" id="kpi-total-shop-orders">--</div>
-        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-shop-sub">--</div>
-        <div class="cc-kpi-source-tag" title="Source in stored system data">
-          <span>Source:</span> <span id="kpi-shop-source">localStorage['cc_shop_orders'] (club.shop.order)</span>
-        </div>
-      </div>
-
-      <!-- 4. Bar / Cafe POS Sales -->
-      <div class="cc-kpi-card" data-module-card="bar">
-        <div class="cc-kpi-card-header">
-          <h3 class="cc-kpi-title">Bar / Cafe Sales</h3>
-          <span class="cc-badge cc-badge-warning">Daily Shift</span>
-        </div>
-        <div class="cc-kpi-value gold-accent" id="kpi-total-bar-revenue">--</div>
-        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-bar-sub">--</div>
-        <div class="cc-kpi-source-tag" title="Source in stored system data">
-          <span>Source:</span> <span id="kpi-bar-source">localStorage['cc_bar_revenue'] (club.bar.shift)</span>
-        </div>
-      </div>
-
-      <!-- 5. Unified Club Revenue -->
-      <div class="cc-kpi-card" data-module-card="revenue">
-        <div class="cc-kpi-card-header">
-          <h3 class="cc-kpi-title">Recorded Club Revenue</h3>
-          <span class="cc-badge cc-badge-gold">Itemized Sum</span>
-        </div>
-        <div class="cc-kpi-value gold-accent" id="kpi-total-revenue">--</div>
-        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-revenue-sub">--</div>
-        <div class="cc-kpi-source-tag" title="Source in stored system data">
-          <span>Source:</span> <span id="kpi-revenue-source">Shop + Bar + Court Receipts</span>
-        </div>
-      </div>
-
-      <!-- 6. Shared Shelf Inventory -->
-      <div class="cc-kpi-card" data-module-card="inventory">
-        <div class="cc-kpi-card-header">
-          <h3 class="cc-kpi-title">Inventory Shelf</h3>
-          <span class="cc-badge" id="kpi-inventory-badge">Shared Shelf</span>
-        </div>
-        <div class="cc-kpi-value" id="kpi-total-inventory-units">--</div>
-        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-inventory-sub">--</div>
-        <div class="cc-kpi-source-tag" title="Source in stored system data">
-          <span>Source:</span> <span id="kpi-inventory-source">localStorage['cc_products'] (club.product)</span>
-        </div>
-      </div>
-
-      <!-- 7. Enquiries / CRM Pipeline -->
-      <div class="cc-kpi-card" data-module-card="crm">
-        <div class="cc-kpi-card-header">
-          <h3 class="cc-kpi-title">Visitor Enquiries</h3>
-          <span class="cc-badge cc-badge-junior">CRM Pipeline</span>
-        </div>
-        <div class="cc-kpi-value" id="kpi-total-leads">--</div>
-        <div class="cc-body-xs" style="color: var(--cc-text-secondary);" id="kpi-crm-sub">--</div>
-        <div class="cc-kpi-source-tag" title="Source in stored system data">
-          <span>Source:</span> <span id="kpi-crm-source">localStorage['cc_leads'] (club.enquiry)</span>
+          <!-- Subtle Right Utility Controls -->
+          <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+            <span class="cc-badge cc-badge-active" id="sync-status-badge" style="display: none;">● Live Sync</span>
+            <span id="dashboard-current-date" style="display: none;">Oct 3, 2026</span>
+            <button id="btn-restore-demo" class="cc-btn cc-btn-ghost cc-btn-xs" style="color: var(--cc-text-muted); font-size: 10px;" title="Reset Demo Data">
+              ↺ Reset Demo
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- =========================================================================
-         DETAILED DATA PANELS WITH COMPLETE LINEAGE
-         ========================================================================= -->
+    <!-- MAIN DASHBOARD CONTENT CONTAINER -->
+    <main class="cc-container" style="padding: 24px 0 64px;">
 
-    <!-- PANEL 1: MEMBERSHIP INFORMATION -->
-    <section class="cc-dashboard-panel" id="panel-membership">
-      <div class="cc-dashboard-panel-header">
-        <h2 class="cc-dashboard-panel-title">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-          Membership Information &amp; Status
-        </h2>
-        <div style="display: flex; gap: 8px;">
-          <a href="members.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">Manage Members &rarr;</a>
+      <!-- =========================================================================
+           SECTION 1: MEMBERSHIP MANAGEMENT (PRESERVED FIRST SCREENSHOT)
+           ========================================================================= -->
+      <div class="cc-dashboard-section is-active-section" id="section-memberships">
+        
+        <!-- EXPIRING SOON ALERT BANNER -->
+        <div id="expiring-alert-banner" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--cc-radius-md); padding: 1rem 1.25rem; margin-bottom: 1.5rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 1.5rem;">⚠️</span>
+            <div>
+              <strong style="color: #FBBF24; font-size: 14px;" id="expiring-banner-text">Attention: 1 membership expiring within 30 days.</strong>
+              <div style="font-size: 12px; color: var(--cc-text-secondary); margin-top: 2px;">Elena Rostova (Silver) expires on Oct 25, 2026. Execute renewal to prevent benefit suspension.</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="cc-btn cc-btn-sm cc-btn-secondary" style="border-color: #FBBF24; color: #FBBF24;" onclick="filterMembersTable('expiring')">Filter Expiring</button>
+            <button class="cc-btn cc-btn-sm cc-btn-primary cc-btn-pill" onclick="triggerQuickRenew()">Quick Renew</button>
+          </div>
         </div>
-      </div>
 
-      <div id="table-container-members">
-        <!-- Rendered by dashboard_manager.js -->
-      </div>
-    </section>
+        <!-- MEMBERSHIP TIERS RECAP -->
+        <div style="margin-bottom: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <div class="cc-eyebrow">Configurable Entitlements</div>
+              <h2 class="cc-heading-3" style="margin-top: 2px;">Membership Tiers &amp; Benefits</h2>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="cc-btn cc-btn-secondary cc-btn-sm cc-btn-pill" onclick="openPlanConfigModal()" id="btn-open-config-plans">⚙️ Edit Tier Prices &amp; Benefits</button>
+              <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" onclick="openModal('modal-new-member')">+ Enroll New Member</button>
+            </div>
+          </div>
 
-    <!-- PANEL 2: COURT BOOKINGS -->
-    <section class="cc-dashboard-panel" id="panel-courts">
-      <div class="cc-dashboard-panel-header">
-        <h2 class="cc-dashboard-panel-title">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-          Court Bookings &amp; Schedules (Tennis, Cricket, Badminton)
-        </h2>
-        <div style="display: flex; gap: 8px;">
-          <a href="bookings.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">Court Booking Portal &rarr;</a>
+          <div class="cc-grid cc-grid-cols-3" style="gap: 1.25rem;" id="membership-tiers-grid">
+            <!-- Gold, Silver, Junior Cards rendered dynamically -->
+          </div>
         </div>
-      </div>
 
-      <div id="table-container-bookings">
-        <!-- Rendered by dashboard_manager.js -->
-      </div>
-    </section>
+        <!-- SEARCH, SORT, AND FILTER CONTROLS (PRESERVED FROM FIRST SCREENSHOT) -->
+        <div class="cc-card cc-card-glass" style="margin-bottom: 1.25rem; padding: 1.25rem;">
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
+            
+            <!-- Search Bar -->
+            <div class="cc-input-search-wrap" style="max-width: 380px; flex: 1; min-width: 260px;">
+              <svg class="cc-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              <input type="search" id="member-search" class="cc-input cc-input-search" placeholder="Search by name, Member ID, phone or email..." oninput="handleMemberSearch()">
+            </div>
 
-    <!-- PANEL 3: PRO SHOP SALES & INVENTORY -->
-    <section class="cc-dashboard-panel" id="panel-shop">
-      <div class="cc-dashboard-panel-header">
-        <h2 class="cc-dashboard-panel-title">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-          Pro Shop Sales Orders (Counter &amp; Online)
-        </h2>
-        <div style="display: flex; gap: 8px;">
-          <a href="shop.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">Open Pro Shop &rarr;</a>
+            <!-- Sort Select & Filter Pills -->
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--cc-text-muted); margin-right: 4px;">
+                <span>Sort:</span>
+                <select id="member-sort-select" class="cc-select" style="padding: 6px 12px; font-size: 12px; width: auto;" onchange="handleMemberSort()">
+                  <option value="expiry-asc">Expiry Date (Soonest first)</option>
+                  <option value="expiry-desc">Expiry Date (Furthest first)</option>
+                  <option value="name-asc">Name (A &rarr; Z)</option>
+                  <option value="id-asc">Member ID</option>
+                </select>
+              </div>
+
+              <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;" id="member-filter-pills">
+                <button class="cc-filter-pill is-active" data-mfilter="all" onclick="filterMembersTable('all')">All Members <span class="cc-count-chip" id="chip-all">7</span></button>
+                <button class="cc-filter-pill" data-mfilter="gold" onclick="filterMembersTable('gold')">★ Gold <span class="cc-count-chip" id="chip-gold">2</span></button>
+                <button class="cc-filter-pill" data-mfilter="silver" onclick="filterMembersTable('silver')">◆ Silver <span class="cc-count-chip" id="chip-silver">2</span></button>
+                <button class="cc-filter-pill" data-mfilter="junior" onclick="filterMembersTable('junior')">● Junior <span class="cc-count-chip" id="chip-junior">3</span></button>
+                <button class="cc-filter-pill" data-mfilter="active" onclick="filterMembersTable('active')">&#9679; Active</button>
+                <button class="cc-filter-pill" data-mfilter="expiring" onclick="filterMembersTable('expiring')">⚠️ Expiring</button>
+                <button class="cc-filter-pill" data-mfilter="expired" onclick="filterMembersTable('expired')">✕ Expired</button>
+              </div>
+            </div>
+
+          </div>
         </div>
-      </div>
 
-      <div id="table-container-shop-orders">
-        <!-- Rendered by dashboard_manager.js -->
-      </div>
-    </section>
-
-    <!-- PANEL 4: SHARED SHELF INVENTORY -->
-    <section class="cc-dashboard-panel" id="panel-inventory">
-      <div class="cc-dashboard-panel-header">
-        <h2 class="cc-dashboard-panel-title">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-          Unified Shared Shelf Inventory (Rackets, Balls, Shoes, Accessories, Apparel)
-        </h2>
-        <div id="inventory-low-stock-alert-pill">
-          <!-- Dynamic alert tag -->
+        <!-- FULL MEMBERS ROSTER TABLE (PRESERVED FROM FIRST SCREENSHOT) -->
+        <div class="cc-table-container">
+          <table class="cc-table" id="members-full-table">
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Member ID</th>
+                <th>Tier Plan</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>Expiry Date</th>
+                <th>Last Activity</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="members-full-table-body">
+              <!-- Rendered dynamically by dashboard_manager.js -->
+            </tbody>
+          </table>
         </div>
+
       </div>
 
-      <div id="table-container-inventory">
-        <!-- Rendered by dashboard_manager.js -->
-      </div>
-    </section>
+      <!-- =========================================================================
+           SECTION 2: SALES (ALL SALES, REVENUE, TAXES, COURTS, PRO SHOP & BAR)
+           ========================================================================= -->
+      <div class="cc-dashboard-section" id="section-sales">
+        
+        <!-- UNIFIED FINANCIAL INTELLIGENCE HERO HEADER -->
+        <div class="cc-finance-hero-card" style="margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <span class="cc-eyebrow" style="color: var(--cc-gold-400);">UNIFIED FINANCIAL INTELLIGENCE</span>
+              <h2 class="cc-heading-2" style="margin: 4px 0 6px;">Total Club Revenue</h2>
+              <div class="cc-text-mono" id="fin-grand-total" style="font-size: 2.8rem; font-weight: 800; color: var(--cc-gold-400); line-height: 1.1;">
+                ₹ 11,010.00
+              </div>
+              <div class="cc-body-xs" style="color: var(--cc-text-secondary); margin-top: 6px;">
+                100% computed from verified immutable database receipts across all business channels. Zero estimations.
+              </div>
+            </div>
 
-    <!-- PANEL 5: BAR & CAFETERIA POS -->
-    <section class="cc-dashboard-panel" id="panel-bar">
-      <div class="cc-dashboard-panel-header">
-        <h2 class="cc-dashboard-panel-title">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Bar &amp; Cafeteria POS: Seating, Tabs &amp; Daily Reconciliation
-        </h2>
-        <div style="display: flex; gap: 8px;">
-          <a href="pos.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">Bar POS Terminal &rarr;</a>
+            <!-- Period Scope Filter -->
+            <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+              <span style="font-size: 11px; color: var(--cc-text-muted); font-weight: 700; text-transform: uppercase;">Time Scope:</span>
+              <div style="display: flex; gap: 6px;">
+                <button class="cc-filter-pill is-active cc-fin-period-pill" data-fperiod="today" onclick="setFinancePeriod('today')">Today</button>
+                <button class="cc-filter-pill cc-fin-period-pill" data-fperiod="week" onclick="setFinancePeriod('week')">This Week</button>
+                <button class="cc-filter-pill cc-fin-period-pill" data-fperiod="month" onclick="setFinancePeriod('month')">This Month</button>
+                <button class="cc-filter-pill cc-fin-period-pill" data-fperiod="all" onclick="setFinancePeriod('all')">All Time</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PAYMENT METHODS BREAKDOWN BAR -->
+          <div class="cc-payment-breakdown-box">
+            <div style="text-align: center; border-right: 1px solid var(--cc-border-subtle); padding: 4px 10px;">
+              <span style="font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase; font-weight: 700;">💵 CASH PAYMENTS</span>
+              <div class="cc-text-mono" id="fin-cash-total" style="font-size: 1.3rem; font-weight: 800; color: #FFFFFF; margin-top: 2px;">₹ 2,440.00</div>
+              <span class="cc-body-xs" style="color: var(--cc-text-muted);">Counter &amp; Cafe</span>
+            </div>
+            <div style="text-align: center; border-right: 1px solid var(--cc-border-subtle); padding: 4px 10px;">
+              <span style="font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase; font-weight: 700;">💳 CARD / POS SWIPES</span>
+              <div class="cc-text-mono" id="fin-card-total" style="font-size: 1.3rem; font-weight: 800; color: #FFFFFF; margin-top: 2px;">₹ 5,200.00</div>
+              <span class="cc-body-xs" style="color: var(--cc-text-muted);">EDC Terminal Receipts</span>
+            </div>
+            <div style="text-align: center; padding: 4px 10px;">
+              <span style="font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase; font-weight: 700;">📱 UPI &amp; ONLINE TRANSFERS</span>
+              <div class="cc-text-mono" id="fin-upi-total" style="font-size: 1.3rem; font-weight: 800; color: var(--cc-gold-300); margin-top: 2px;">₹ 3,370.00</div>
+              <span class="cc-body-xs" style="color: var(--cc-text-muted);">QR Code &amp; Web Checkout</span>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-        <div>
-          <h3 class="cc-h4" style="margin: 0 0 12px; font-size: 14px; color: var(--cc-text-secondary); text-transform: uppercase;">Daily Bar Revenue Reconciliation Ledger</h3>
-          <div class="cc-ledger-card" id="bar-reconciliation-ledger">
+        <!-- 3 REVENUE STREAMS COMPARISON GRID WITH INTEGRATED LIVE DETAILS -->
+        <div class="cc-finance-matrix-grid" style="margin-bottom: 24px; align-items: start;">
+          
+          <!-- STREAM 1: COURTS WITH INTEGRATED BOOKING DETAILS -->
+          <div class="cc-finance-stream-card cc-stream-interactive-card" id="stream-card-courts">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="cc-badge cc-badge-silver">STREAM 1</span>
+                <span class="cc-badge cc-badge-active" id="fin-courts-pct">6% of Total</span>
+              </div>
+              <h3 class="cc-heading-4" style="margin: 0 0 4px; display: flex; align-items: center; gap: 6px;">
+                <span>🎾</span> Court Bookings
+              </h3>
+              <p class="cc-body-xs" style="color: var(--cc-text-secondary); margin-bottom: 12px;">Casual walk-in player receipts &amp; member court fees</p>
+              <div class="cc-text-mono" id="fin-stream-courts" style="font-size: 1.75rem; font-weight: 800; color: var(--cc-gold-400); margin-bottom: 12px;">
+                ₹ 600.00
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: var(--cc-radius-sm); font-size: 11px; color: var(--cc-text-secondary); display: flex; justify-content: space-between; margin-bottom: 14px;">
+              <span>Cash: <strong id="fin-court-cash">₹ 200</strong></span>
+              <span>Card: <strong id="fin-court-card">₹ 250</strong></span>
+              <span>UPI: <strong id="fin-court-upi">₹ 150</strong></span>
+            </div>
+
+            <!-- INTEGRATED DETAILS CONTAINER FOR STREAM 1 -->
+            <div class="cc-stream-integrated-details">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-top: 1px solid var(--cc-border-subtle); padding-top: 12px; flex-wrap: wrap; gap: 6px;">
+                <span class="cc-eyebrow" style="color: var(--cc-gold-400); font-size: 10px;">COURT SCHEDULE &amp; BOOKINGS</span>
+                <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" style="padding: 3px 10px; font-size: 11px;" onclick="openModal('modal-new-booking')">+ Reserve Slot</button>
+              </div>
+
+              <!-- Bookings Filter Pills -->
+              <div class="cc-filter-pill-bar" id="court-bookings-filter-bar" style="margin-bottom: 10px; gap: 4px; flex-wrap: wrap;">
+                <button class="cc-filter-pill is-active" data-bfilter="all" onclick="filterBookingsTable('all')" style="font-size: 10px; padding: 3px 8px;">All</button>
+                <button class="cc-filter-pill" data-bfilter="today" onclick="filterBookingsTable('today')" style="font-size: 10px; padding: 3px 8px;">Today (Oct 3)</button>
+                <button class="cc-filter-pill" data-bfilter="confirmed" onclick="filterBookingsTable('confirmed')" style="font-size: 10px; padding: 3px 8px;">Confirmed</button>
+                <button class="cc-filter-pill" data-bfilter="cancelled" onclick="filterBookingsTable('cancelled')" style="font-size: 10px; padding: 3px 8px;">Cancelled</button>
+              </div>
+
+              <div class="cc-table-container" style="max-height: 290px; overflow-y: auto; border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-sm);">
+                <table class="cc-table cc-table-sm" style="font-size: 11px;">
+                  <thead>
+                    <tr>
+                      <th>Booking ID</th>
+                      <th>Court / Arena</th>
+                      <th>Sport</th>
+                      <th>Date &amp; Time</th>
+                      <th>Player / Member</th>
+                      <th>Type</th>
+                      <th>Rate Applied</th>
+                      <th>Status</th>
+                      <th style="text-align: right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="courts-bookings-table-body">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- STREAM 2: PRO SHOP WITH INTEGRATED ORDER DETAILS -->
+          <div class="cc-finance-stream-card cc-stream-interactive-card" id="stream-card-shop">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="cc-badge cc-badge-silver">STREAM 2</span>
+                <span class="cc-badge cc-badge-active" id="fin-shop-pct">85% of Total</span>
+              </div>
+              <h3 class="cc-heading-4" style="margin: 0 0 4px; display: flex; align-items: center; gap: 6px;">
+                <span>🛍️</span> Pro Shop &amp; Equipment
+              </h3>
+              <p class="cc-body-xs" style="color: var(--cc-text-secondary); margin-bottom: 12px;">Counter gear retail and member click &amp; collect orders</p>
+              <div class="cc-text-mono" id="fin-stream-shop" style="font-size: 1.75rem; font-weight: 800; color: var(--cc-gold-400); margin-bottom: 12px;">
+                ₹ 9,400.00
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: var(--cc-radius-sm); font-size: 11px; color: var(--cc-text-secondary); display: flex; justify-content: space-between; margin-bottom: 14px;">
+              <span>Cash: <strong id="fin-shop-cash">₹ 2,000</strong></span>
+              <span>Card: <strong id="fin-shop-card">₹ 4,500</strong></span>
+              <span>UPI: <strong id="fin-shop-upi">₹ 2,900</strong></span>
+            </div>
+
+            <!-- INTEGRATED DETAILS CONTAINER FOR STREAM 2 -->
+            <div class="cc-stream-integrated-details">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-top: 1px solid var(--cc-border-subtle); padding-top: 12px; flex-wrap: wrap; gap: 6px;">
+                <span class="cc-eyebrow" style="color: var(--cc-gold-400); font-size: 10px;">PRO SHOP ORDERS &amp; FULFILLMENT</span>
+                <div style="display: flex; gap: 4px;">
+                  <button class="cc-btn cc-btn-secondary cc-btn-sm cc-btn-pill" style="padding: 3px 8px; font-size: 11px;" onclick="openModal('modal-new-product')">+ Product</button>
+                  <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" style="padding: 3px 8px; font-size: 11px;" onclick="switchDashboardTab('inventory')">📦 Shelf</button>
+                </div>
+              </div>
+
+              <div class="cc-table-container" style="max-height: 290px; overflow-y: auto; border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-sm);">
+                <table class="cc-table cc-table-sm" style="font-size: 11px;">
+                  <thead>
+                    <tr>
+                      <th>Order #</th>
+                      <th>Channel</th>
+                      <th>Customer / Member</th>
+                      <th>Items Purchased</th>
+                      <th>Fulfillment</th>
+                      <th>Total Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="shop-orders-full-body">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- STREAM 3: BAR / CAFE POS WITH INTEGRATED RECONCILIATION & TABS -->
+          <div class="cc-finance-stream-card cc-stream-interactive-card" id="stream-card-bar">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="cc-badge cc-badge-silver">STREAM 3</span>
+                <span class="cc-badge cc-badge-active" id="fin-bar-pct">9% of Total</span>
+              </div>
+              <h3 class="cc-heading-4" style="margin: 0 0 4px; display: flex; align-items: center; gap: 6px;">
+                <span>🍹</span> Bar &amp; Cafeteria POS
+              </h3>
+              <p class="cc-body-xs" style="color: var(--cc-text-secondary); margin-bottom: 12px;">Post-match smoothies, meals, and member tab settlements</p>
+              <div class="cc-text-mono" id="fin-stream-bar" style="font-size: 1.75rem; font-weight: 800; color: var(--cc-gold-400); margin-bottom: 12px;">
+                ₹ 1,010.00
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: var(--cc-radius-sm); font-size: 11px; color: var(--cc-text-secondary); display: flex; justify-content: space-between; margin-bottom: 14px;">
+              <span>Cash: <strong id="fin-bar-cash">₹ 240</strong></span>
+              <span>Card: <strong id="fin-bar-card">₹ 450</strong></span>
+              <span>UPI: <strong id="fin-bar-upi">₹ 320</strong></span>
+            </div>
+
+            <!-- INTEGRATED DETAILS CONTAINER FOR STREAM 3 -->
+            <div class="cc-stream-integrated-details">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-top: 1px solid var(--cc-border-subtle); padding-top: 12px; flex-wrap: wrap; gap: 6px;">
+                <span class="cc-eyebrow" style="color: var(--cc-gold-400); font-size: 10px;">SHIFT RECONCILIATION &amp; TABS</span>
+                <div style="display: flex; gap: 4px;">
+                  <button class="cc-btn cc-btn-secondary cc-btn-sm cc-btn-pill" style="padding: 3px 8px; font-size: 11px;" onclick="openModal('modal-add-bar-item')">+ Table / Item</button>
+                  <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" style="padding: 3px 8px; font-size: 11px;" onclick="openBarShiftSettleModal()">💵 Settle Shift</button>
+                </div>
+              </div>
+
+              <!-- Daily Shift Cash/Card/UPI Summary inside Stream 3 -->
+              <div class="cc-ledger-card" id="bar-shift-reconciliation-box" style="margin-bottom: 10px; font-size: 11px; padding: 8px 10px;">
+                <!-- Rendered dynamically -->
+              </div>
+
+              <div class="cc-eyebrow" style="font-size: 10px; margin-bottom: 6px; color: var(--cc-text-muted);">ACTIVE TABLES &amp; RUNNING TABS</div>
+              <div id="bar-active-tabs-container" style="max-height: 180px; overflow-y: auto;">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAX MATRIX & OFFICIAL AUDIT REPORTS -->
+        <div class="cc-dashboard-panel" style="margin-bottom: 24px;">
+          <div class="cc-dashboard-panel-header">
+            <div>
+              <h2 class="cc-dashboard-panel-title">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Tax Matrix &amp; Multi-Stream Audit Reports
+              </h2>
+              <div class="cc-body-xs" style="color: var(--cc-text-muted); margin-top: 4px;">Authoritative GST 18% tax calculation &amp; multi-stream revenue reconciliation</div>
+            </div>
+            <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" onclick="window.print()">🖨️ Print / Export Official Audit Report</button>
+          </div>
+
+          <!-- Tax Overview Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 20px;">
+            <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-subtle); padding: 16px; border-radius: var(--cc-radius-md);">
+              <span class="cc-eyebrow">Gross Receipts</span>
+              <div class="cc-text-mono" id="tax-gross-rev" style="font-size: 1.6rem; font-weight: 800; color: var(--cc-gold-400); margin-top: 4px;">₹ 11,010.00</div>
+              <span class="cc-body-xs" style="color: var(--cc-text-muted);">Recorded transactions</span>
+            </div>
+            <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-subtle); padding: 16px; border-radius: var(--cc-radius-md);">
+              <span class="cc-eyebrow">Taxable Base Amount</span>
+              <div class="cc-text-mono" id="tax-taxable-base" style="font-size: 1.6rem; font-weight: 800; color: #FFFFFF; margin-top: 4px;">₹ 9,330.51</div>
+              <span class="cc-body-xs" style="color: var(--cc-text-muted);">Net of 18% GST</span>
+            </div>
+            <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid rgba(212, 175, 55, 0.4); padding: 16px; border-radius: var(--cc-radius-md);">
+              <span class="cc-eyebrow" style="color: var(--cc-gold-400);">GST 18% Tax Collected</span>
+              <div class="cc-text-mono" id="tax-gst-total" style="font-size: 1.6rem; font-weight: 800; color: var(--cc-neon-green); margin-top: 4px;">₹ 1,679.49</div>
+              <span class="cc-body-xs" style="color: var(--cc-text-muted);">Payable to government</span>
+            </div>
+          </div>
+
+          <div class="cc-table-container">
+            <table class="cc-table">
+              <thead>
+                <tr>
+                  <th>Revenue Stream</th>
+                  <th>Transactions Count</th>
+                  <th>Gross Receipts</th>
+                  <th>GST Rate</th>
+                  <th>Tax Collected</th>
+                  <th>Net Club Earnings</th>
+                </tr>
+              </thead>
+              <tbody id="tax-matrix-table-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ITEMIZED REVENUE AUDIT LEDGER TABLE -->
+        <div class="cc-dashboard-panel">
+          <div class="cc-dashboard-panel-header">
+            <h2 class="cc-dashboard-panel-title">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              Unified Itemized Revenue Receipts Ledger
+            </h2>
+            <button class="cc-btn cc-btn-secondary cc-btn-sm" onclick="exportRevenueCSV()">📥 Export Ledger CSV</button>
+          </div>
+          <div id="revenue-traceability-breakdown">
             <!-- Rendered by dashboard_manager.js -->
           </div>
         </div>
 
-        <div>
-          <h3 class="cc-h4" style="margin: 0 0 12px; font-size: 14px; color: var(--cc-text-secondary); text-transform: uppercase;">Active Running Member Tabs</h3>
-          <div id="table-container-bar-tabs">
-            <!-- Rendered by dashboard_manager.js -->
+      </div>
+
+      <!-- =========================================================================
+           SECTION 3: INVENTORY MANAGEMENT (SHARED SHELF)
+           ========================================================================= -->
+      <div class="cc-dashboard-section" id="section-inventory">
+        <div class="cc-dashboard-panel">
+          <div class="cc-dashboard-panel-header">
+            <div>
+              <h2 class="cc-dashboard-panel-title">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                Unified Shared Shelf Inventory Ledger
+              </h2>
+              <div class="cc-body-xs" style="color: var(--cc-text-muted); margin-top: 4px;">Single inventory source powering both Pro Shop counter sales and online orders</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" onclick="openModal('modal-new-product')">+ Add New Product</button>
+            </div>
+          </div>
+
+          <div id="inventory-low-stock-alert-pill" style="margin-bottom: 16px;">
+            <!-- Low stock banner -->
+          </div>
+
+          <div class="cc-table-container">
+            <table class="cc-table">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>SKU</th>
+                  <th>Category</th>
+                  <th>Shelf Stock</th>
+                  <th>Min Alert Threshold</th>
+                  <th>Unit Price</th>
+                  <th>Stock Status</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-full-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- PANEL 6: REVENUE TRACEABILITY LEDGER -->
-    <section class="cc-dashboard-panel" id="panel-revenue">
-      <div class="cc-dashboard-panel-header">
-        <h2 class="cc-dashboard-panel-title">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-          Unified Revenue Ledger (Itemized Traceable Receipts)
-        </h2>
-        <span class="cc-badge cc-badge-gold">Zero Guesswork</span>
-      </div>
+      <!-- =========================================================================
+           SECTION 4: ENQUIRING & CRM PIPELINE
+           ========================================================================= -->
+      <div class="cc-dashboard-section" id="section-crm">
+        
+        <!-- HEADER & EXPLANATION -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div class="cc-eyebrow" style="color: var(--cc-gold-400);">— VISITOR ENGAGEMENT PIPELINE</div>
+            <h1 class="cc-heading-1" style="margin: 4px 0 6px; font-size: 2.25rem; font-weight: 800;">Enquiries &amp; Member Onboarding</h1>
+            <p class="cc-body-sm" style="color: var(--cc-text-secondary); margin: 0;">
+              When a visitor reaches out online or at front desk, manage the lifecycle across strictly defined stages: <strong>New Enquiry &rsaquo; Contacted &rsaquo; Follow-up &rsaquo; Quote &rsaquo; Converted</strong>.
+            </p>
+          </div>
+          <div>
+            <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" onclick="openModal('modal-new-enquiry')" id="btn-open-enquiry-modal" style="font-weight: 700; padding: 8px 18px;">
+              + NEW VISITOR ENQUIRY
+            </button>
+          </div>
+        </div>
 
-      <div id="revenue-traceability-breakdown">
-        <!-- Rendered by dashboard_manager.js -->
-      </div>
-    </section>
+        <!-- PIPELINE STAGES KANBAN BOARD -->
+        <div class="cc-crm-pipeline" id="admin-crm-kanban">
+          
+          <!-- STAGE 1: NEW ENQUIRY -->
+          <div class="cc-pipeline-col" id="crm-col-new">
+            <div class="cc-col-header">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="cc-pulse-dot" style="background: var(--cc-junior-blue);"></span>
+                <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">NEW ENQUIRY</strong>
+              </div>
+              <span class="cc-badge cc-badge-junior" id="crm-badge-new">0</span>
+            </div>
+            <div class="cc-cards-container" id="crm-cards-new" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
 
-    <!-- PANEL 7: ENQUIRIES & CRM PIPELINE -->
-    <section class="cc-dashboard-panel" id="panel-crm">
-      <div class="cc-dashboard-panel-header">
-        <h2 class="cc-dashboard-panel-title">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          Visitor Enquiries &amp; CRM Pipeline
-        </h2>
-        <div style="display: flex; gap: 8px;">
-          <a href="crm.html" class="cc-btn cc-btn-secondary" style="padding: 6px 14px; font-size: 11px;">CRM Kanban Pipeline &rarr;</a>
+          <!-- STAGE 2: CONTACTED -->
+          <div class="cc-pipeline-col" id="crm-col-contacted">
+            <div class="cc-col-header">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="cc-pulse-dot" style="background: var(--cc-amber);"></span>
+                <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">CONTACTED</strong>
+              </div>
+              <span class="cc-badge cc-badge-warning" id="crm-badge-contacted">0</span>
+            </div>
+            <div class="cc-cards-container" id="crm-cards-contacted" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+          <!-- STAGE 3: FOLLOW-UP -->
+          <div class="cc-pipeline-col" id="crm-col-followup">
+            <div class="cc-col-header">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="cc-pulse-dot" style="background: #38bdf8;"></span>
+                <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">FOLLOW-UP</strong>
+              </div>
+              <span class="cc-badge cc-badge-silver" id="crm-badge-followup">0</span>
+            </div>
+            <div class="cc-cards-container" id="crm-cards-followup" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+          <!-- STAGE 4: QUOTE -->
+          <div class="cc-pipeline-col" id="crm-col-quote">
+            <div class="cc-col-header">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="cc-pulse-dot" style="background: var(--cc-gold-500);"></span>
+                <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">QUOTE</strong>
+              </div>
+              <span class="cc-badge cc-badge-gold" id="crm-badge-quote">0</span>
+            </div>
+            <div class="cc-cards-container" id="crm-cards-quote" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+          <!-- STAGE 5: CONVERTED -->
+          <div class="cc-pipeline-col" id="crm-col-converted">
+            <div class="cc-col-header">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="cc-pulse-dot" style="background: var(--cc-neon-green);"></span>
+                <strong style="font-size: 13px; text-transform: uppercase; color: var(--cc-text-primary);">CONVERTED</strong>
+              </div>
+              <span class="cc-badge cc-badge-active" id="crm-badge-converted">0</span>
+            </div>
+            <div class="cc-cards-container" id="crm-cards-converted" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div id="table-container-leads">
-        <!-- Rendered by dashboard_manager.js -->
-      </div>
-    </section>
-  </main>
+      <!-- =========================================================================
+           SECTION 5: INVOICES & BUSINESS CLIENTS
+           ========================================================================= -->
+      <div class="cc-dashboard-section" id="section-invoices">
+        <div class="cc-dashboard-panel">
+          <div class="cc-dashboard-panel-header">
+            <div>
+              <h2 class="cc-dashboard-panel-title">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Invoices &amp; Corporate Business Clients
+              </h2>
+              <div class="cc-body-xs" style="color: var(--cc-text-muted); margin-top: 4px;">Track Corporate arena block billing, tournament packages, and annual membership dues</div>
+            </div>
+            <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" onclick="openModal('modal-new-invoice')">+ Create New Invoice</button>
+          </div>
 
-  <!-- Raw Record Inspector Modal -->
-  <div class="cc-raw-inspector-modal" id="modal-raw-inspector" role="dialog" aria-modal="true" aria-labelledby="modal-inspector-title">
-    <div class="cc-raw-inspector-content">
-      <div class="cc-raw-inspector-header">
-        <div>
-          <span class="cc-badge cc-badge-gold" style="margin-bottom: 4px;">AUDIT TRACEABILITY</span>
-          <h3 class="cc-h3" id="modal-inspector-title" style="margin: 0; font-size: 18px;">Underlying Record Payload</h3>
+          <!-- Invoice Summary Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+            <div style="background: rgba(14, 19, 31, 0.7); border: 1px solid var(--cc-border-subtle); padding: 14px; border-radius: var(--cc-radius-md);">
+              <span class="cc-eyebrow">Total Invoiced</span>
+              <div class="cc-text-mono" id="inv-kpi-total" style="font-size: 1.4rem; font-weight: 800; color: var(--cc-gold-400); margin-top: 4px;">₹ 1,22,720.00</div>
+            </div>
+            <div style="background: rgba(14, 19, 31, 0.7); border: 1px solid rgba(0, 229, 153, 0.3); padding: 14px; border-radius: var(--cc-radius-md);">
+              <span class="cc-eyebrow" style="color: var(--cc-neon-green);">Paid &amp; Cleared</span>
+              <div class="cc-text-mono" id="inv-kpi-paid" style="font-size: 1.4rem; font-weight: 800; color: var(--cc-neon-green); margin-top: 4px;">₹ 87,320.00</div>
+            </div>
+            <div style="background: rgba(14, 19, 31, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); padding: 14px; border-radius: var(--cc-radius-md);">
+              <span class="cc-eyebrow" style="color: var(--cc-amber);">Pending Payment</span>
+              <div class="cc-text-mono" id="inv-kpi-pending" style="font-size: 1.4rem; font-weight: 800; color: var(--cc-amber); margin-top: 4px;">₹ 21,240.00</div>
+            </div>
+            <div style="background: rgba(14, 19, 31, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 14px; border-radius: var(--cc-radius-md);">
+              <span class="cc-eyebrow" style="color: #fca5a5;">Overdue</span>
+              <div class="cc-text-mono" id="inv-kpi-overdue" style="font-size: 1.4rem; font-weight: 800; color: #ef4444; margin-top: 4px;">₹ 14,160.00</div>
+            </div>
+          </div>
+
+          <div class="cc-table-container">
+            <table class="cc-table">
+              <thead>
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Client / Member Name</th>
+                  <th>Type</th>
+                  <th>Issue Date</th>
+                  <th>Due Date</th>
+                  <th>Untaxed Base</th>
+                  <th>GST (18%)</th>
+                  <th>Total Amount</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="invoices-table-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
         </div>
-        <button id="btn-close-inspector" class="cc-btn-close" aria-label="Close Modal" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">&times;</button>
       </div>
-      <div class="cc-raw-inspector-body">
-        <pre id="modal-inspector-json" style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 12px;"></pre>
+
+      <!-- =========================================================================
+           SECTION 6: EMPLOYEE DETAILS & LEAVE MANAGEMENT
+           ========================================================================= -->
+      <div class="cc-dashboard-section" id="section-employees">
+        
+        <!-- STAFF & COACHES DIRECTORY -->
+        <div class="cc-dashboard-panel" style="margin-bottom: 24px;">
+          <div class="cc-dashboard-panel-header">
+            <div>
+              <h2 class="cc-dashboard-panel-title">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                Staff, Coaches &amp; Operational Team
+              </h2>
+              <div class="cc-body-xs" style="color: var(--cc-text-muted); margin-top: 4px;">Staff identification, department assignments, role-based schedules &amp; payroll compensation</div>
+            </div>
+            <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" onclick="openModal('modal-new-employee')">+ Add Staff Member</button>
+          </div>
+
+          <!-- Payroll Summary -->
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(14, 19, 31, 0.7); border: 1px solid var(--cc-border-subtle); padding: 14px 20px; border-radius: var(--cc-radius-md); margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <span class="cc-eyebrow">Monthly Club Payroll Obligation</span>
+              <div class="cc-text-mono" id="emp-payroll-total" style="font-size: 1.6rem; font-weight: 800; color: var(--cc-gold-400); margin-top: 2px;">
+                ₹ 3,42,000.00 / month
+              </div>
+            </div>
+            <div style="font-size: 12px; color: var(--cc-text-secondary);">
+              Total Active Personnel: <strong style="color: #FFF;" id="emp-active-count">6 Staff</strong> &bull; All roles linked to operational scheduling.
+            </div>
+          </div>
+
+          <div class="cc-table-container">
+            <table class="cc-table">
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Staff Member</th>
+                  <th>Role / Designation</th>
+                  <th>Department</th>
+                  <th>Contact Phone</th>
+                  <th>Email</th>
+                  <th>Monthly Salary</th>
+                  <th>Status</th>
+                  <th>Joining Date</th>
+                </tr>
+              </thead>
+              <tbody id="employees-table-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- STAFF LEAVE MANAGEMENT -->
+        <div class="cc-dashboard-panel">
+          <div class="cc-dashboard-panel-header">
+            <div>
+              <h2 class="cc-dashboard-panel-title">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                Staff Leave Requests &amp; Approvals
+              </h2>
+              <div class="cc-body-xs" style="color: var(--cc-text-muted); margin-top: 4px;">Enforce manager &amp; administrator approval barriers for annual, casual, and sick leaves</div>
+            </div>
+          </div>
+
+          <div class="cc-table-container">
+            <table class="cc-table">
+              <thead>
+                <tr>
+                  <th>Request ID</th>
+                  <th>Employee</th>
+                  <th>Leave Type</th>
+                  <th>From Date</th>
+                  <th>To Date</th>
+                  <th>Days</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Administrator Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leaves-table-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
-      <div style="padding: 12px 24px; border-top: 1px solid var(--cc-border-subtle); display: flex; justify-content: flex-end;">
-        <button class="cc-btn cc-btn-secondary" id="btn-done-inspector" style="padding: 8px 16px; font-size: 12px;">Close Inspector</button>
+
+    </main>
+
+    <!-- =========================================================================
+         ALL CENTRALIZED MODAL DIALOGS
+         ========================================================================= -->
+
+    <!-- MODAL 1: REGISTER NEW MEMBER -->
+    <div class="cc-modal-backdrop" id="modal-new-member" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 580px;">
+        <div class="cc-modal-header">
+          <h3 class="cc-modal-title">Enroll New Member</h3>
+          <button class="cc-modal-close" onclick="closeModal('modal-new-member')">&times;</button>
+        </div>
+        <form id="form-enroll-member" onsubmit="handleEnrollMember(event)">
+          <div class="cc-modal-body">
+            <div class="cc-form-group">
+              <label class="cc-label" for="mem-new-name">Full Name *</label>
+              <input type="text" id="mem-new-name" class="cc-input" placeholder="e.g. David Vance" required>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="mem-new-phone">Phone Number *</label>
+                <input type="tel" id="mem-new-phone" class="cc-input" placeholder="+91 98000 12345" required>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="mem-new-email">Email Address</label>
+                <input type="email" id="mem-new-email" class="cc-input" placeholder="member@example.com">
+              </div>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="mem-new-plan">Membership Tier *</label>
+                <select id="mem-new-plan" class="cc-select">
+                  <option value="gold">★ Gold Plan (₹ 24,000 / yr - Free Courts)</option>
+                  <option value="silver">◆ Silver Plan (₹ 14,000 / yr - Member Rates)</option>
+                  <option value="junior">● Junior Plan (₹ 8,000 / yr - Youth Rate)</option>
+                </select>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="mem-new-start">Start Date *</label>
+                <input type="date" id="mem-new-start" class="cc-input" value="2026-10-03" required>
+              </div>
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label" for="mem-new-notes">Administrative Notes</label>
+              <textarea id="mem-new-notes" class="cc-textarea" placeholder="Front desk notes, coaching interest..." style="height: 70px;"></textarea>
+            </div>
+          </div>
+          <div class="cc-modal-footer">
+            <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-new-member')">Cancel</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Enroll &amp; Generate ID</button>
+          </div>
+        </form>
       </div>
     </div>
-  </div>
+
+    <!-- MODAL 2: MEMBER 360° PROFILE & ACTIVITY DRAWER -->
+    <div class="cc-modal-backdrop" id="modal-member-360" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 660px;">
+        <div class="cc-modal-header">
+          <div>
+            <span class="cc-eyebrow" id="m360-id">CC-MEM-00101</span>
+            <h3 class="cc-modal-title" id="m360-name">Member Name</h3>
+          </div>
+          <button class="cc-modal-close" onclick="closeModal('modal-member-360')">&times;</button>
+        </div>
+        <div class="cc-modal-body" style="max-height: 70vh; overflow-y: auto;">
+          
+          <!-- DIGITAL PASS CARD -->
+          <div class="cc-digital-card" style="margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+              <div>
+                <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--cc-gold-400); font-weight: 700;">CHAMPIONS CLUB MEMBERSHIP</span>
+                <h3 style="margin: 2px 0 0; font-size: 18px; color: #FFF;" id="m360-card-name">Member Name</h3>
+              </div>
+              <span class="cc-badge cc-badge-gold" id="m360-card-tier">GOLD TIER</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 12px; font-family: monospace;">
+              <div>
+                <div style="color: #94A3B8;">VALIDITY:</div>
+                <div id="m360-card-validity" style="color: #FFF; font-weight: 700;">2026-01-01 &rarr; 2026-12-31</div>
+              </div>
+              <div class="cc-badge cc-badge-active" id="m360-card-status">ACTIVE</div>
+            </div>
+          </div>
+
+          <!-- MEMBER DETAILS -->
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; background: rgba(14, 19, 31, 0.6); padding: 12px 16px; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle); margin-bottom: 1.25rem; font-size: 13px;">
+            <div>
+              <span style="color: var(--cc-text-muted);">Phone:</span> <strong id="m360-phone" style="color: #FFF;">-</strong>
+            </div>
+            <div>
+              <span style="color: var(--cc-text-muted);">Email:</span> <strong id="m360-email" style="color: #FFF;">-</strong>
+            </div>
+            <div>
+              <span style="color: var(--cc-text-muted);">Court Rate:</span> <strong id="m360-court-rate" style="color: var(--cc-neon-green);">Free</strong>
+            </div>
+            <div>
+              <span style="color: var(--cc-text-muted);">Shop / Bar Discount:</span> <strong id="m360-discounts" style="color: var(--cc-gold-400);">15%</strong>
+            </div>
+          </div>
+
+          <!-- 360° ACTIVITY TIMELINE -->
+          <div>
+            <div class="cc-eyebrow" style="margin-bottom: 0.5rem;">360° Audit &amp; Activity History</div>
+            <div class="cc-history-timeline" id="m360-history-timeline" style="max-height: 160px; overflow-y: auto;">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+        </div>
+        <div class="cc-modal-footer" style="justify-content: space-between;">
+          <div style="display: flex; gap: 6px;">
+            <button class="cc-btn cc-btn-secondary cc-btn-sm" id="btn-m360-renew" onclick="handle360Renew()">Renew (1 Year)</button>
+            <button class="cc-btn cc-btn-ghost cc-btn-sm" style="color: #fca5a5;" onclick="handle360Expire()">Mark Expired</button>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-member-360')">Close</button>
+            <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-m360-book" onclick="handle360Book()">Book Court</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 3: RESERVE COURT SLOT -->
+    <div class="cc-modal-backdrop" id="modal-new-booking" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 540px;">
+        <div class="cc-modal-header">
+          <h3 class="cc-modal-title">Reserve Court / Arena Slot</h3>
+          <button class="cc-modal-close" onclick="closeModal('modal-new-booking')">&times;</button>
+        </div>
+        <form id="form-create-booking" onsubmit="handleCreateBooking(event)">
+          <div class="cc-modal-body">
+            <div class="cc-form-group">
+              <label class="cc-label" for="bk-court-select">Court / Arena *</label>
+              <select id="bk-court-select" class="cc-select" required>
+                <option value="1">Tennis Court 1 (Clay)</option>
+                <option value="2">Tennis Court 2 (Hard)</option>
+                <option value="3">Cricket Pitch &amp; Net 1 (Turf)</option>
+                <option value="4">Cricket Practice Net 2 (Synthetic)</option>
+                <option value="5">Badminton Court 1 (Indoor Mat)</option>
+                <option value="6">Badminton Court 2 (Indoor Mat)</option>
+              </select>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="bk-date">Date *</label>
+                <input type="date" id="bk-date" class="cc-input" value="2026-10-03" required>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="bk-time">Start Time (30-min Interval) *</label>
+                <select id="bk-time" class="cc-select" required>
+                  <option value="06:00">06:00 AM</option>
+                  <option value="07:00">07:00 AM</option>
+                  <option value="08:00">08:00 AM</option>
+                  <option value="17:00">05:00 PM</option>
+                  <option value="18:00" selected>06:00 PM</option>
+                  <option value="19:00">07:00 PM</option>
+                  <option value="20:00">08:00 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="bk-player-type">Player Type *</label>
+                <select id="bk-player-type" class="cc-select" onchange="updateBookingRatePreview()">
+                  <option value="member">Active Member (Tier Rate)</option>
+                  <option value="walkin">Walk-in Guest (Full Rate)</option>
+                </select>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="bk-member-select">Member Name / ID</label>
+                <select id="bk-member-select" class="cc-select" onchange="updateBookingRatePreview()">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+            </div>
+            <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid var(--cc-gold-500); border-radius: var(--cc-radius-sm); padding: 10px 14px; font-size: 13px;">
+              <span>Calculated Rate: </span> <strong class="cc-text-mono" id="bk-calculated-rate" style="color: var(--cc-gold-400);">₹ 0.00 (Gold Plan Free)</strong>
+            </div>
+          </div>
+          <div class="cc-modal-footer">
+            <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-new-booking')">Cancel</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Confirm Reservation</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         UNIFIED QUICK ADD MODAL: ALL 3 ADD OPTIONS INTEGRATED IN ONE
+         ========================================================================= -->
+    <div class="cc-modal-backdrop" id="modal-quick-add-hub" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 620px;">
+        <div class="cc-modal-header">
+          <div>
+            <h3 class="cc-modal-title" style="display: flex; align-items: center; gap: 8px;">
+              <span>✨</span> Quick Add Club Asset
+            </h3>
+            <p class="cc-body-xs" style="color: var(--cc-text-muted); margin: 2px 0 0;">
+              Select an asset category below to add a new court, product, or bar table/menu item.
+            </p>
+          </div>
+          <button class="cc-modal-close" onclick="closeModal('modal-quick-add-hub')">&times;</button>
+        </div>
+
+        <!-- Segmented Tab Switcher for the 3 Integrated Add Options -->
+        <div class="cc-quick-add-tabs-wrap" style="padding: 12px 24px 0; border-bottom: 1px solid var(--cc-border-subtle); display: flex; gap: 8px; overflow-x: auto;">
+          <button type="button" class="cc-filter-pill is-active cc-qadd-tab-btn" data-qtab="court" onclick="switchQuickAddTab('court')">
+            🎾 1. Add Court
+          </button>
+          <button type="button" class="cc-filter-pill cc-qadd-tab-btn" data-qtab="product" onclick="switchQuickAddTab('product')">
+            🛍️ 2. Add Product
+          </button>
+          <button type="button" class="cc-filter-pill cc-qadd-tab-btn" data-qtab="bar" onclick="switchQuickAddTab('bar')">
+            🍹 3. Add Bar Table / Item
+          </button>
+        </div>
+
+        <!-- 1. INTEGRATED ADD COURT PANE -->
+        <div id="qadd-pane-court" class="cc-qadd-pane">
+          <form id="form-qadd-court" onsubmit="handleCreateCourt(event)">
+            <div class="cc-modal-body">
+              <div class="cc-form-group">
+                <label class="cc-label" for="qadd-court-name">Court / Arena Name *</label>
+                <input type="text" id="qadd-court-name" class="cc-input" placeholder="e.g. Tennis Court 3 (Clay)" required>
+              </div>
+              <div class="cc-grid cc-grid-cols-2">
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-court-sport">Sport Category *</label>
+                  <select id="qadd-court-sport" class="cc-select" required>
+                    <option value="tennis">Tennis</option>
+                    <option value="cricket">Cricket (Net / Pitch)</option>
+                    <option value="badminton">Badminton</option>
+                    <option value="squash">Squash</option>
+                    <option value="pickleball">Pickleball</option>
+                  </select>
+                </div>
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-court-surface">Surface / Specification *</label>
+                  <select id="qadd-court-surface" class="cc-select" required>
+                    <option value="Clay">Red Clay</option>
+                    <option value="Hard Court">Hard Synthetic Court</option>
+                    <option value="Natural Turf">Natural Grass Turf</option>
+                    <option value="Synthetic Turf">Synthetic AstroTurf</option>
+                    <option value="Indoor Wooden/Mat">Indoor Mat / Wood</option>
+                  </select>
+                </div>
+              </div>
+              <div class="cc-grid cc-grid-cols-2">
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-court-rate">Base Walk-in Rate (₹/hr) *</label>
+                  <input type="number" id="qadd-court-rate" class="cc-input cc-text-mono" placeholder="500" value="500" min="0" step="50" required>
+                </div>
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-court-status">Operational Status *</label>
+                  <select id="qadd-court-status" class="cc-select">
+                    <option value="active">Active &amp; Bookable</option>
+                    <option value="maintenance">Under Maintenance</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="cc-modal-footer">
+              <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-quick-add-hub')">Cancel</button>
+              <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Save &amp; Activate Court</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 2. INTEGRATED ADD PRODUCT PANE -->
+        <div id="qadd-pane-product" class="cc-qadd-pane" style="display: none;">
+          <form id="form-qadd-product" onsubmit="handleCreateProduct(event)">
+            <div class="cc-modal-body">
+              <div class="cc-form-group">
+                <label class="cc-label" for="qadd-prod-name">Product Name *</label>
+                <input type="text" id="qadd-prod-name" class="cc-input" placeholder="e.g. Pro Tour Carbon Tennis Racket" required>
+              </div>
+              <div class="cc-grid cc-grid-cols-2">
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-prod-category">Category *</label>
+                  <select id="qadd-prod-category" class="cc-select">
+                    <option value="rackets">Rackets</option>
+                    <option value="balls">Balls &amp; Shuttles</option>
+                    <option value="shoes">Athletic Shoes</option>
+                    <option value="apparel">Apparel &amp; Jerseys</option>
+                    <option value="accessories">Grips &amp; Accessories</option>
+                  </select>
+                </div>
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-prod-price">Retail Price (₹) *</label>
+                  <input type="number" id="qadd-prod-price" class="cc-input cc-text-mono" placeholder="8500" required>
+                </div>
+              </div>
+              <div class="cc-grid cc-grid-cols-2">
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-prod-stock">Initial Shelf Stock *</label>
+                  <input type="number" id="qadd-prod-stock" class="cc-input" placeholder="10" required>
+                </div>
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-prod-alert">Min Alert Threshold *</label>
+                  <input type="number" id="qadd-prod-alert" class="cc-input" placeholder="4" required>
+                </div>
+              </div>
+            </div>
+            <div class="cc-modal-footer">
+              <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-quick-add-hub')">Cancel</button>
+              <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Save Product to Shelf</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 3. INTEGRATED ADD BAR TABLE / ITEM PANE -->
+        <div id="qadd-pane-bar" class="cc-qadd-pane" style="display: none;">
+          <form id="form-qadd-bar-asset" onsubmit="handleCreateBarAsset(event)">
+            <input type="hidden" id="qadd-bar-asset-mode" value="table">
+            
+            <div style="padding: 10px 24px 0; display: flex; gap: 6px;">
+              <button type="button" class="cc-filter-pill is-active" id="btn-qadd-bar-toggle-table" onclick="toggleBarModalMode('table')" style="font-size: 11px; padding: 4px 10px;">🪑 Dining Table</button>
+              <button type="button" class="cc-filter-pill" id="btn-qadd-bar-toggle-item" onclick="toggleBarModalMode('item')" style="font-size: 11px; padding: 4px 10px;">🥤 Cafe Menu Item</button>
+            </div>
+
+            <div class="cc-modal-body">
+              <!-- SECTION A: ADD TABLE -->
+              <div id="qadd-bar-form-table-fields">
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-bar-table-name">Table / Seating Name *</label>
+                  <input type="text" id="qadd-bar-table-name" class="cc-input" placeholder="e.g. Courtside Table 5 or VIP Booth 2">
+                </div>
+                <div class="cc-grid cc-grid-cols-2">
+                  <div class="cc-form-group">
+                    <label class="cc-label" for="qadd-bar-table-area">Dining Area / Zone *</label>
+                    <select id="qadd-bar-table-area" class="cc-select">
+                      <option value="Courtside">Courtside Patio</option>
+                      <option value="Veranda">Open-air Veranda</option>
+                      <option value="Lounge">VIP Lounge</option>
+                      <option value="Indoor Cafe">Indoor Cafe</option>
+                      <option value="Poolside">Poolside Deck</option>
+                    </select>
+                  </div>
+                  <div class="cc-form-group">
+                    <label class="cc-label" for="qadd-bar-table-capacity">Guest Capacity *</label>
+                    <select id="qadd-bar-table-capacity" class="cc-select">
+                      <option value="2">2 Guests</option>
+                      <option value="4" selected>4 Guests</option>
+                      <option value="6">6 Guests</option>
+                      <option value="8">8 Guests</option>
+                      <option value="12">12 Guests (Group)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION B: ADD MENU ITEM -->
+              <div id="qadd-bar-form-item-fields" style="display: none;">
+                <div class="cc-form-group">
+                  <label class="cc-label" for="qadd-bar-item-name">Menu Item / Beverage Name *</label>
+                  <input type="text" id="qadd-bar-item-name" class="cc-input" placeholder="e.g. Cold Pressed Watermelon Juice 400ml">
+                </div>
+                <div class="cc-grid cc-grid-cols-3">
+                  <div class="cc-form-group">
+                    <label class="cc-label" for="qadd-bar-item-category">Category *</label>
+                    <select id="qadd-bar-item-category" class="cc-select">
+                      <option value="Smoothies & Shakes">Smoothies &amp; Shakes</option>
+                      <option value="Beverages">Beverages &amp; Juices</option>
+                      <option value="Health Bowls">Health Bowls</option>
+                      <option value="Recovery Snacks">Recovery Snacks</option>
+                      <option value="Coffee & Tea">Coffee &amp; Tea</option>
+                    </select>
+                  </div>
+                  <div class="cc-form-group">
+                    <label class="cc-label" for="qadd-bar-item-price">Price (₹) *</label>
+                    <input type="number" id="qadd-bar-item-price" class="cc-input cc-text-mono" placeholder="250" min="0" step="10">
+                  </div>
+                  <div class="cc-form-group">
+                    <label class="cc-label" for="qadd-bar-item-tax">GST Rate</label>
+                    <select id="qadd-bar-item-tax" class="cc-select">
+                      <option value="5">5% GST</option>
+                      <option value="18">18% GST</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cc-modal-footer">
+              <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-quick-add-hub')">Cancel</button>
+              <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-qadd-submit-bar-asset">Save Table</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MODAL: ADD NEW SPORTS COURT / ARENA -->
+    <div class="cc-modal-backdrop" id="modal-add-court" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 540px;">
+        <div class="cc-modal-header">
+          <div>
+            <h3 class="cc-modal-title" style="display: flex; align-items: center; gap: 8px;">
+              <span>🎾</span> Add New Sports Court / Arena
+            </h3>
+            <p class="cc-body-xs" style="color: var(--cc-text-muted); margin: 2px 0 0;">
+              Configure a new playing facility with sport type, surface specification, and base hourly rate.
+            </p>
+          </div>
+          <button class="cc-modal-close" onclick="closeModal('modal-add-court')">&times;</button>
+        </div>
+        <form id="form-create-court" onsubmit="handleCreateCourt(event)">
+          <div class="cc-modal-body">
+            <div class="cc-form-group">
+              <label class="cc-label" for="court-new-name">Court / Arena Name *</label>
+              <input type="text" id="court-new-name" class="cc-input" placeholder="e.g. Tennis Court 3 (Clay)" required>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="court-new-sport">Sport Category *</label>
+                <select id="court-new-sport" class="cc-select" required>
+                  <option value="tennis">Tennis</option>
+                  <option value="cricket">Cricket (Net / Pitch)</option>
+                  <option value="badminton">Badminton</option>
+                  <option value="squash">Squash</option>
+                  <option value="pickleball">Pickleball</option>
+                </select>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="court-new-surface">Surface / Specification *</label>
+                <select id="court-new-surface" class="cc-select" required>
+                  <option value="Clay">Red Clay</option>
+                  <option value="Hard Court">Hard Synthetic Court</option>
+                  <option value="Natural Turf">Natural Grass Turf</option>
+                  <option value="Synthetic Turf">Synthetic AstroTurf</option>
+                  <option value="Indoor Wooden/Mat">Indoor Mat / Wood</option>
+                </select>
+              </div>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="court-new-rate">Base Walk-in Rate (₹/hr) *</label>
+                <input type="number" id="court-new-rate" class="cc-input cc-text-mono" placeholder="500" value="500" min="0" step="50" required>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="court-new-status">Operational Status *</label>
+                <select id="court-new-status" class="cc-select">
+                  <option value="active">Active &amp; Bookable</option>
+                  <option value="maintenance">Under Maintenance</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="cc-modal-footer">
+            <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-add-court')">Cancel</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Save &amp; Activate Court</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: ADD BAR TABLE OR CAFE MENU ITEM -->
+    <div class="cc-modal-backdrop" id="modal-add-bar-item" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 580px;">
+        <div class="cc-modal-header">
+          <div>
+            <h3 class="cc-modal-title" style="display: flex; align-items: center; gap: 8px;">
+              <span>🍹</span> Add Bar Table or Cafeteria Item
+            </h3>
+            <p class="cc-body-xs" style="color: var(--cc-text-muted); margin: 2px 0 0;">
+              Expand hospitality operations with dining tables or cafe menu items.
+            </p>
+          </div>
+          <button class="cc-modal-close" onclick="closeModal('modal-add-bar-item')">&times;</button>
+        </div>
+        
+        <div style="padding: 12px 24px 0; border-bottom: 1px solid var(--cc-border-subtle); display: flex; gap: 8px;">
+          <button type="button" class="cc-filter-pill is-active" id="btn-bar-toggle-table" onclick="toggleBarModalMode('table')">🪑 Add Dining / Lounge Table</button>
+          <button type="button" class="cc-filter-pill" id="btn-bar-toggle-item" onclick="toggleBarModalMode('item')">🥤 Add Cafe / Drink Item</button>
+        </div>
+
+        <form id="form-create-bar-asset" onsubmit="handleCreateBarAsset(event)">
+          <input type="hidden" id="bar-asset-mode" value="table">
+          
+          <div class="cc-modal-body">
+            <!-- SECTION A: ADD TABLE -->
+            <div id="bar-form-table-fields">
+              <div class="cc-form-group">
+                <label class="cc-label" for="bar-table-name">Table / Seating Name *</label>
+                <input type="text" id="bar-table-name" class="cc-input" placeholder="e.g. Courtside Table 5 or VIP Booth 2">
+              </div>
+              <div class="cc-grid cc-grid-cols-2">
+                <div class="cc-form-group">
+                  <label class="cc-label" for="bar-table-area">Dining Area / Zone *</label>
+                  <select id="bar-table-area" class="cc-select">
+                    <option value="Courtside">Courtside Patio</option>
+                    <option value="Veranda">Open-air Veranda</option>
+                    <option value="Lounge">VIP Lounge</option>
+                    <option value="Indoor Cafe">Indoor Cafe</option>
+                    <option value="Poolside">Poolside Deck</option>
+                  </select>
+                </div>
+                <div class="cc-form-group">
+                  <label class="cc-label" for="bar-table-capacity">Guest Capacity *</label>
+                  <select id="bar-table-capacity" class="cc-select">
+                    <option value="2">2 Guests</option>
+                    <option value="4" selected>4 Guests</option>
+                    <option value="6">6 Guests</option>
+                    <option value="8">8 Guests</option>
+                    <option value="12">12 Guests (Group)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION B: ADD MENU ITEM -->
+            <div id="bar-form-item-fields" style="display: none;">
+              <div class="cc-form-group">
+                <label class="cc-label" for="bar-item-name">Menu Item / Beverage Name *</label>
+                <input type="text" id="bar-item-name" class="cc-input" placeholder="e.g. Cold Pressed Watermelon Juice 400ml">
+              </div>
+              <div class="cc-grid cc-grid-cols-3">
+                <div class="cc-form-group">
+                  <label class="cc-label" for="bar-item-category">Category *</label>
+                  <select id="bar-item-category" class="cc-select">
+                    <option value="Smoothies & Shakes">Smoothies &amp; Shakes</option>
+                    <option value="Beverages">Beverages &amp; Juices</option>
+                    <option value="Health Bowls">Health Bowls</option>
+                    <option value="Recovery Snacks">Recovery Snacks</option>
+                    <option value="Coffee & Tea">Coffee &amp; Tea</option>
+                  </select>
+                </div>
+                <div class="cc-form-group">
+                  <label class="cc-label" for="bar-item-price">Price (₹) *</label>
+                  <input type="number" id="bar-item-price" class="cc-input cc-text-mono" placeholder="250" min="0" step="10">
+                </div>
+                <div class="cc-form-group">
+                  <label class="cc-label" for="bar-item-tax">GST Rate</label>
+                  <select id="bar-item-tax" class="cc-select">
+                    <option value="5">5% GST</option>
+                    <option value="18">18% GST</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cc-modal-footer">
+            <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-add-bar-item')">Cancel</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-submit-bar-asset">Save Table</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 4: ADD PRODUCT / INVENTORY -->
+    <div class="cc-modal-backdrop" id="modal-new-product" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 520px;">
+        <div class="cc-modal-header">
+          <h3 class="cc-modal-title">Add New Product to Shared Shelf</h3>
+          <button class="cc-modal-close" onclick="closeModal('modal-new-product')">&times;</button>
+        </div>
+        <form id="form-create-product" onsubmit="handleCreateProduct(event)">
+          <div class="cc-modal-body">
+            <div class="cc-form-group">
+              <label class="cc-label" for="prod-name">Product Name *</label>
+              <input type="text" id="prod-name" class="cc-input" placeholder="e.g. Pro Tour Carbon Tennis Racket" required>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="prod-category">Category *</label>
+                <select id="prod-category" class="cc-select">
+                  <option value="rackets">Rackets</option>
+                  <option value="balls">Balls &amp; Shuttles</option>
+                  <option value="shoes">Athletic Shoes</option>
+                  <option value="apparel">Apparel &amp; Jerseys</option>
+                  <option value="accessories">Grips &amp; Accessories</option>
+                </select>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="prod-price">Retail Price (₹) *</label>
+                <input type="number" id="prod-price" class="cc-input" placeholder="8500" required>
+              </div>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="prod-stock">Initial Shelf Stock *</label>
+                <input type="number" id="prod-stock" class="cc-input" placeholder="10" required>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="prod-alert">Min Alert Threshold *</label>
+                <input type="number" id="prod-alert" class="cc-input" placeholder="4" required>
+              </div>
+            </div>
+          </div>
+          <div class="cc-modal-footer">
+            <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-new-product')">Cancel</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Save Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 5: CREATE B2B INVOICE -->
+    <div class="cc-modal-backdrop" id="modal-new-invoice" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 560px;">
+        <div class="cc-modal-header">
+          <h3 class="cc-modal-title">Create Business / Membership Invoice</h3>
+          <button class="cc-modal-close" onclick="closeModal('modal-new-invoice')">&times;</button>
+        </div>
+        <form id="form-create-invoice" onsubmit="handleCreateInvoice(event)">
+          <div class="cc-modal-body">
+            <div class="cc-form-group">
+              <label class="cc-label" for="inv-client-name">Client / Business Name *</label>
+              <input type="text" id="inv-client-name" class="cc-input" placeholder="e.g. Apex Tech Corp" required>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="inv-type">Invoice Category *</label>
+                <select id="inv-type" class="cc-select">
+                  <option value="corporate">Corporate Arena Hire / Tournament</option>
+                  <option value="membership">Annual Membership Subscription</option>
+                </select>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="inv-amount">Taxable Subtotal (₹) *</label>
+                <input type="number" id="inv-amount" class="cc-input" placeholder="50000" oninput="updateInvoicePreview()" required>
+              </div>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="inv-due-date">Due Date *</label>
+                <input type="date" id="inv-due-date" class="cc-input" value="2026-10-20" required>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="inv-status">Initial Status</label>
+                <select id="inv-status" class="cc-select">
+                  <option value="pending">Pending Payment</option>
+                  <option value="paid">Paid &amp; Reconciled</option>
+                </select>
+              </div>
+            </div>
+            <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-subtle); padding: 10px 14px; border-radius: var(--cc-radius-sm); font-size: 13px;">
+              <span>GST (18%): <strong id="inv-tax-preview">₹ 9,000.00</strong> &bull; Total: <strong class="cc-text-mono" id="inv-total-preview" style="color: var(--cc-gold-400);">₹ 59,000.00</strong></span>
+            </div>
+          </div>
+          <div class="cc-modal-footer">
+            <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-new-invoice')">Cancel</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Generate Invoice</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 6: LOG CRM VISITOR ENQUIRY -->
+    <div class="cc-modal-backdrop" id="modal-new-enquiry" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 520px;">
+        <div class="cc-modal-header">
+          <h3 class="cc-modal-title">Visitor Enquiry Capture</h3>
+          <button class="cc-modal-close" onclick="closeModal('modal-new-enquiry')">&times;</button>
+        </div>
+        <form id="form-admin-new-enquiry" onsubmit="handleCreateEnquiry(event)">
+          <div class="cc-modal-body">
+            <div class="cc-form-group">
+              <label class="cc-label" for="adm-enq-name">Visitor Full Name *</label>
+              <input type="text" id="adm-enq-name" class="cc-input" placeholder="e.g. Siddharth Rao" required>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="adm-enq-phone">Phone / WhatsApp *</label>
+                <input type="tel" id="adm-enq-phone" class="cc-input" placeholder="+91 98000 12345" required>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="adm-enq-email">Email Address</label>
+                <input type="email" id="adm-enq-email" class="cc-input" placeholder="visitor@example.com">
+              </div>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="adm-enq-source">Enquiry Source</label>
+                <select id="adm-enq-source" class="cc-select">
+                  <option value="website">Website Enquiry</option>
+                  <option value="walkin">Front Desk / Walk-in</option>
+                  <option value="phone">Phone / WhatsApp</option>
+                  <option value="referral">Member Referral</option>
+                </select>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="adm-enq-plan">Interested Plan Tier</label>
+                <select id="adm-enq-plan" class="cc-select">
+                  <option value="gold">Gold Plan (Full Privileges)</option>
+                  <option value="silver">Silver Plan (Standard)</option>
+                  <option value="junior">Junior Plan (Under 18)</option>
+                </select>
+              </div>
+            </div>
+            <div class="cc-form-group">
+              <label class="cc-label" for="adm-enq-msg">Visitor Query / Requirement</label>
+              <textarea id="adm-enq-msg" class="cc-textarea" placeholder="Weekend tennis court inquiry..." style="height: 70px;"></textarea>
+            </div>
+          </div>
+          <div class="cc-modal-footer">
+            <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-new-enquiry')">Cancel</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Submit to CRM Pipeline</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 7: ADD EMPLOYEE -->
+    <div class="cc-modal-backdrop" id="modal-new-employee" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 520px;">
+        <div class="cc-modal-header">
+          <h3 class="cc-modal-title">Add Staff Member</h3>
+          <button class="cc-modal-close" onclick="closeModal('modal-new-employee')">&times;</button>
+        </div>
+        <form id="form-create-employee" onsubmit="handleCreateEmployee(event)">
+          <div class="cc-modal-body">
+            <div class="cc-form-group">
+              <label class="cc-label" for="emp-name">Full Name *</label>
+              <input type="text" id="emp-name" class="cc-input" placeholder="e.g. Vikram Singhania" required>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="emp-role">Role / Designation *</label>
+                <input type="text" id="emp-role" class="cc-input" placeholder="Head Tennis Coach" required>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="emp-dept">Department *</label>
+                <select id="emp-dept" class="cc-select">
+                  <option value="Operations">Operations / Front Desk</option>
+                  <option value="Sports Coaching">Sports Coaching</option>
+                  <option value="Sales & CRM">Sales &amp; CRM</option>
+                  <option value="Hospitality">Hospitality &amp; Bar</option>
+                  <option value="Management">Management</option>
+                </select>
+              </div>
+            </div>
+            <div class="cc-grid cc-grid-cols-2">
+              <div class="cc-form-group">
+                <label class="cc-label" for="emp-phone">Phone Number *</label>
+                <input type="tel" id="emp-phone" class="cc-input" placeholder="+91 98000 00000" required>
+              </div>
+              <div class="cc-form-group">
+                <label class="cc-label" for="emp-salary">Monthly Salary (₹) *</label>
+                <input type="number" id="emp-salary" class="cc-input" placeholder="50000" required>
+              </div>
+            </div>
+          </div>
+          <div class="cc-modal-footer">
+            <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-new-employee')">Cancel</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Save Staff Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 8: CRM LEAD DETAIL, QUOTE & CONVERSION -->
+    <div class="cc-modal-backdrop" id="modal-lead-detail" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 600px;">
+        <div class="cc-modal-header">
+          <div>
+            <span class="cc-eyebrow" id="crm-modal-ref">CC-ENQ-0038</span>
+            <h3 class="cc-modal-title" id="crm-modal-name">Visitor Name</h3>
+          </div>
+          <button class="cc-modal-close" onclick="closeModal('modal-lead-detail')">&times;</button>
+        </div>
+        <div class="cc-modal-body" style="max-height: 70vh; overflow-y: auto;">
+          <div style="background: rgba(14, 19, 31, 0.6); padding: 12px 16px; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle); margin-bottom: 12px; font-size: 13px; display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--cc-text-muted);">Contact:</span>
+              <strong id="crm-modal-contact" style="color: #FFF;">-</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--cc-text-muted);">Interested Tier:</span>
+              <span id="crm-modal-plan-badge"></span>
+            </div>
+          </div>
+
+          <div class="cc-card cc-card-glass" style="margin-bottom: 12px; padding: 12px;">
+            <div class="cc-eyebrow" style="margin-bottom: 4px;">Visitor Query</div>
+            <p class="cc-body-sm" id="crm-modal-message" style="color: var(--cc-text-secondary); margin: 0;">-</p>
+          </div>
+
+          <!-- Quotation Action -->
+          <div class="cc-card cc-card-highlight" style="margin-bottom: 12px; padding: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span class="cc-eyebrow" style="color: var(--cc-gold-400);">Send Quotation</span>
+              <span class="cc-badge cc-badge-active" id="crm-modal-quote-status">Pending</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: flex-end;">
+              <div style="flex: 1;">
+                <label class="cc-label" style="font-size: 10px;">Quoted Fee (₹)</label>
+                <input type="number" id="crm-modal-quote-amount" class="cc-input" style="padding: 6px 10px; font-size: 13px;" value="24000">
+              </div>
+              <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" onclick="handleSendLeadQuote()">Send Quote</button>
+            </div>
+          </div>
+
+          <!-- Follow-up Activity -->
+          <div>
+            <div class="cc-eyebrow" style="margin-bottom: 4px;">Follow-up Activity</div>
+            <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+              <input type="text" id="crm-modal-note-input" class="cc-input" placeholder="Log call notes or WhatsApp..." style="padding: 6px 10px; font-size: 12px;">
+              <button class="cc-btn cc-btn-secondary cc-btn-sm" onclick="handleAddLeadFollowup()">Log Note</button>
+            </div>
+            <div class="cc-history-timeline" id="crm-modal-timeline" style="max-height: 120px; overflow-y: auto;"></div>
+          </div>
+        </div>
+        <div class="cc-modal-footer" style="justify-content: space-between;">
+          <button class="cc-btn cc-btn-secondary cc-btn-sm" onclick="handleMarkLeadContacted()">Mark Contacted</button>
+          <div style="display: flex; gap: 6px;">
+            <button class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-lead-detail')">Close</button>
+            <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-crm-convert" onclick="handleConvertLead()">★ Convert to Member</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 9: CONFIGURE MEMBERSHIP PLANS & PRICING -->
+    <div class="cc-modal-backdrop" id="modal-config-plans" role="dialog" aria-modal="true">
+      <div class="cc-modal" style="max-width: 840px;">
+        <div class="cc-modal-header">
+          <div>
+            <h3 class="cc-modal-title" style="display: flex; align-items: center; gap: 8px;">
+              <span>⚙️</span> Edit Membership Tier Prices &amp; Benefits
+            </h3>
+            <p class="cc-body-xs" style="color: var(--cc-text-muted); margin: 2px 0 0;">
+              Changes made here are saved globally to the database and immediately reflected everywhere across all bookings, CRM quotes, member 360 profiles, and public pages.
+            </p>
+          </div>
+          <button class="cc-modal-close" onclick="closeModal('modal-config-plans')">&times;</button>
+        </div>
+        <form id="form-config-plans" onsubmit="handleSavePlanConfig(event)">
+          <div class="cc-modal-body" style="max-height: 65vh; overflow-y: auto;">
+            <div class="cc-grid cc-grid-cols-3" style="gap: 1rem;">
+              
+              <!-- GOLD PLAN CONFIG CARD -->
+              <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--cc-gold-500); border-radius: var(--cc-radius-md); padding: 14px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                  <span class="cc-badge cc-badge-gold">★ GOLD TIER</span>
+                  <span style="font-size: 11px; color: var(--cc-gold-400); font-weight: 700;">Full Access</span>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-gold-fee" style="font-size: 11px;">Annual Membership Fee (₹) *</label>
+                  <input type="number" id="cfg-gold-fee" class="cc-input cc-text-mono" style="font-weight: 700; color: var(--cc-gold-400);" value="24000" min="0" step="100" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-gold-court" style="font-size: 11px;">Court Rate (₹/hr, 0 = Free) *</label>
+                  <input type="number" id="cfg-gold-court" class="cc-input cc-text-mono" value="0" min="0" step="50" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-gold-shop" style="font-size: 11px;">Pro Shop Discount (%) *</label>
+                  <input type="number" id="cfg-gold-shop" class="cc-input" value="15" min="0" max="100" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-gold-bar" style="font-size: 11px;">Bar / Cafe Discount (%) *</label>
+                  <input type="number" id="cfg-gold-bar" class="cc-input" value="15" min="0" max="100" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 0;">
+                  <label class="cc-label" for="cfg-gold-passes" style="font-size: 11px;">Guest Passes / Year *</label>
+                  <input type="number" id="cfg-gold-passes" class="cc-input" value="4" min="0" max="20" required>
+                </div>
+              </div>
+
+              <!-- SILVER PLAN CONFIG CARD -->
+              <div style="background: rgba(148, 163, 184, 0.05); border: 1px solid var(--cc-silver-400); border-radius: var(--cc-radius-md); padding: 14px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                  <span class="cc-badge cc-badge-silver">◆ SILVER TIER</span>
+                  <span style="font-size: 11px; color: var(--cc-silver-300); font-weight: 700;">Standard</span>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-silver-fee" style="font-size: 11px;">Annual Membership Fee (₹) *</label>
+                  <input type="number" id="cfg-silver-fee" class="cc-input cc-text-mono" style="font-weight: 700; color: #FFFFFF;" value="14000" min="0" step="100" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-silver-court" style="font-size: 11px;">Court Rate (₹/hr) *</label>
+                  <input type="number" id="cfg-silver-court" class="cc-input cc-text-mono" value="300" min="0" step="50" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-silver-shop" style="font-size: 11px;">Pro Shop Discount (%) *</label>
+                  <input type="number" id="cfg-silver-shop" class="cc-input" value="10" min="0" max="100" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-silver-bar" style="font-size: 11px;">Bar / Cafe Discount (%) *</label>
+                  <input type="number" id="cfg-silver-bar" class="cc-input" value="10" min="0" max="100" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 0;">
+                  <label class="cc-label" for="cfg-silver-passes" style="font-size: 11px;">Guest Passes / Year *</label>
+                  <input type="number" id="cfg-silver-passes" class="cc-input" value="1" min="0" max="20" required>
+                </div>
+              </div>
+
+              <!-- JUNIOR PLAN CONFIG CARD -->
+              <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid var(--cc-junior-blue); border-radius: var(--cc-radius-md); padding: 14px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                  <span class="cc-badge cc-badge-junior">● JUNIOR TIER</span>
+                  <span style="font-size: 11px; color: var(--cc-junior-blue); font-weight: 700;">Youth (U-18)</span>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-junior-fee" style="font-size: 11px;">Annual Membership Fee (₹) *</label>
+                  <input type="number" id="cfg-junior-fee" class="cc-input cc-text-mono" style="font-weight: 700; color: var(--cc-junior-blue);" value="8000" min="0" step="100" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-junior-court" style="font-size: 11px;">Court Rate (₹/hr) *</label>
+                  <input type="number" id="cfg-junior-court" class="cc-input cc-text-mono" value="200" min="0" step="50" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-junior-shop" style="font-size: 11px;">Pro Shop Discount (%) *</label>
+                  <input type="number" id="cfg-junior-shop" class="cc-input" value="15" min="0" max="100" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 10px;">
+                  <label class="cc-label" for="cfg-junior-bar" style="font-size: 11px;">Bar / Cafe Discount (%) *</label>
+                  <input type="number" id="cfg-junior-bar" class="cc-input" value="5" min="0" max="100" required>
+                </div>
+                <div class="cc-form-group" style="margin-bottom: 0;">
+                  <label class="cc-label" for="cfg-junior-passes" style="font-size: 11px;">Guest Passes / Year *</label>
+                  <input type="number" id="cfg-junior-passes" class="cc-input" value="0" min="0" max="20" required>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="cc-modal-footer">
+            <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="closeModal('modal-config-plans')">Cancel</button>
+            <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">💾 Save &amp; Apply Pricing Updates</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
   </div>
   <!-- End of #cc-admin-protected-content -->
@@ -425,7 +1735,7 @@
           </div>
         </div>
         <p class="cc-body-xs" style="color: var(--cc-text-muted); margin: 0;">
-          Administrative Dashboard &bull; Authoritative Data Engine &bull; Reference Date: October 3, 2026
+          Champions Club Centralized ERP Control Center &bull; Reference Date: October 3, 2026
         </p>
       </div>
     </div>

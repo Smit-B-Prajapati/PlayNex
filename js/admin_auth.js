@@ -1,10 +1,402 @@
 /**
- * CHAMPIONS CLUB — Admin Authentication & Access Guard Controller
- * Centralized role-based access controller ensuring administrative controls,
- * financial dashboards, member management rosters, and CRM pipelines are accessible
- * strictly when an authorized Administrator / Staff user is authenticated.
+ * CHAMPIONS CLUB — Unified Member & Admin Authentication Access Controller
+ * Centralized role-based access controller ensuring:
+ * 1. Member Authentication: Simplified login requiring ONLY Full Name & Phone Number
+ * 2. Member Session Management: Persists profile across courts, pro shop, POS, and member portal
+ * 3. Administrative Access Guard: Protects administrative controls, finance, rosters, and CRM pipelines
  */
 
+// ============================================================================
+// 1. MEMBER AUTHENTICATION CONTROLLER (NAME & PHONE ONLY)
+// ============================================================================
+const ClubMemberAuth = (function() {
+  'use strict';
+
+  const STORAGE_KEY = 'cc_portal_member';
+  const CURRENT_MEMBER_KEY = 'cc_current_member';
+
+  function getMember() {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY) || localStorage.getItem(STORAGE_KEY) ||
+                  sessionStorage.getItem(CURRENT_MEMBER_KEY) || localStorage.getItem(CURRENT_MEMBER_KEY);
+      if (raw) {
+        const mem = JSON.parse(raw);
+        if (mem && (mem.name || mem.id)) {
+          if (typeof window !== 'undefined' && window.ClubDataStore) {
+            const all = window.ClubDataStore.getMembers() || [];
+            const fresh = all.find(m => m.id === mem.id || m.member_code === mem.id || m.name === mem.name);
+            if (fresh) {
+              return { ...mem, ...fresh };
+            }
+          }
+          return mem;
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading member session:', e);
+    }
+    return null;
+  }
+
+  function isMember() {
+    const mem = getMember();
+    return mem !== null && mem.state !== 'cancelled';
+  }
+
+  function login(name, phone) {
+    const cleanName = (name || '').trim();
+    const cleanPhone = (phone || '').trim();
+    const digitsOnly = cleanPhone.replace(/\D/g, '');
+
+    if (!cleanName) {
+      if (window.ClubAPI && window.ClubAPI.showError) {
+        window.ClubAPI.showError('Please enter your Full Name.', 'Missing Name');
+      } else {
+        alert('Please enter your Full Name.');
+      }
+      return null;
+    }
+
+    if (!cleanPhone || digitsOnly.length < 4) {
+      if (window.ClubAPI && window.ClubAPI.showError) {
+        window.ClubAPI.showError('Please enter a valid Phone Number.', 'Missing Number');
+      } else {
+        alert('Please enter a valid Phone Number.');
+      }
+      return null;
+    }
+
+    // Lookup in ClubDataStore members
+    let member = null;
+    let allMembers = [];
+    if (window.ClubDataStore) {
+      allMembers = window.ClubDataStore.getMembers() || [];
+      // 1. Match by phone digits
+      member = allMembers.find(m => {
+        const mDigits = (m.phone || '').replace(/\D/g, '');
+        return mDigits.length >= 4 && (mDigits.endsWith(digitsOnly) || digitsOnly.endsWith(mDigits));
+      });
+
+      // 2. Match by name
+      if (!member) {
+        member = allMembers.find(m => (m.name || '').toLowerCase() === cleanName.toLowerCase());
+      }
+    }
+
+    // 3. If new member, auto-register active profile immediately!
+    if (!member) {
+      const nextId = `CC-MEM-00${100 + allMembers.length + 1}`;
+      member = {
+        id: nextId,
+        member_code: nextId,
+        name: cleanName,
+        phone: cleanPhone.startsWith('+') ? cleanPhone : `+91 ${cleanPhone}`,
+        email: `${cleanName.toLowerCase().replace(/[^a-z0-9]/g, '.')}@example.com`,
+        plan: 'gold',
+        startDate: new Date().toISOString().substring(0, 10),
+        endDate: new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString().substring(0, 10),
+        state: 'active',
+        history: [
+          { timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16), type: 'signup', desc: `Authenticated via mobile verification (+91 ${cleanPhone}).` }
+        ],
+        notes: 'Authenticated member profile.'
+      };
+      if (window.ClubDataStore) {
+        allMembers.push(member);
+        window.ClubDataStore.saveMembers(allMembers);
+      }
+    } else {
+      if (cleanPhone && (!member.phone || member.phone === '')) {
+        member.phone = cleanPhone;
+        if (window.ClubDataStore) window.ClubDataStore.saveMembers(allMembers);
+      }
+    }
+
+    const isCancelled = member.state === 'cancelled';
+    const planCode = (member.plan || 'gold').toLowerCase();
+    const session = {
+      id: member.id || member.member_code,
+      member_id: member.id || member.member_code,
+      member_code: member.id || member.member_code,
+      name: member.name,
+      phone: member.phone || cleanPhone,
+      email: member.email || `${member.name.toLowerCase().replace(/[^a-z0-9]/g, '.')}@example.com`,
+      plan: planCode,
+      plan_name: planCode.toUpperCase(),
+      tier_code: planCode,
+      state: member.state || 'active',
+      startDate: member.startDate || '2026-10-04',
+      endDate: member.endDate || '2027-10-04',
+      has_active_benefits: member.state === 'active',
+      authenticated: true,
+      loginTime: new Date().toISOString()
+    };
+
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    sessionStorage.setItem(CURRENT_MEMBER_KEY, JSON.stringify(session));
+    localStorage.setItem(CURRENT_MEMBER_KEY, JSON.stringify(session));
+
+    const welcomeMsg = isCancelled
+      ? `Welcome, ${session.name}! (Membership Cancelled)`
+      : `Welcome, ${session.name}! (${session.tier_code.toUpperCase()} Tier)`;
+
+    if (window.ClubAPI && window.ClubAPI.showSuccess) {
+      window.ClubAPI.showSuccess(welcomeMsg);
+    } else {
+      showMemberToast(welcomeMsg);
+    }
+
+    closeLoginModal();
+    applyMemberState();
+    syncMemberProfileEverywhere(session);
+    return session;
+  }
+
+  function logout() {
+    sessionStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(CURRENT_MEMBER_KEY);
+    localStorage.removeItem(CURRENT_MEMBER_KEY);
+
+    if (window.ClubAPI && window.ClubAPI.showSuccess) {
+      window.ClubAPI.showSuccess('Member signed out successfully.');
+    } else {
+      showMemberToast('Member signed out.');
+    }
+
+    applyMemberState();
+    syncMemberProfileEverywhere(null);
+
+    // If on portal.html, switch back to login view
+    if (typeof window !== 'undefined' && window.location && window.location.pathname.toLowerCase().includes('portal.html')) {
+      const viewLogin = document.getElementById('view-login');
+      const viewProfile = document.getElementById('view-profile');
+      if (viewLogin) viewLogin.style.display = 'block';
+      if (viewProfile) viewProfile.style.display = 'none';
+    }
+  }
+
+  function showMemberToast(msg) {
+    const existing = document.getElementById('cc-member-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'cc-member-toast';
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0D131F;
+      border: 1px solid var(--cc-gold-500);
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      font-size: 13px;
+      font-family: var(--cc-font-display, sans-serif);
+      font-weight: 600;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: fadeIn 0.3s ease;
+    `;
+    toast.innerHTML = `<span style="color: var(--cc-gold-400); font-size: 16px;">👤</span> <span>${msg}</span>`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.4s ease';
+      setTimeout(() => toast.remove(), 400);
+    }, 3000);
+  }
+
+  function openLoginModal() {
+    ensureMemberLoginModalInjected();
+    const modal = document.getElementById('modal-global-member-login');
+    if (modal) {
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      const nameInput = document.getElementById('member-modal-name');
+      if (nameInput) {
+        setTimeout(() => nameInput.focus(), 150);
+      }
+    }
+  }
+
+  function closeLoginModal() {
+    const modal = document.getElementById('modal-global-member-login');
+    if (modal) {
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function quickFillMember(name, phone) {
+    const nameInput = document.getElementById('member-modal-name');
+    const phoneInput = document.getElementById('member-modal-phone');
+    if (nameInput) nameInput.value = name;
+    if (phoneInput) phoneInput.value = phone;
+    login(name, phone);
+  }
+
+  function ensureMemberLoginModalInjected() {
+    if (document.getElementById('modal-global-member-login')) return;
+
+    const modalHtml = `
+      <div class="cc-modal-backdrop" id="modal-global-member-login" role="dialog" aria-modal="true" style="z-index: 99998;">
+        <div class="cc-modal" style="max-width: 460px; width: 95%; text-align: center;">
+          <div class="cc-modal-header" style="justify-content: center; position: relative;">
+            <div>
+              <span class="cc-eyebrow" style="color: var(--cc-gold-400);">MEMBER AUTHENTICATION</span>
+              <h3 class="cc-modal-title" style="margin-top: 2px;">Member Sign In</h3>
+            </div>
+            <button class="cc-modal-close" style="position: absolute; right: 16px;" onclick="ClubMemberAuth.closeLoginModal()" aria-label="Close dialog">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <form id="form-global-member-login" onsubmit="event.preventDefault(); ClubMemberAuth.login(document.getElementById('member-modal-name').value, document.getElementById('member-modal-phone').value);">
+            <div class="cc-modal-body" style="text-align: left; padding: 1.5rem;">
+              <div style="background: rgba(212, 175, 55, 0.08); border: 1px solid var(--cc-border-highlight); padding: 0.75rem 1rem; border-radius: var(--cc-radius-md); margin-bottom: 1.25rem; font-size: 12px; color: var(--cc-text-secondary);">
+                👤 Enter your <strong>Full Name</strong> and <strong>Phone Number</strong> to instantly access personal club privileges, court bookings, and member discounts.
+              </div>
+
+              <div class="cc-form-group" style="margin-bottom: 1rem;">
+                <label class="cc-label" for="member-modal-name">Full Name *</label>
+                <input type="text" id="member-modal-name" class="cc-input" placeholder="e.g. David Vance" required>
+              </div>
+
+              <div class="cc-form-group" style="margin-bottom: 1.25rem;">
+                <label class="cc-label" for="member-modal-phone">Phone Number *</label>
+                <input type="tel" id="member-modal-phone" class="cc-input" placeholder="e.g. +91 98234 11201 or 9823411201" required>
+              </div>
+
+              <!-- 1-Click Quick Demo Accounts -->
+              <div style="margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.85rem; background: rgba(0,0,0,0.3); border: 1px dashed var(--cc-border-medium); border-radius: var(--cc-radius-md);">
+                <div style="font-size: 11px; font-weight: 700; color: var(--cc-gold-400); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
+                  ⚡ Quick 1-Click Demo Profiles:
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                  <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; justify-content: space-between; padding: 6px 10px; width: 100%; text-align: left;" onclick="ClubMemberAuth.quickFillMember('David Vance', '+91 98234 11201')">
+                    <span>★ <strong>David Vance</strong> (+91 98234 11201)</span>
+                    <span class="cc-badge cc-badge-gold" style="font-size: 9px;">GOLD</span>
+                  </button>
+                  <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; justify-content: space-between; padding: 6px 10px; width: 100%; text-align: left;" onclick="ClubMemberAuth.quickFillMember('Elena Rostova', '+91 98450 77312')">
+                    <span>◆ <strong>Elena Rostova</strong> (+91 98450 77312)</span>
+                    <span class="cc-badge cc-badge-silver" style="font-size: 9px;">SILVER</span>
+                  </button>
+                  <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; justify-content: space-between; padding: 6px 10px; width: 100%; text-align: left;" onclick="ClubMemberAuth.quickFillMember('Leo Chen', '+91 97123 90814')">
+                    <span>● <strong>Leo Chen</strong> (+91 97123 90814)</span>
+                    <span class="cc-badge cc-badge-junior" style="font-size: 9px;">JUNIOR</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="cc-modal-footer" style="display: flex; justify-content: space-between;">
+              <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" onclick="ClubMemberAuth.closeLoginModal()">Cancel</button>
+              <button type="submit" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">Authenticate &amp; Access &rarr;</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+  }
+
+  function applyMemberState() {
+    // If admin is active, admin controls top actions
+    if (ClubAdminAuth && ClubAdminAuth.isAdmin && ClubAdminAuth.isAdmin()) {
+      return;
+    }
+
+    const member = getMember();
+    const navActions = document.querySelector('.cc-nav-actions');
+    if (!navActions) return;
+
+    if (member) {
+      const isCancelled = member.state === 'cancelled' || member.state === 'inactive' || member.status === 'cancelled' || member.subscription_status === 'cancelled';
+      const planCode = (member.plan || member.tier_code || 'gold').toLowerCase();
+      const badgeClass = planCode === 'gold' ? 'cc-badge-gold' : planCode === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
+      const tierBadgeHtml = isCancelled
+        ? `<span class="cc-badge cc-badge-danger" style="font-size: 9px; padding: 1px 6px;">CANCELLED</span>`
+        : `<span class="cc-badge ${badgeClass}" style="font-size: 9px; padding: 1px 6px;">${planCode.toUpperCase()}</span>`;
+
+      navActions.innerHTML = `
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: nowrap;">
+          <a href="portal.html" class="cc-member-nav-badge" style="display: inline-flex; align-items: center; gap: 6px; background: ${isCancelled ? 'rgba(239, 68, 68, 0.15)' : 'rgba(212, 175, 55, 0.15)'}; border: 1px solid ${isCancelled ? 'rgba(239, 68, 68, 0.4)' : 'var(--cc-gold-500)'}; padding: 4px 12px; border-radius: 20px; text-decoration: none; font-size: 11px; color: #FFFFFF; font-weight: 700;">
+            <span class="cc-pulse-dot" style="background: ${isCancelled ? 'var(--cc-crimson)' : 'var(--cc-neon-green)'}; width: 6px; height: 6px; border-radius: 50%;"></span>
+            <span style="color: ${isCancelled ? '#FCA5A5' : 'var(--cc-gold-400)'};">👤 ${member.name}</span>
+            ${tierBadgeHtml}
+          </a>
+          <button class="cc-btn cc-btn-ghost cc-btn-sm" style="font-size: 10px; padding: 2px 8px; color: var(--cc-text-muted);" onclick="ClubMemberAuth.logout()" title="Sign out of Member account">Sign Out</button>
+          <button id="btn-nav-admin-login" class="cc-btn cc-btn-outline-gold cc-btn-sm" style="font-size: 11px; padding: 4px 12px;" onclick="ClubAdminAuth.openLoginModal()">
+            🔒 Staff / Admin Login
+          </button>
+        </div>
+      `;
+    } else {
+      navActions.innerHTML = `
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: nowrap;">
+          <button id="btn-nav-member-login" class="cc-btn cc-btn-primary cc-btn-sm" style="font-size: 11px; padding: 5px 12px; font-weight: 700;" onclick="ClubMemberAuth.openLoginModal()">
+            👤 Member Login
+          </button>
+          <button id="btn-nav-admin-login" class="cc-btn cc-btn-outline-gold cc-btn-sm" style="font-size: 11px; padding: 4px 12px;" onclick="ClubAdminAuth.openLoginModal()">
+            🔒 Staff / Admin Login
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function syncMemberProfileEverywhere(session) {
+    // 1. Member Portal
+    if (typeof window !== 'undefined' && window.location && window.location.pathname.toLowerCase().includes('portal.html')) {
+      if (session && window.loadMemberProfile) {
+        window.loadMemberProfile(session.id || session.member_id);
+      }
+    }
+    // 2. Booking Manager
+    if (typeof window !== 'undefined' && window.updateMemberDisplayCard) {
+      window.updateMemberDisplayCard();
+    }
+    // 3. Shop Manager
+    if (typeof window !== 'undefined' && window.renderShopMemberBanner) {
+      window.renderShopMemberBanner();
+    }
+    // 4. POS Manager
+    if (typeof window !== 'undefined' && window.renderPOSMemberInfo) {
+      window.renderPOSMemberInfo();
+    }
+    // 5. Landing Page Enquiry form prefill
+    const webName = document.getElementById('web-name');
+    const webPhone = document.getElementById('web-phone');
+    if (session) {
+      if (webName && !webName.value) webName.value = session.name;
+      if (webPhone && !webPhone.value) webPhone.value = session.phone;
+    }
+  }
+
+  return {
+    getMember,
+    isMember,
+    login,
+    logout,
+    openLoginModal,
+    closeLoginModal,
+    quickFillMember,
+    applyMemberState,
+    ensureMemberLoginModalInjected,
+    syncMemberProfileEverywhere
+  };
+})();
+
+
+// ============================================================================
+// 2. ADMINISTRATOR AUTHENTICATION & ACCESS GUARD CONTROLLER
+// ============================================================================
 const ClubAdminAuth = (function() {
   'use strict';
 
@@ -266,61 +658,47 @@ const ClubAdminAuth = (function() {
       }
     });
 
-    // 3. Scan & Filter Navbar Links
-    const navLinks = document.querySelectorAll('.cc-nav-link');
-    navLinks.forEach(link => {
-      const href = (link.getAttribute('href') || '').toLowerCase();
-      const text = (link.textContent || '').toLowerCase();
+    // 3. Scan & Filter Navbar Links (Strict Admin Header Rule)
+    const navUl = document.querySelector('.cc-nav-links');
+    if (navUl) {
+      if (authenticated) {
+        // ADMIN MODE: Clean navigation without redundant header heading
+        navUl.innerHTML = '';
+      } else {
+        // VISITOR / MEMBER MODE: Primary header links (Member Portal & Admin accessed via top-right actions)
+        navUl.innerHTML = `
+          <li><a href="index.html" class="cc-nav-link">Home</a></li>
+          <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
+          <li><a href="shop.html" class="cc-nav-link">Shop</a></li>
+          <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
+          <li><a href="crm.html" class="cc-nav-link">Enquiries</a></li>
+        `;
 
-      // Enquiries (crm.html) is public-accessible for visitor membership enquiries
-      const isPureAdminDest = href.includes('dashboard.html') || 
-                              text.includes('admin dashboard') || 
-                              text.includes('roster (admin)') ||
-                              link.hasAttribute('data-cc-admin-nav');
-
-      if (isPureAdminDest) {
-        const li = link.closest('li') || link;
-        if (authenticated) {
-          li.classList.remove('cc-hidden-unauthorized');
-          li.style.removeProperty('display');
-        } else {
-          li.classList.add('cc-hidden-unauthorized');
-          li.style.setProperty('display', 'none', 'important');
-        }
+        // Highlight active page
+        const path = (window.location.pathname || '').toLowerCase();
+        const links = navUl.querySelectorAll('.cc-nav-link');
+        links.forEach(link => {
+          const href = (link.getAttribute('href') || '').toLowerCase();
+          if ((path.endsWith(href) && href !== 'index.html') || ((path.endsWith('/') || path.endsWith('index.html')) && href === 'index.html')) {
+            link.classList.add('is-active');
+          }
+        });
       }
-    });
+    }
 
     // 4. Update Navbar Action Button / Badge
     const navActions = document.querySelector('.cc-nav-actions');
     if (navActions) {
-      let adminBadge = document.getElementById('cc-nav-admin-badge');
-      let adminLoginBtn = document.getElementById('btn-nav-admin-login');
-
       if (authenticated) {
-        if (adminLoginBtn) adminLoginBtn.remove();
-        if (!adminBadge) {
-          adminBadge = document.createElement('div');
-          adminBadge.id = 'cc-nav-admin-badge';
-          adminBadge.className = 'cc-admin-badge-pill';
-          navActions.insertBefore(adminBadge, navActions.firstChild);
-        }
-        adminBadge.innerHTML = `
-          <span class="cc-pulse-dot"></span>
-          <span>👑 ${adminUser ? adminUser.name.split(' ')[0] : 'Admin'}</span>
-          <button class="cc-admin-signout-btn" onclick="ClubAdminAuth.logout()" title="Sign out of Administrator role">Sign Out</button>
+        navActions.innerHTML = `
+          <div class="cc-admin-badge-pill" id="cc-nav-admin-badge">
+            <span class="cc-pulse-dot"></span>
+            <span>👑 Club Administrator</span>
+            <button class="cc-admin-signout-btn" onclick="ClubAdminAuth.logout()" title="Sign out of Administrator role">Sign Out</button>
+          </div>
         `;
       } else {
-        if (adminBadge) adminBadge.remove();
-        if (!adminLoginBtn) {
-          adminLoginBtn = document.createElement('button');
-          adminLoginBtn.id = 'btn-nav-admin-login';
-          adminLoginBtn.className = 'cc-btn cc-btn-outline-gold cc-btn-sm';
-          adminLoginBtn.style.fontSize = '11px';
-          adminLoginBtn.style.padding = '4px 12px';
-          adminLoginBtn.innerHTML = `🔒 Staff / Admin Login`;
-          adminLoginBtn.onclick = openLoginModal;
-          navActions.insertBefore(adminLoginBtn, navActions.firstChild);
-        }
+        ClubMemberAuth.applyMemberState();
       }
     }
 
@@ -360,6 +738,7 @@ const ClubAdminAuth = (function() {
   // Auto-initialize when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     ensureLoginModalInjected();
+    ClubMemberAuth.ensureMemberLoginModalInjected();
     applyAdminState();
   });
 
@@ -378,4 +757,6 @@ const ClubAdminAuth = (function() {
 // Attach globally
 if (typeof window !== 'undefined') {
   window.ClubAdminAuth = ClubAdminAuth;
+  window.ClubMemberAuth = ClubMemberAuth;
+  window.ClubAuth = ClubMemberAuth;
 }

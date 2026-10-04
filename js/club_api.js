@@ -515,11 +515,15 @@ const ClubAPI = (function() {
       return null;
     },
 
-    // 6. Secure Authentication & Member Portal APIs
-    async login(loginOrCode, password = null) {
-      const res = await rpc('/champions_club/auth/login', { login: loginOrCode, member_code: loginOrCode, password }, { showLoader: true, loaderMsg: 'Verifying Member Identity...' });
+    // 6. Secure Authentication & Member Portal APIs (Name & Phone Verification)
+    async login(nameOrIdentifier, phoneOrPassword = null) {
+      if (window.ClubMemberAuth) {
+        return window.ClubMemberAuth.login(nameOrIdentifier, phoneOrPassword || nameOrIdentifier);
+      }
+      const res = await rpc('/champions_club/auth/login', { login: nameOrIdentifier, phone: phoneOrPassword }, { showLoader: true, loaderMsg: 'Verifying Member Identity...' });
       if (res && res.success) {
         sessionStorage.setItem('cc_portal_member', JSON.stringify(res.session));
+        localStorage.setItem('cc_portal_member', JSON.stringify(res.session));
         showSuccess(`Welcome back, ${res.session.name}!`);
         return res.session;
       }
@@ -530,20 +534,23 @@ const ClubAPI = (function() {
       // Local fallback
       if (window.ClubDataStore) {
         const mems = window.ClubDataStore.getMembers();
-        const found = mems.find(m => m.id === loginOrCode || m.name.toLowerCase() === loginOrCode.toLowerCase() || (m.email && m.email.toLowerCase() === loginOrCode.toLowerCase()));
+        const found = mems.find(m => m.id === nameOrIdentifier || m.name.toLowerCase() === nameOrIdentifier.toLowerCase() || (m.phone && m.phone.includes(nameOrIdentifier)));
         if (found) {
           const session = {
             member_id: found.id,
             member_code: found.id,
+            id: found.id,
             name: found.name,
             email: found.email,
             phone: found.phone,
+            plan: found.plan || 'gold',
             plan_name: (found.plan || 'gold').toUpperCase(),
             tier_code: found.plan || 'gold',
             state: found.state || 'active',
             has_active_benefits: found.state !== 'cancelled' && found.state !== 'expired'
           };
           sessionStorage.setItem('cc_portal_member', JSON.stringify(session));
+          localStorage.setItem('cc_portal_member', JSON.stringify(session));
           showSuccess(`Welcome, ${found.name}!`);
           return session;
         }
@@ -553,11 +560,15 @@ const ClubAPI = (function() {
     },
 
     async getSession() {
+      if (window.ClubMemberAuth && window.ClubMemberAuth.getMember) {
+        const m = window.ClubMemberAuth.getMember();
+        if (m) return m;
+      }
       const res = await rpc('/champions_club/auth/session', {}, { showLoader: false });
       if (res && res.authenticated) {
         return res.member;
       }
-      const saved = sessionStorage.getItem('cc_portal_member');
+      const saved = sessionStorage.getItem('cc_portal_member') || localStorage.getItem('cc_portal_member');
       if (saved) {
         try { return JSON.parse(saved); } catch (e) { return null; }
       }
@@ -565,8 +576,13 @@ const ClubAPI = (function() {
     },
 
     async logout() {
+      if (window.ClubMemberAuth) {
+        window.ClubMemberAuth.logout();
+        return;
+      }
       await rpc('/champions_club/auth/logout', {}, { showLoader: false });
       sessionStorage.removeItem('cc_portal_member');
+      localStorage.removeItem('cc_portal_member');
       showSuccess('You have been logged out.');
     },
 

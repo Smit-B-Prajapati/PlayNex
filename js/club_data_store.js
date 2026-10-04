@@ -16,7 +16,13 @@ const ClubDataStore = (function() {
     BAR_TABLES: 'cc_bar_tables',
     BAR_TABS: 'cc_bar_tabs',
     BAR_REVENUE: 'cc_bar_revenue',
-    LEADS: 'cc_leads'
+    BAR_MENU: 'cc_bar_menu',
+    COURTS: 'cc_courts',
+    LEADS: 'cc_leads',
+    EMPLOYEES: 'cc_employees',
+    EMPLOYEE_LEAVES: 'cc_employee_leaves',
+    INVOICES: 'cc_invoices',
+    PLAN_BENEFITS: 'cc_plan_benefits'
   };
 
   // Seed Baseline Club Data — includes all registered members and activity
@@ -254,11 +260,25 @@ const ClubDataStore = (function() {
         date: '2026-10-03'
       }
     ],
+    courts: [
+      { id: '1', name: 'Tennis Court 1 (Clay)', sport: 'tennis', surface: 'Clay', walkinRate: 500, state: 'active' },
+      { id: '2', name: 'Tennis Court 2 (Hard)', sport: 'tennis', surface: 'Hard Court', walkinRate: 500, state: 'active' },
+      { id: '3', name: 'Cricket Pitch & Net 1 (Turf)', sport: 'cricket', surface: 'Natural Turf', walkinRate: 600, state: 'active' },
+      { id: '4', name: 'Cricket Practice Net 2', sport: 'cricket', surface: 'Synthetic Turf', walkinRate: 600, state: 'active' },
+      { id: '5', name: 'Badminton Court 1 (Indoor Mat)', sport: 'badminton', surface: 'Indoor Wooden/Mat', walkinRate: 400, state: 'active' },
+      { id: '6', name: 'Badminton Court 2 (Indoor Mat)', sport: 'badminton', surface: 'Indoor Wooden/Mat', walkinRate: 400, state: 'active' }
+    ],
     barTables: [
-      { id: 't1', name: 'Courtside Table 1', state: 'occupied', currentTab: 'CC-TAB-0001' },
-      { id: 't2', name: 'Courtside Table 2', state: 'available', currentTab: null },
-      { id: 't3', name: 'Veranda Table 3', state: 'available', currentTab: null },
-      { id: 't4', name: 'Lounge Booth 4', state: 'available', currentTab: null }
+      { id: 't1', name: 'Courtside Table 1', capacity: 4, area: 'Courtside', state: 'occupied', currentTab: 'CC-TAB-0001' },
+      { id: 't2', name: 'Courtside Table 2', capacity: 4, area: 'Courtside', state: 'available', currentTab: null },
+      { id: 't3', name: 'Veranda Table 3', capacity: 6, area: 'Veranda', state: 'available', currentTab: null },
+      { id: 't4', name: 'Lounge Booth 4', capacity: 8, area: 'Lounge', state: 'available', currentTab: null }
+    ],
+    barMenuItems: [
+      { id: 'bm1', name: 'Post-Match Whey Protein Shake', category: 'Smoothies & Shakes', price: 280, tax: 5 },
+      { id: 'bm2', name: 'Cold Pressed Green Detox Juice', category: 'Beverages', price: 220, tax: 5 },
+      { id: 'bm3', name: 'Grilled Chicken & Quinoa Energy Bowl', category: 'Health Bowls', price: 380, tax: 5 },
+      { id: 'bm4', name: 'Artisan Espresso / Americano', category: 'Beverages', price: 160, tax: 5 }
     ],
     barTabs: [
       {
@@ -289,6 +309,7 @@ const ClubDataStore = (function() {
         phone: '+91 99001 22334',
         email: 'siddharth.rao@example.com',
         plan: 'gold',
+        source: 'website',
         sport: 'tennis',
         message: 'Interested in Gold membership and court availability for weekend tennis.',
         stage: 'converted',
@@ -307,6 +328,7 @@ const ClubDataStore = (function() {
         phone: '+91 98210 44556',
         email: 'ananya.d@example.com',
         plan: 'silver',
+        source: 'website',
         sport: 'badminton',
         message: 'Inquiring about badminton court slots after office hours (7 PM).',
         stage: 'contacted',
@@ -324,6 +346,7 @@ const ClubDataStore = (function() {
         phone: '+91 97110 33445',
         email: 'vikram.bose@example.com',
         plan: 'junior',
+        source: 'website',
         sport: 'cricket',
         message: 'Looking for youth cricket net training for 15-year old son.',
         stage: 'converted',
@@ -343,11 +366,12 @@ const ClubDataStore = (function() {
         phone: '+91 98450 99887',
         email: 'natasha.k@example.com',
         plan: 'gold',
+        source: 'website',
         sport: 'tennis',
         message: 'Enrolled after court trial session.',
         stage: 'converted',
         staff: 'Pooja Patel (Membership Advisor)',
-        quoteSent: true,
+        quoteSent: false,
         quoteAmount: 24000,
         followups: [
           { time: '2026-09-28 14:00', note: 'Initial enquiry regarding tennis clay courts.' },
@@ -355,7 +379,32 @@ const ClubDataStore = (function() {
         ],
         memberId: 'CC-MEM-00105'
       }
-    ]
+    ],
+    employees: [
+      { id: 'CC-EMP-0001', name: 'Rohan Verma', role: 'Front Desk Lead', department: 'Operations', phone: '+91 98201 11223', email: 'rohan.v@championsclub.com', salary: 45000, state: 'active', joinedDate: '2024-03-15' },
+      { id: 'CC-EMP-0002', name: 'Pooja Patel', role: 'Membership Advisor', department: 'Sales & CRM', phone: '+91 98201 22334', email: 'pooja.p@championsclub.com', salary: 52000, state: 'active', joinedDate: '2023-08-01' },
+      { id: 'CC-EMP-0003', name: 'Karan Mehra', role: 'Club Manager', department: 'Management', phone: '+91 98201 33445', email: 'karan.m@championsclub.com', salary: 85000, state: 'active', joinedDate: '2022-01-10' },
+      { id: 'CC-EMP-0004', name: 'Vikram Singhania', role: 'Head Tennis Coach', department: 'Sports Coaching', phone: '+91 98201 44556', email: 'vikram.s@championsclub.com', salary: 65000, state: 'active', joinedDate: '2023-04-12' },
+      { id: 'CC-EMP-0005', name: 'Ananya Sen', role: 'Badminton Coach', department: 'Sports Coaching', phone: '+91 98201 55667', email: 'ananya.s@championsclub.com', salary: 55000, state: 'active', joinedDate: '2024-01-20' },
+      { id: 'CC-EMP-0006', name: 'Rajesh Sharma', role: 'F&B / Bar Lead', department: 'Hospitality', phone: '+91 98201 66778', email: 'rajesh.s@championsclub.com', salary: 40000, state: 'active', joinedDate: '2024-06-01' }
+    ],
+    employeeLeaves: [
+      { id: 'CC-LV-0001', employeeId: 'CC-EMP-0002', employeeName: 'Pooja Patel', leaveType: 'Annual Leave', startDate: '2026-10-12', endDate: '2026-10-16', days: 5, reason: 'Family function & personal travel', state: 'requested' },
+      { id: 'CC-LV-0002', employeeId: 'CC-EMP-0005', employeeName: 'Ananya Sen', leaveType: 'Sick Leave', startDate: '2026-10-04', endDate: '2026-10-05', days: 2, reason: 'Medical consultation & rest', state: 'requested' },
+      { id: 'CC-LV-0003', employeeId: 'CC-EMP-0001', employeeName: 'Rohan Verma', leaveType: 'Casual Leave', startDate: '2026-09-15', endDate: '2026-09-16', days: 2, reason: 'Personal emergency', state: 'approved' },
+      { id: 'CC-LV-0004', employeeId: 'CC-EMP-0004', employeeName: 'Vikram Singhania', leaveType: 'Annual Leave', startDate: '2026-08-10', endDate: '2026-08-14', days: 5, reason: 'National coaching seminar', state: 'approved' }
+    ],
+    invoices: [
+      { id: 'CC-INV-2026-0101', clientName: 'Apex Tech Corp (Corporate Tournament)', invoiceType: 'corporate', issueDate: '2026-10-01', dueDate: '2026-10-15', amountUntaxed: 50000, taxAmount: 9000, totalAmount: 59000, state: 'paid', paymentMethod: 'upi', notes: 'Annual corporate arena booking and tournament package.' },
+      { id: 'CC-INV-2026-0102', clientName: 'Siddharth Rao (Gold Membership)', invoiceType: 'membership', issueDate: '2026-10-03', dueDate: '2026-10-10', amountUntaxed: 24000, taxAmount: 4320, totalAmount: 28320, state: 'paid', paymentMethod: 'card', notes: '1-Year Gold Membership Subscription.' },
+      { id: 'CC-INV-2026-0103', clientName: 'Redwood Athletics (Weekend Arena Hire)', invoiceType: 'corporate', issueDate: '2026-10-02', dueDate: '2026-10-20', amountUntaxed: 18000, taxAmount: 3240, totalAmount: 21240, state: 'pending', paymentMethod: null, notes: 'All-court training camp reservation.' },
+      { id: 'CC-INV-2026-0104', clientName: 'Horizon Sports Academy', invoiceType: 'corporate', issueDate: '2026-09-15', dueDate: '2026-09-30', amountUntaxed: 12000, taxAmount: 2160, totalAmount: 14160, state: 'overdue', paymentMethod: null, notes: 'Cricket nets junior training block hire.' }
+    ],
+    planBenefits: {
+      gold: { name: "Gold Plan", fee: 24000, courtRate: 0, courtAccess: "Full Club Access (Free / ₹0)", shopDiscount: 15, barDiscount: 15, allowTab: true, guestPasses: 4, priorityBooking: true, maxBookingHours: 3 },
+      silver: { name: "Silver Plan", fee: 14000, courtRate: 300, courtAccess: "Standard Member Rate (₹300/hr)", shopDiscount: 10, barDiscount: 10, allowTab: false, guestPasses: 1, priorityBooking: false, maxBookingHours: 2 },
+      junior: { name: "Junior Plan", fee: 8000, courtRate: 200, courtAccess: "Youth Training Rate (₹200/hr)", shopDiscount: 15, barDiscount: 5, allowTab: false, guestPasses: 0, priorityBooking: false, coachingAccess: true, maxBookingHours: 1 }
+    }
   };
 
   // Memory cache
@@ -477,12 +526,49 @@ const ClubDataStore = (function() {
       save(KEYS.SHOP_ORDERS, data);
     },
 
+    // Courts & Arenas
+    getCourts() {
+      return load(KEYS.COURTS, SEED_DATA.courts);
+    },
+    saveCourts(data) {
+      save(KEYS.COURTS, data);
+    },
+    addCourt(court) {
+      const courts = this.getCourts();
+      if (!court.id) court.id = 'court-' + Date.now();
+      courts.push(court);
+      this.saveCourts(courts);
+      return court;
+    },
+
     // Bar / Cafeteria
     getBarTables() {
       return load(KEYS.BAR_TABLES, SEED_DATA.barTables);
     },
     saveBarTables(data) {
       save(KEYS.BAR_TABLES, data);
+    },
+    addBarTable(table) {
+      const tables = this.getBarTables();
+      if (!table.id) table.id = 't' + (tables.length + 1);
+      if (!table.state) table.state = 'available';
+      tables.push(table);
+      this.saveBarTables(tables);
+      return table;
+    },
+
+    getBarMenuItems() {
+      return load(KEYS.BAR_MENU, SEED_DATA.barMenuItems);
+    },
+    saveBarMenuItems(data) {
+      save(KEYS.BAR_MENU, data);
+    },
+    addBarMenuItem(item) {
+      const items = this.getBarMenuItems();
+      if (!item.id) item.id = 'bm' + (items.length + 1);
+      items.push(item);
+      this.saveBarMenuItems(items);
+      return item;
     },
 
     getBarTabs() {
@@ -507,16 +593,65 @@ const ClubDataStore = (function() {
       save(KEYS.LEADS, data);
     },
 
+    // Employees
+    getEmployees() {
+      return load(KEYS.EMPLOYEES, SEED_DATA.employees);
+    },
+    saveEmployees(data) {
+      save(KEYS.EMPLOYEES, data);
+    },
+
+    // Employee Leaves
+    getLeaves() {
+      return load(KEYS.EMPLOYEE_LEAVES, SEED_DATA.employeeLeaves);
+    },
+    saveLeaves(data) {
+      save(KEYS.EMPLOYEE_LEAVES, data);
+    },
+
+    // Invoices & Business Clients
+    getInvoices() {
+      return load(KEYS.INVOICES, SEED_DATA.invoices);
+    },
+    saveInvoices(data) {
+      save(KEYS.INVOICES, data);
+    },
+
+    // Configurable Plan Benefits
+    getPlanBenefits() {
+      return load(KEYS.PLAN_BENEFITS, SEED_DATA.planBenefits);
+    },
+    savePlanBenefits(data) {
+      save(KEYS.PLAN_BENEFITS, data);
+    },
+    getMaxBookingHours(planCode) {
+      const p = (planCode || '').toLowerCase();
+      if (p === 'gold') return 3;
+      if (p === 'silver') return 2;
+      if (p === 'junior') return 1;
+      const benefits = load(KEYS.PLAN_BENEFITS, SEED_DATA.planBenefits);
+      if (benefits && benefits[p] && benefits[p].maxBookingHours) {
+        return benefits[p].maxBookingHours;
+      }
+      return 1;
+    },
+
     // Seed or Reset to Baseline DATA
     resetToDemoData() {
       save(KEYS.MEMBERS, SEED_DATA.members);
       save(KEYS.BOOKINGS, SEED_DATA.bookings);
+      save(KEYS.COURTS, SEED_DATA.courts);
       save(KEYS.PRODUCTS, SEED_DATA.products);
       save(KEYS.SHOP_ORDERS, SEED_DATA.shopOrders);
       save(KEYS.BAR_TABLES, SEED_DATA.barTables);
+      save(KEYS.BAR_MENU, SEED_DATA.barMenuItems);
       save(KEYS.BAR_TABS, SEED_DATA.barTabs);
       save(KEYS.BAR_REVENUE, SEED_DATA.barRevenue);
       save(KEYS.LEADS, SEED_DATA.leads);
+      save(KEYS.EMPLOYEES, SEED_DATA.employees);
+      save(KEYS.EMPLOYEE_LEAVES, SEED_DATA.employeeLeaves);
+      save(KEYS.INVOICES, SEED_DATA.invoices);
+      save(KEYS.PLAN_BENEFITS, SEED_DATA.planBenefits);
     },
 
     // Clear All Records (For testing the "No data available" requirement)
@@ -529,6 +664,9 @@ const ClubDataStore = (function() {
       save(KEYS.BAR_TABS, []);
       save(KEYS.BAR_REVENUE, { cash: 0, card: 0, upi: 0 });
       save(KEYS.LEADS, []);
+      save(KEYS.EMPLOYEES, []);
+      save(KEYS.EMPLOYEE_LEAVES, []);
+      save(KEYS.INVOICES, []);
     }
   };
 })();

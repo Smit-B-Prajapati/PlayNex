@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CHAMPIONS CLUB — PLAY. PERFORM. BELONG.</title>
-  <meta name="description" content="CHAMPIONS CLUB: One complete sports club for training, competition, community and everything in between. Tennis, cricket, badminton, pro shop, and cafeteria.">
+  <meta name="description"
+    content="CHAMPIONS CLUB: One complete sports club for training, competition, community and everything in between. Tennis, cricket, badminton, pro shop, and cafeteria.">
   <link rel="stylesheet" href="css/design_system.css">
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/admin_auth.css">
+  <script src="js/club_data_store.js"></script>
+  <script src="js/club_api.js"></script>
+  <script src="js/admin_auth.js"></script>
 </head>
+
 <body>
 
   <!-- ==========================================
@@ -26,27 +32,20 @@
 
       <nav>
         <ul class="cc-nav-links" id="nav-menu">
-          <li><a href="#facilities" class="cc-nav-link">Facilities</a></li>
-          <li><a href="bookings.html" class="cc-nav-link">Court Bookings</a></li>
-          <li><a href="#memberships" class="cc-nav-link">Memberships</a></li>
-          <li><a href="shop.html" class="cc-nav-link">Pro Shop</a></li>
+          <li><a href="index.html" class="cc-nav-link is-active">Home</a></li>
+          <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
+          <li><a href="shop.html" class="cc-nav-link">Shop</a></li>
           <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
           <li><a href="crm.html" class="cc-nav-link">Enquiries</a></li>
-          <li><a href="members.html" class="cc-nav-link">Roster (Admin)</a></li>
-          <li><a href="portal.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Member Portal</a></li>
-          <li><a href="dashboard.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Admin Dashboard</a></li>
-          <li><a href="#cta" class="cc-nav-link">Join Us</a></li>
         </ul>
       </nav>
 
       <div class="cc-nav-actions">
-        <a href="bookings.html" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill">
-          Book a Court
-        </a>
-        <button class="cc-nav-toggle" id="cc-nav-toggle" aria-label="Toggle navigation">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
+        <button id="btn-nav-member-login" class="cc-btn cc-btn-primary cc-btn-sm" style="font-size: 11px; padding: 5px 12px; font-weight: 700;" onclick="if(window.ClubMemberAuth) window.ClubMemberAuth.openLoginModal()">
+          👤 Member Login
+        </button>
+        <button id="btn-nav-admin-login" class="cc-btn cc-btn-outline-gold cc-btn-sm" style="font-size: 11px; padding: 4px 12px;" onclick="if(window.ClubAdminAuth) window.ClubAdminAuth.openLoginModal()">
+          🔒 Staff / Admin Login
         </button>
       </div>
     </div>
@@ -92,7 +91,7 @@
         </div>
 
         <div class="cc-grid cc-grid-cols-3">
-          
+
           <!-- Facility 1: Tennis -->
           <div class="cc-facility-card">
             <div class="cc-facility-img-wrap">
@@ -103,7 +102,8 @@
             </div>
             <div class="cc-facility-body">
               <h3 class="cc-facility-title">Tennis</h3>
-              <p class="cc-body-sm">Championship-grade tennis courts accommodating singles and doubles play with staggered 1-hour booking sessions.</p>
+              <p class="cc-body-sm">Championship-grade tennis courts accommodating singles and doubles play with
+                staggered 1-hour booking sessions.</p>
               <ul class="cc-facility-features">
                 <li class="cc-facility-feature-item">1-hour sessions with slots opening every 30 minutes</li>
                 <li class="cc-facility-feature-item">Max 2 sessions per member daily limit enforcement</li>
@@ -120,14 +120,16 @@
           <!-- Facility 2: Cricket -->
           <div class="cc-facility-card">
             <div class="cc-facility-img-wrap">
-              <img src="assets/images/cricket.jpg" alt="Cricket Practice Turf at Champions Club" class="cc-facility-img">
+              <img src="assets/images/cricket.jpg" alt="Cricket Practice Turf at Champions Club"
+                class="cc-facility-img">
               <div class="cc-facility-badge-pos">
                 <span class="cc-badge cc-badge-active"><span class="cc-pulse-dot"></span> Turf & Nets</span>
               </div>
             </div>
             <div class="cc-facility-body">
               <h3 class="cc-facility-title">Cricket</h3>
-              <p class="cc-body-sm">Dedicated cricket practice courts and batting/bowling nets built with turf surfaces and high-mast illumination.</p>
+              <p class="cc-body-sm">Dedicated cricket practice courts and batting/bowling nets built with turf surfaces
+                and high-mast illumination.</p>
               <ul class="cc-facility-features">
                 <li class="cc-facility-feature-item">Full net enclosure with synthetic & natural turf options</li>
                 <li class="cc-facility-feature-item">Member priority slots & walk-in access handling</li>
@@ -144,14 +146,16 @@
           <!-- Facility 3: Badminton -->
           <div class="cc-facility-card">
             <div class="cc-facility-img-wrap">
-              <img src="assets/images/badminton.jpg" alt="Badminton Indoor Courts at Champions Club" class="cc-facility-img">
+              <img src="assets/images/badminton.jpg" alt="Badminton Indoor Courts at Champions Club"
+                class="cc-facility-img">
               <div class="cc-facility-badge-pos">
                 <span class="cc-badge cc-badge-active"><span class="cc-pulse-dot"></span> Indoor Arena</span>
               </div>
             </div>
             <div class="cc-facility-body">
               <h3 class="cc-facility-title">Badminton</h3>
-              <p class="cc-body-sm">Precision indoor badminton courts featuring anti-glare high-bay sports lighting and professional shock-absorbing mat surfaces.</p>
+              <p class="cc-body-sm">Precision indoor badminton courts featuring anti-glare high-bay sports lighting and
+                professional shock-absorbing mat surfaces.</p>
               <ul class="cc-facility-features">
                 <li class="cc-facility-feature-item">Climate-controlled indoor court environment</li>
                 <li class="cc-facility-feature-item">Integrated racket stringing & grip service at pro shop</li>
@@ -182,134 +186,154 @@
     <section class="cc-showcase-section" id="memberships">
       <div class="cc-container">
         <div class="cc-showcase-header" style="text-align: center; max-width: 720px; margin: 0 auto 3.5rem;">
-          <div class="cc-eyebrow">Membership Tiers</div>
+          <div class="cc-eyebrow">Membership Tiers &amp; Benefits</div>
           <h2 class="cc-heading-2">Choose Your Level of Play</h2>
           <p class="cc-body">
-            Tier entitlements explicitly tailored to match frequency, court privileges, and clubhouse discounts.
+            All-inclusive athletic entitlements tailored for recreational players, aspiring juniors, and championship
+            competitors.
           </p>
         </div>
 
         <div class="cc-grid cc-grid-cols-3">
 
           <!-- Tier 1: Silver (Standard) -->
-          <div class="cc-tier-card">
-            <div class="cc-card-header" style="margin-bottom: 0.5rem;">
-              <span class="cc-badge cc-badge-silver">&#9670; Standard Tier</span>
+          <div class="cc-tier-card" style="border-top: 3px solid var(--cc-silver-400);">
+            <div class="cc-tier-card-header">
+              <span class="cc-badge cc-badge-silver">◆ SILVER TIER</span>
+              <span style="font-size: 11px; color: var(--cc-silver-300); font-weight: 700; letter-spacing: 0.05em;">Standard</span>
             </div>
-            <h3 class="cc-tier-name">Silver</h3>
-            <p class="cc-body-sm">Standard club membership offering reduced court rates and clubwide discounts.</p>
-            
+            <h3 class="cc-tier-name">Silver Plan</h3>
+            <p class="cc-tier-desc">Standard club membership offering member court rates and clubwide pro shop &amp; cafeteria discounts.</p>
+
             <div class="cc-tier-price-box">
-              <div class="cc-tier-price-label">PRICE — CONFIGURABLE</div>
+              <div class="cc-tier-price-amount" id="home-tier-price-silver" style="color: #FFFFFF;">₹ 14,000.00</div>
+              <span class="cc-tier-price-sub">/ year &bull; Billed Annually</span>
             </div>
 
             <ul class="cc-tier-benefits-list">
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Reduced court rates compared to walk-in visitors</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-silver-300);">✓</span>
+                <span><strong id="home-court-silver">Standard Member Rate (₹300/hr)</strong></span>
               </li>
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Automatic discount on gear shop purchases</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-silver-300);">✓</span>
+                <span><strong id="home-disc-silver">10% Pro Shop &amp; 10% Bar Discount</strong></span>
               </li>
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Automatic discount on bar and cafeteria orders</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-silver-300);">✓</span>
+                <span><strong id="home-passes-silver">1 Complimentary Guest Pass</strong> &bull; Standard Window</span>
               </li>
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Automated membership expiration tracking</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-silver-300);">✓</span>
+                <span>Annual Club Championship &amp; Ladder Tournament Access</span>
               </li>
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Member history & check-in recognition by staff</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-silver-300);">✓</span>
+                <span>Standard 3-Day Court Booking Advance Window</span>
+              </li>
+              <li class="cc-tier-benefit-item">
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-silver-300);">✓</span>
+                <span>Digital Member QR Pass &amp; Activity Tracking</span>
               </li>
             </ul>
 
-            <a href="#cta" onclick="selectEnquiryTier('silver')" class="cc-btn cc-btn-secondary cc-btn-pill" style="width: 100%;">
+            <a href="#cta" onclick="selectEnquiryTier('silver')" class="cc-btn cc-btn-secondary cc-btn-pill"
+              style="width: 100%; margin-top: auto;">
               Enquire for Silver
             </a>
           </div>
 
           <!-- Tier 2: Gold (Featured / Premium) -->
-          <div class="cc-tier-card is-featured">
-            <div class="cc-tier-featured-pill">
-              <span class="cc-badge cc-badge-gold">&#9733; PREMIUM ACCESS</span>
+          <div class="cc-tier-card is-featured" style="border-top: 3px solid var(--cc-gold-400);">
+            <div class="cc-tier-card-header">
+              <span class="cc-badge cc-badge-gold">★ GOLD TIER</span>
+              <span style="font-size: 11px; color: var(--cc-gold-400); font-weight: 700; letter-spacing: 0.05em;">Full Access</span>
             </div>
-            <div class="cc-card-header" style="margin-bottom: 0.5rem; margin-top: 0.5rem;">
-              <span class="cc-badge cc-badge-gold">&#9733; Gold Tier</span>
-            </div>
-            <h3 class="cc-tier-name cc-text-gold">Gold</h3>
-            <p class="cc-body-sm">Premium, full-access membership with optimal court benefits and top discounts.</p>
-            
-            <div class="cc-tier-price-box" style="border-color: var(--cc-border-highlight); background: rgba(212, 175, 55, 0.08);">
-              <div class="cc-tier-price-label cc-text-gold">PRICE — CONFIGURABLE</div>
+            <h3 class="cc-tier-name cc-text-gold">Gold Plan</h3>
+            <p class="cc-tier-desc">Premier, full-access membership with optimal court benefits, bar tab privileges, and maximum retail discounts.</p>
+
+            <div class="cc-tier-price-box"
+              style="border-color: rgba(212, 175, 55, 0.4); background: rgba(212, 175, 55, 0.08);">
+              <div class="cc-tier-price-amount" id="home-tier-price-gold" style="color: var(--cc-gold-400);">₹ 24,000.00</div>
+              <span class="cc-tier-price-sub" style="color: var(--cc-gold-300);">/ year &bull; All-Inclusive VIP</span>
             </div>
 
             <ul class="cc-tier-benefits-list">
               <li class="cc-tier-benefit-item">
                 <span class="cc-tier-benefit-icon" style="color: var(--cc-gold-400);">✓</span>
-                <span><strong>Full access privileges</strong> across all sports courts</span>
+                <span><strong id="home-court-gold">Full Club Court Access (Free / ₹0)</strong></span>
               </li>
               <li class="cc-tier-benefit-item">
                 <span class="cc-tier-benefit-icon" style="color: var(--cc-gold-400);">✓</span>
-                <span>Pay <strong>zero or minimal court rates</strong> depending on plan configuration</span>
+                <span><strong id="home-disc-gold">15% Pro Shop &amp; 15% Bar Discount</strong></span>
               </li>
               <li class="cc-tier-benefit-item">
                 <span class="cc-tier-benefit-icon" style="color: var(--cc-gold-400);">✓</span>
-                <span>Automatic top-tier discount at the gear shop</span>
+                <span><strong>Bar Tab Allowed</strong> &bull; <strong id="home-passes-gold">4 Guest Passes</strong></span>
               </li>
               <li class="cc-tier-benefit-item">
                 <span class="cc-tier-benefit-icon" style="color: var(--cc-gold-400);">✓</span>
-                <span>Automatic discount at the bar & cafeteria</span>
+                <span><strong>7-Day Priority Booking Window</strong> for Prime Slots</span>
               </li>
               <li class="cc-tier-benefit-item">
                 <span class="cc-tier-benefit-icon" style="color: var(--cc-gold-400);">✓</span>
-                <span>Support for running tabs with end-of-visit settlement</span>
+                <span>Annual Club Championship Access &amp; VIP Lounge</span>
+              </li>
+              <li class="cc-tier-benefit-item">
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-gold-400);">✓</span>
+                <span>Digital Member QR Pass &amp; Locker Amenities</span>
               </li>
             </ul>
 
-            <a href="#cta" onclick="selectEnquiryTier('gold')" class="cc-btn cc-btn-primary cc-btn-pill" style="width: 100%;">
+            <a href="#cta" onclick="selectEnquiryTier('gold')" class="cc-btn cc-btn-primary cc-btn-pill"
+              style="width: 100%; margin-top: auto;">
               Enquire for Gold
             </a>
           </div>
 
           <!-- Tier 3: Junior (Under 18) -->
-          <div class="cc-tier-card">
-            <div class="cc-card-header" style="margin-bottom: 0.5rem;">
-              <span class="cc-badge cc-badge-junior">&#9679; Youth Tier</span>
+          <div class="cc-tier-card" style="border-top: 3px solid var(--cc-junior-blue);">
+            <div class="cc-tier-card-header">
+              <span class="cc-badge cc-badge-junior">● JUNIOR TIER</span>
+              <span style="font-size: 11px; color: var(--cc-junior-blue); font-weight: 700; letter-spacing: 0.05em;">Youth (U-18)</span>
             </div>
-            <h3 class="cc-tier-name">Junior</h3>
-            <p class="cc-body-sm">Dedicated plan for players under 18 with discounted membership rates.</p>
-            
+            <h3 class="cc-tier-name" style="color: var(--cc-junior-blue);">Junior Plan</h3>
+            <p class="cc-tier-desc">Dedicated athletic training plan for youth players under 18 with special training court rates and coaching clinics.</p>
+
             <div class="cc-tier-price-box">
-              <div class="cc-tier-price-label">PRICE — CONFIGURABLE</div>
+              <div class="cc-tier-price-amount" id="home-tier-price-junior" style="color: var(--cc-junior-blue);">₹ 8,000.00</div>
+              <span class="cc-tier-price-sub">/ year &bull; Youth Development</span>
             </div>
 
             <ul class="cc-tier-benefits-list">
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Discounted youth membership eligibility (under 18)</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-junior-blue);">✓</span>
+                <span><strong id="home-court-junior">Youth Training Rate (₹200/hr)</strong></span>
               </li>
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Discounted court session rates</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-junior-blue);">✓</span>
+                <span><strong id="home-disc-junior">15% Gear Discount &bull; 5% Cafe</strong></span>
               </li>
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Member discounts on junior gear & accessories</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-junior-blue);">✓</span>
+                <span>Youth Coaching Clinics &amp; Junior League Access</span>
               </li>
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Discounts on cafeteria nutrition & refreshments</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-junior-blue);">✓</span>
+                <span>Under 18 Age Verification Required</span>
               </li>
               <li class="cc-tier-benefit-item">
-                <span class="cc-tier-benefit-icon">✓</span>
-                <span>Automated profile & activity history tracking</span>
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-junior-blue);">✓</span>
+                <span>Junior Tournament Entry &amp; Equipment Guidance</span>
+              </li>
+              <li class="cc-tier-benefit-item">
+                <span class="cc-tier-benefit-icon" style="color: var(--cc-junior-blue);">✓</span>
+                <span>Automated Skill Progression &amp; Match History</span>
               </li>
             </ul>
 
-            <a href="#cta" onclick="selectEnquiryTier('junior')" class="cc-btn cc-btn-secondary cc-btn-pill" style="width: 100%;">
+            <a href="#cta" onclick="selectEnquiryTier('junior')" class="cc-btn cc-btn-secondary cc-btn-pill"
+              style="width: 100%; margin-top: auto;">
               Enquire for Junior
             </a>
           </div>
@@ -327,17 +351,19 @@
           <div class="cc-eyebrow">Club Pro Shop</div>
           <h2 class="cc-heading-2">Gear Up Before Your Match</h2>
           <p class="cc-body">
-            The club gear shop supplies premium equipment from the same unified shelf — available for counter purchase, club collection, or doorstep delivery.
+            The club gear shop supplies premium equipment from the same unified shelf — available for counter purchase,
+            club collection, or doorstep delivery.
           </p>
         </div>
 
         <div class="cc-grid cc-grid-cols-5" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));">
-          
+
           <!-- Category 1: Rackets -->
           <div class="cc-shop-cat-card">
             <div class="cc-shop-cat-icon">
               <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <h3 class="cc-shop-cat-name">Rackets</h3>
@@ -349,11 +375,13 @@
           <div class="cc-shop-cat-card">
             <div class="cc-shop-cat-icon">
               <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <h3 class="cc-shop-cat-name">Balls</h3>
-            <p class="cc-shop-cat-desc">Tournament tennis balls, cricket leather & turf training balls, shuttlecocks.</p>
+            <p class="cc-shop-cat-desc">Tournament tennis balls, cricket leather & turf training balls, shuttlecocks.
+            </p>
             <span class="cc-badge cc-badge-active" style="margin-top: auto; font-size: 11px;">In Stock</span>
           </div>
 
@@ -361,7 +389,7 @@
           <div class="cc-shop-cat-card">
             <div class="cc-shop-cat-icon">
               <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
             <h3 class="cc-shop-cat-name">Shoes</h3>
@@ -373,7 +401,8 @@
           <div class="cc-shop-cat-card">
             <div class="cc-shop-cat-icon">
               <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
             </div>
             <h3 class="cc-shop-cat-name">Accessories</h3>
@@ -385,7 +414,8 @@
           <div class="cc-shop-cat-card">
             <div class="cc-shop-cat-icon">
               <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
               </svg>
             </div>
             <h3 class="cc-shop-cat-name">Apparel</h3>
@@ -409,27 +439,32 @@
     <section class="cc-container" id="cta" style="padding-bottom: 5rem;">
       <div class="cc-cta-section" style="text-align: left; padding: 3rem 2rem;">
         <div class="cc-grid cc-grid-cols-2" style="gap: 2.5rem; align-items: center;">
-          
+
           <div>
             <div class="cc-eyebrow" style="margin-bottom: 0.75rem;">Step Onto The Court</div>
             <h2 class="cc-heading-1" style="margin-bottom: 1rem;">
               Enquire or Book a Trial Session
             </h2>
             <p class="cc-body-lg" style="margin-bottom: 1.5rem; color: var(--cc-text-secondary);">
-              Ready to elevate your game? Send us your details for a tailored membership quotation, coaching assessment, or court walkthrough.
+              Ready to elevate your game? Send us your details for a tailored membership quotation, coaching assessment,
+              or court walkthrough.
             </p>
-            <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 13px; color: var(--cc-text-muted);">
-              <div>✓ <strong>Direct CRM Integration:</strong> Enquiries instantly route to dedicated membership advisors.</div>
+            <div
+              style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 13px; color: var(--cc-text-muted);">
+              <div>✓ <strong>Direct CRM Integration:</strong> Enquiries instantly route to dedicated membership
+                advisors.</div>
               <div>✓ <strong>No Guesswork:</strong> Transparent Gold, Silver, and Junior tier pricing.</div>
               <div>✓ <strong>Fast Turnaround:</strong> Same-day follow-up and trial scheduling.</div>
             </div>
           </div>
 
           <!-- Live Website Enquiry Form -->
-          <div style="background: rgba(14, 19, 31, 0.85); border: 1px solid var(--cc-border-medium); border-radius: var(--cc-radius-lg); padding: 2rem;">
+          <div
+            style="background: rgba(14, 19, 31, 0.85); border: 1px solid var(--cc-border-medium); border-radius: var(--cc-radius-lg); padding: 2rem;">
             <div style="margin-bottom: 1.25rem;">
               <span class="cc-badge cc-badge-gold" style="font-size: 11px;">Official Website Enquiry</span>
-              <h3 style="font-size: 18px; font-weight: 700; color: var(--cc-text-primary); margin-top: 6px;">Get in Touch</h3>
+              <h3 style="font-size: 18px; font-weight: 700; color: var(--cc-text-primary); margin-top: 6px;">Get in
+                Touch</h3>
             </div>
 
             <form id="website-enquiry-form">
@@ -460,12 +495,15 @@
 
               <div class="cc-form-group">
                 <label class="cc-label" for="web-message">Sport / Specific Needs</label>
-                <textarea id="web-message" class="cc-textarea" placeholder="e.g. Inquiring about weekend tennis coaching and court availability..." style="height: 70px;"></textarea>
+                <textarea id="web-message" class="cc-textarea"
+                  placeholder="e.g. Inquiring about weekend tennis coaching and court availability..."
+                  style="height: 70px;"></textarea>
               </div>
 
               <div id="web-enquiry-feedback" style="display: none; margin-bottom: 1rem;"></div>
 
-              <button type="submit" id="btn-submit-web-enquiry" class="cc-btn cc-btn-primary cc-btn-md cc-btn-pill" style="width: 100%;">
+              <button type="submit" id="btn-submit-web-enquiry" class="cc-btn cc-btn-primary cc-btn-md cc-btn-pill"
+                style="width: 100%;">
                 Submit Enquiry to Club CRM
               </button>
             </form>
@@ -480,13 +518,14 @@
   <!-- ==========================================
        PLACEHOLDER INTERACTIVE MODAL DIALOG
        ========================================== -->
-  <div class="cc-modal-backdrop" id="placeholder-modal" role="dialog" aria-modal="true" aria-labelledby="ph-modal-title">
+  <div class="cc-modal-backdrop" id="placeholder-modal" role="dialog" aria-modal="true"
+    aria-labelledby="ph-modal-title">
     <div class="cc-modal">
       <div class="cc-modal-header">
         <h3 class="cc-modal-title" id="ph-modal-title">Placeholder Action</h3>
         <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
@@ -498,7 +537,8 @@
           You selected a route that links to a subsequent module.
         </p>
         <p class="cc-body-sm" style="color: var(--cc-text-muted);">
-          In accordance with hackathon guidelines, backend court booking, membership subscriptions, and POS logic will be connected during their respective implementation phases.
+          In accordance with hackathon guidelines, backend court booking, membership subscriptions, and POS logic will
+          be connected during their respective implementation phases.
         </p>
       </div>
       <div class="cc-modal-footer">
@@ -522,7 +562,8 @@
             </div>
           </a>
           <p class="cc-body-sm" style="max-width: 280px; margin-top: 0.75rem;">
-            The unified digital backbone for modern sports club management across courts, gear shop, cafeteria, and members.
+            The unified digital backbone for modern sports club management across courts, gear shop, cafeteria, and
+            members.
           </p>
         </div>
 
@@ -555,9 +596,11 @@
         <div>
           <div class="cc-footer-title">Stay Updated</div>
           <div class="cc-form-group" style="margin-bottom: 0.75rem;">
-            <input type="email" class="cc-input" placeholder="Your email address" style="padding: 10px 14px; font-size: 13px;">
+            <input type="email" class="cc-input" placeholder="Your email address"
+              style="padding: 10px 14px; font-size: 13px;">
           </div>
-          <a href="#placeholder-route" class="cc-btn cc-btn-primary cc-btn-sm cc-placeholder-trigger" style="width: 100%;" data-route-name="Newsletter Subscription">
+          <a href="#placeholder-route" class="cc-btn cc-btn-primary cc-btn-sm cc-placeholder-trigger"
+            style="width: 100%;" data-route-name="Newsletter Subscription">
             Subscribe
           </a>
         </div>
@@ -632,7 +675,7 @@
             });
 
             const refCode = (res && (res.reference || res.name || res.id)) || `CC-ENQ-00${Date.now().toString().slice(-2)}`;
-            try { localStorage.setItem('cc_last_enquiry_ref', refCode); } catch (e) {}
+            try { localStorage.setItem('cc_last_enquiry_ref', refCode); } catch (e) { }
 
             // Show real success message ONLY after actual record creation
             feedback.style.display = 'block';
@@ -660,7 +703,7 @@
       }
 
       // Helper function to auto-select tier and scroll down to enquiry form
-      window.selectEnquiryTier = function(tier) {
+      window.selectEnquiryTier = function (tier) {
         const planSelect = document.getElementById('web-plan');
         if (planSelect) {
           planSelect.value = tier;
@@ -674,6 +717,55 @@
           }
         }
       };
+
+      // Helper to dynamically synchronize home membership prices with Admin datastore
+      async function syncHomeMembershipPrices() {
+        if (window.ClubDataStore && window.ClubDataStore.ensureSynced) {
+          try { await window.ClubDataStore.ensureSynced(); } catch (e) { }
+        }
+        if (!window.ClubDataStore || !window.ClubDataStore.getPlanBenefits) return;
+        const plans = window.ClubDataStore.getPlanBenefits();
+        if (!plans) return;
+
+        function fmt(val) {
+          if (typeof val !== 'number' || isNaN(val)) return '₹ 0.00';
+          return '₹ ' + val.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        if (plans.gold) {
+          const elP = document.getElementById('home-tier-price-gold');
+          if (elP) elP.textContent = fmt(plans.gold.fee || 24000);
+          const elC = document.getElementById('home-court-gold');
+          if (elC) elC.textContent = (plans.gold.courtRate === 0 || plans.gold.courtRate === '0') ? 'Full Club Court Access (Free / ₹0)' : `Club Court Access (₹${plans.gold.courtRate}/hr)`;
+          const elD = document.getElementById('home-disc-gold');
+          if (elD) elD.textContent = `${plans.gold.shopDiscount || 15}% Pro Shop & ${plans.gold.barDiscount || 15}% Bar Discount`;
+          const elPass = document.getElementById('home-passes-gold');
+          if (elPass) elPass.textContent = `${plans.gold.guestPasses !== undefined ? plans.gold.guestPasses : 4} Guest Passes`;
+        }
+
+        if (plans.silver) {
+          const elP = document.getElementById('home-tier-price-silver');
+          if (elP) elP.textContent = fmt(plans.silver.fee || 14000);
+          const elC = document.getElementById('home-court-silver');
+          if (elC) elC.textContent = `Standard Member Rate (₹${plans.silver.courtRate || 300}/hr)`;
+          const elD = document.getElementById('home-disc-silver');
+          if (elD) elD.textContent = `${plans.silver.shopDiscount || 10}% Pro Shop & ${plans.silver.barDiscount || 10}% Bar Discount`;
+          const elPass = document.getElementById('home-passes-silver');
+          if (elPass) elPass.textContent = `${plans.silver.guestPasses !== undefined ? plans.silver.guestPasses : 1} Complimentary Guest Pass`;
+        }
+
+        if (plans.junior) {
+          const elP = document.getElementById('home-tier-price-junior');
+          if (elP) elP.textContent = fmt(plans.junior.fee || 8000);
+          const elC = document.getElementById('home-court-junior');
+          if (elC) elC.textContent = `Youth Training Rate (₹${plans.junior.courtRate || 200}/hr)`;
+          const elD = document.getElementById('home-disc-junior');
+          if (elD) elD.textContent = `${plans.junior.shopDiscount || 15}% Gear Discount • ${plans.junior.barDiscount || 5}% Cafe`;
+        }
+      }
+
+      // Sync on load
+      syncHomeMembershipPrices();
 
       // Placeholder Route Handler
       const placeholderTriggers = document.querySelectorAll('.cc-placeholder-trigger');
@@ -695,8 +787,6 @@
       });
     });
   </script>
-  <script src="js/club_data_store.js"></script>
-  <script src="js/club_api.js"></script>
-  <script src="js/admin_auth.js"></script>
 </body>
+
 </html>

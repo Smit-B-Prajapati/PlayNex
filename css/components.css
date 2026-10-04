@@ -602,7 +602,7 @@
 .cc-nav-links {
   display: flex;
   align-items: center;
-  gap: var(--cc-space-6);
+  gap: 0.4rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -610,30 +610,73 @@
 
 .cc-nav-link {
   font-family: var(--cc-font-display);
-  font-size: var(--cc-text-xs);
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: var(--cc-tracking-wider);
-  color: var(--cc-text-secondary);
+  letter-spacing: 0.08em;
+  color: #94A3B8;
   text-decoration: none;
-  transition: color var(--cc-transition-fast);
   position: relative;
-  padding: 6px 0;
+  padding: 7px 15px;
+  border-radius: 9999px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
 }
 
-.cc-nav-link:hover,
+.cc-nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.16) 0%, rgba(212, 175, 55, 0.03) 100%);
+  opacity: 0;
+  transform: scale(0.92);
+  transition: all 0.25s ease;
+  z-index: -1;
+}
+
+.cc-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 20px;
+  height: 2px;
+  background: var(--cc-gold-400);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--cc-gold-400);
+  transition: transform 0.25s ease;
+}
+
+.cc-nav-link:hover {
+  color: #FFFFFF;
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 12px rgba(212, 175, 55, 0.15);
+  transform: translateY(-1px);
+}
+
+.cc-nav-link:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cc-nav-link:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
 .cc-nav-link.is-active {
   color: var(--cc-gold-400);
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.2);
 }
 
 .cc-nav-link.is-active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--cc-grad-gold);
+  transform: translateX(-50%) scaleX(1);
 }
 
 .cc-nav-actions {

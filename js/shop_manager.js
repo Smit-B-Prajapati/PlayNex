@@ -114,6 +114,55 @@ async function renderCatalog() {
   });
 }
 
+function getActiveMemberDiscount() {
+  if (typeof window !== 'undefined' && window.ClubMemberAuth && window.ClubMemberAuth.isMember()) {
+    const mem = window.ClubMemberAuth.getMember();
+    if (!mem || mem.state === 'cancelled' || mem.state === 'expired' || mem.state === 'inactive') {
+      return { percent: 0, member: mem, isCancelled: true };
+    }
+    const plan = (mem.plan || mem.tier_code || 'gold').toLowerCase();
+    if (plan === 'gold') return { percent: 15, member: mem };
+    if (plan === 'silver') return { percent: 10, member: mem };
+    if (plan === 'junior') return { percent: 15, member: mem };
+    return { percent: 10, member: mem };
+  }
+  return { percent: 0, member: null };
+}
+
+function renderShopMemberBanner() {
+  const memberDisc = getActiveMemberDiscount();
+  const nameInput = document.getElementById('customer-name-input');
+  const bannerContainer = document.getElementById('shop-member-discount-banner');
+
+  if (memberDisc.member) {
+    if (nameInput && (!nameInput.value || nameInput.value === 'David Vance')) {
+      nameInput.value = memberDisc.member.name;
+    }
+    if (bannerContainer) {
+      if (memberDisc.isCancelled) {
+        bannerContainer.style.display = 'block';
+        bannerContainer.innerHTML = `
+          <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); padding: 8px 12px; border-radius: var(--cc-radius-md); font-size: 12px; color: #FFFFFF; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <span>👤 Member: <strong>${memberDisc.member.name}</strong> <span class="cc-badge cc-badge-danger" style="font-size: 9px; margin-left: 6px;">CANCELLED</span></span>
+            <span style="font-size: 11px; color: var(--cc-text-muted);">Standard Walk-in Rates Apply</span>
+          </div>
+        `;
+      } else {
+        bannerContainer.style.display = 'block';
+        bannerContainer.innerHTML = `
+          <div style="background: rgba(212, 175, 55, 0.12); border: 1px solid var(--cc-gold-500); padding: 8px 12px; border-radius: var(--cc-radius-md); font-size: 12px; color: #FFFFFF; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <span>👤 Shopping as <strong>${memberDisc.member.name}</strong> (${(memberDisc.member.plan || 'Gold').toUpperCase()} Tier)</span>
+            <span class="cc-badge cc-badge-gold" style="font-size: 10px;">${memberDisc.percent}% Member Discount Applied</span>
+          </div>
+        `;
+      }
+    }
+  } else {
+    if (bannerContainer) bannerContainer.style.display = 'none';
+  }
+  renderCart();
+}
+
 function renderCart() {
   const container = document.getElementById('cart-items-container');
   const countBadge = document.getElementById('cart-item-count-badge');
@@ -121,10 +170,19 @@ function renderCart() {
   if (!container) return;
 
   const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-  const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const rawTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const memberDisc = getActiveMemberDiscount();
+  const discAmount = (rawTotal * memberDisc.percent) / 100.0;
+  const netTotal = rawTotal - discAmount;
 
   if (countBadge) countBadge.textContent = `${totalQty} Item${totalQty === 1 ? '' : 's'}`;
-  if (totalDisplay) totalDisplay.textContent = `₹ ${totalAmount.toLocaleString()}`;
+  if (totalDisplay) {
+    if (memberDisc.percent > 0 && discAmount > 0) {
+      totalDisplay.innerHTML = `<span style="font-size: 0.9rem; text-decoration: line-through; color: var(--cc-text-muted); margin-right: 6px;">₹ ${rawTotal.toLocaleString()}</span> ₹ ${netTotal.toLocaleString()}`;
+    } else {
+      totalDisplay.textContent = `₹ ${rawTotal.toLocaleString()}`;
+    }
+  }
 
   if (cart.length === 0) {
     container.innerHTML = '<p class="cc-body-xs" style="color: var(--cc-text-muted); padding: 12px 0;">Your cart is currently empty. Click "+ Add to Cart" on any product.</p>';
@@ -404,7 +462,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const orders = getShopOrders();
-        const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const rawAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const memberDisc = getActiveMemberDiscount();
+        const discAmount = (rawAmount * memberDisc.percent) / 100.0;
+        const totalAmount = rawAmount - discAmount;
         const fulfillmentLabel = !isOnline 
           ? 'Immediate Counter Handover' 
           : fulfillment === 'pickup' 
@@ -413,6 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const newOrder = {
           id: orderRef,
+          memberId: memberDisc.member ? (memberDisc.member.id || memberDisc.member.member_id) : 'GUEST',
           channel: isOnline ? 'online' : 'counter',
           customer: customerName,
           fulfillment: fulfillmentLabel,
@@ -454,4 +516,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Check member on load
+  renderShopMemberBanner();
+
+  // Expose globally
+  window.renderShopMemberBanner = renderShopMemberBanner;
 });
+

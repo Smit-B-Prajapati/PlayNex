@@ -1,6 +1,6 @@
 /**
  * CHAMPIONS CLUB — Court Booking Controller
- * Manages 1-hour sessions, 30-min staggered slots, double-booking prevention,
+ * Manages dynamic 1-3 hour sessions, slot validation, double-booking prevention,
  * daily limits (max 2/member/day), plan-dependent rates, and instant cancellation slot release.
  * Communicates with real Odoo backend endpoints via ClubAPI.
  */
@@ -64,16 +64,34 @@ function getCurrentMember() {
   const members = getDynamicMembers();
   let session = null;
   if (typeof window !== 'undefined') {
-    const raw = sessionStorage.getItem('cc_portal_member');
-    if (raw) {
-      try { session = JSON.parse(raw); } catch (e) {}
+    if (window.ClubMemberAuth && window.ClubMemberAuth.getMember) {
+      session = window.ClubMemberAuth.getMember();
+    }
+    if (!session) {
+      const raw = sessionStorage.getItem('cc_portal_member') || localStorage.getItem('cc_portal_member') ||
+                  sessionStorage.getItem('cc_current_member') || localStorage.getItem('cc_current_member');
+      if (raw) {
+        try { session = JSON.parse(raw); } catch (e) {}
+      }
     }
   }
 
   if (session) {
     const sessionCode = session.member_id || session.id || session.member_code;
-    const found = members.find(m => m.id === sessionCode || m.name.toLowerCase() === (session.name || '').toLowerCase());
+    const found = members.find(m => m.id === sessionCode || (session.name && m.name.toLowerCase() === session.name.toLowerCase()));
     if (found) return found;
+
+    // If dynamic member was just registered
+    const planCode = (session.plan || session.tier_code || 'gold').toLowerCase();
+    const isCancelled = session.state === 'cancelled' || session.state === 'expired' || session.state === 'inactive';
+    return {
+      id: session.id || session.member_code || 'CC-MEM-00101',
+      name: session.name,
+      plan: isCancelled ? 'none' : planCode,
+      state: session.state || 'active',
+      rate: isCancelled ? 500.0 : (planCode === 'gold' ? 0.0 : planCode === 'silver' ? 300.0 : 200.0),
+      rateLabel: isCancelled ? '₹ 500.00 / hr (Expired - Standard Rate)' : (planCode === 'gold' ? 'Free (Gold Tier Entitlement)' : planCode === 'silver' ? '₹ 300.00 / hr (Silver Member Rate)' : '₹ 200.00 / hr (Junior Youth Rate)')
+    };
   }
 
   const explicitId = document.getElementById('booking-member-id')?.value;
@@ -85,6 +103,28 @@ function getCurrentMember() {
   // Default to first active member
   const activeMem = members.find(m => m.state === 'active') || members[0];
   return activeMem;
+}
+
+function getMemberMaxBookingHours() {
+  const isWalkin = document.getElementById('radio-party-walkin')?.checked;
+  if (isWalkin) {
+    return 1;
+  }
+
+  const member = getCurrentMember();
+  if (!member || member.state === 'cancelled' || member.state === 'expired' || member.state === 'inactive') {
+    return 1;
+  }
+
+  if (window.ClubDataStore && window.ClubDataStore.getMaxBookingHours) {
+    return window.ClubDataStore.getMaxBookingHours(member.plan);
+  }
+
+  const plan = (member.plan || 'gold').toLowerCase();
+  if (plan === 'gold') return 3;
+  if (plan === 'silver') return 2;
+  if (plan === 'junior') return 1;
+  return 1;
 }
 
 function updateMemberDisplayCard() {
@@ -102,11 +142,18 @@ function updateMemberDisplayCard() {
   if (nameEl) nameEl.textContent = member.name;
   if (hiddenInput) hiddenInput.value = member.id;
 
+  const isCancelled = member.state === 'cancelled' || member.state === 'inactive' || member.state === 'expired';
+
   if (tierBadgeEl) {
-    const planUpper = (member.plan || 'gold').toUpperCase();
-    const badgeClass = member.plan === 'gold' ? 'cc-badge-gold' : member.plan === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
-    tierBadgeEl.className = `cc-badge ${badgeClass}`;
-    tierBadgeEl.textContent = `★ ${planUpper} TIER`;
+    if (isCancelled) {
+      tierBadgeEl.style.display = 'none';
+    } else {
+      tierBadgeEl.style.display = 'inline-flex';
+      const planUpper = (member.plan || 'gold').toUpperCase();
+      const badgeClass = member.plan === 'gold' ? 'cc-badge-gold' : member.plan === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
+      tierBadgeEl.className = `cc-badge ${badgeClass}`;
+      tierBadgeEl.textContent = `★ ${planUpper} TIER`;
+    }
   }
 
   if (stateEl) {
@@ -116,6 +163,12 @@ function updateMemberDisplayCard() {
 
   if (rateLabelEl) {
     rateLabelEl.textContent = member.rateLabel;
+  }
+
+  // Adjust duration if current selected duration exceeds newly selected member's plan limit
+  const maxHours = getMemberMaxBookingHours();
+  if (selectedDuration > maxHours) {
+    selectedDuration = 1;
   }
 
   updateFormSummary();
@@ -142,7 +195,12 @@ function renderSwitchMembersList(filterText = '') {
 
   filtered.forEach(m => {
     const isCurrent = current && current.id === m.id;
+    const isCancelled = m.state === 'cancelled' || m.state === 'expired' || m.state === 'inactive';
     const planClass = m.plan === 'gold' ? 'cc-badge-gold' : m.plan === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
+    const planBadgeHtml = isCancelled
+      ? `<span class="cc-badge cc-badge-danger" style="font-size: 9px; padding: 1px 5px;">${m.state.toUpperCase()}</span>`
+      : `<span class="cc-badge ${planClass}" style="font-size: 9px; padding: 1px 5px;">${m.plan.toUpperCase()}</span>`;
+
     const item = document.createElement('div');
     item.className = 'cc-card cc-card-glass';
     item.style.cssText = `
@@ -160,7 +218,7 @@ function renderSwitchMembersList(filterText = '') {
       <div>
         <div style="display: flex; align-items: center; gap: 6px;">
           <strong style="color: var(--cc-text-primary); font-size: 14px;">${m.name}</strong>
-          <span class="cc-badge ${planClass}" style="font-size: 9px; padding: 1px 5px;">${m.plan.toUpperCase()}</span>
+          ${planBadgeHtml}
         </div>
         <div class="cc-text-mono" style="font-size: 11px; color: var(--cc-gold-400);">${m.id} &bull; <span style="color: var(--cc-text-muted);">${m.rateLabel}</span></div>
       </div>
@@ -172,15 +230,18 @@ function renderSwitchMembersList(filterText = '') {
     item.addEventListener('click', () => {
       const hiddenInput = document.getElementById('booking-member-id');
       if (hiddenInput) hiddenInput.value = m.id;
-      // Also update portal session
-      sessionStorage.setItem('cc_portal_member', JSON.stringify({
-        member_id: m.id,
-        member_code: m.id,
-        name: m.name,
-        plan_name: m.plan.toUpperCase(),
-        tier_code: m.plan,
-        state: m.state
-      }));
+      if (window.ClubMemberAuth) {
+        window.ClubMemberAuth.login(m.name, m.phone || '+91 98234 11201');
+      } else {
+        sessionStorage.setItem('cc_portal_member', JSON.stringify({
+          member_id: m.id,
+          member_code: m.id,
+          name: m.name,
+          plan_name: m.plan.toUpperCase(),
+          tier_code: m.plan,
+          state: m.state
+        }));
+      }
       updateMemberDisplayCard();
       const modal = document.getElementById('modal-switch-member');
       if (modal) modal.classList.remove('is-open');
@@ -200,6 +261,7 @@ let bookingsData = (window.ClubDataStore && window.ClubDataStore.getBookings) ? 
     date: '2026-10-03',
     startTime: '18:00',
     endTime: '19:00',
+    durationHours: 1,
     bookingType: 'member',
     memberId: 'CC-MEM-00101',
     playerName: 'David Vance (Gold)',
@@ -215,6 +277,7 @@ let bookingsData = (window.ClubDataStore && window.ClubDataStore.getBookings) ? 
     date: '2026-10-03',
     startTime: '17:00',
     endTime: '18:00',
+    durationHours: 1,
     bookingType: 'walkin',
     memberId: null,
     playerName: 'Rahul Sharma (Walk-in)',
@@ -227,6 +290,7 @@ let bookingsData = (window.ClubDataStore && window.ClubDataStore.getBookings) ? 
 let selectedCourtId = '1';
 let selectedDate = '2026-10-03';
 let selectedSlotTime = '18:00';
+let selectedDuration = 1;
 let currentSportFilter = 'all';
 
 // Generate 1-hour dedicated slots from 06:00 to 24:00 (midnight)
@@ -257,7 +321,7 @@ function checkSlotOverlap(courtId, date, slotTimeStr) {
   const endMins = startMins + 60;
 
   for (const b of bookingsData) {
-    if (b.courtId === courtId && b.date === date && b.state === 'confirmed' && !b.isSocial) {
+    if (String(b.courtId) === String(courtId) && b.date === date && b.state === 'confirmed' && !b.isSocial) {
       let bStart = timeToMinutes(b.startTime);
       let bEnd = timeToMinutes(b.endTime);
       if (bEnd === 0 && b.endTime === '00:00') bEnd = 1440;
@@ -269,6 +333,65 @@ function checkSlotOverlap(courtId, date, slotTimeStr) {
     }
   }
   return { isOverlap: false, booking: null };
+}
+
+// Check availability for all consecutive 1-hour intervals for a multi-hour session
+function checkConsecutiveIntervals(courtId, date, startSlotTime, durationHours) {
+  const startMins = timeToMinutes(startSlotTime);
+  const intervals = [];
+  let allAvailable = true;
+  let firstConflict = null;
+
+  for (let i = 0; i < durationHours; i++) {
+    const intStartMins = startMins + (i * 60);
+    const intEndMins = intStartMins + 60;
+    const intStartTime = minutesToTime(intStartMins);
+    const intEndTime = minutesToTime(intEndMins);
+
+    if (intStartMins >= 1440) {
+      allAvailable = false;
+      intervals.push({
+        index: i + 1,
+        start: intStartTime,
+        end: intEndTime,
+        isAvailable: false,
+        booking: { id: 'CLOSED', state: 'closed' }
+      });
+      continue;
+    }
+
+    const overlap = checkSlotOverlap(courtId, date, intStartTime);
+    if (overlap.isOverlap) {
+      allAvailable = false;
+      if (!firstConflict) {
+        firstConflict = {
+          interval: `${intStartTime}–${intEndTime}`,
+          booking: overlap.booking
+        };
+      }
+      intervals.push({
+        index: i + 1,
+        start: intStartTime,
+        end: intEndTime,
+        isAvailable: false,
+        booking: overlap.booking
+      });
+    } else {
+      intervals.push({
+        index: i + 1,
+        start: intStartTime,
+        end: intEndTime,
+        isAvailable: true,
+        booking: null
+      });
+    }
+  }
+
+  return {
+    allAvailable,
+    intervals,
+    firstConflict
+  };
 }
 
 async function renderSlots() {
@@ -310,26 +433,162 @@ async function renderSlots() {
   });
 }
 
+function renderDurationOptions() {
+  const container = document.getElementById('duration-buttons-container');
+  const badge = document.getElementById('duration-tier-limit-badge');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const maxHours = getMemberMaxBookingHours();
+  const isWalkin = document.getElementById('radio-party-walkin')?.checked;
+  const currentMember = getCurrentMember();
+  const planName = isWalkin ? 'Walk-in' : (currentMember ? currentMember.plan.toUpperCase() : 'Gold');
+
+  if (badge) {
+    badge.textContent = `Max: ${maxHours} Hour${maxHours > 1 ? 's' : ''} (${planName})`;
+  }
+
+  // Ensure selectedDuration does not exceed max allowed
+  if (selectedDuration > maxHours) {
+    selectedDuration = 1;
+  }
+
+  for (let h = 1; h <= maxHours; h++) {
+    const check = checkConsecutiveIntervals(selectedCourtId, selectedDate, selectedSlotTime, h);
+    const isAvailable = check.allAvailable;
+    const isSelected = selectedDuration === h;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `cc-btn cc-btn-sm ${isSelected ? 'cc-btn-primary' : 'cc-btn-secondary'}`;
+    btn.style.cssText = `
+      flex: 1;
+      min-width: 90px;
+      font-weight: 700;
+      transition: all var(--cc-transition-fast);
+      position: relative;
+    `;
+
+    if (!isAvailable) {
+      btn.disabled = true;
+      btn.className = 'cc-btn cc-btn-secondary cc-btn-sm is-disabled';
+      btn.style.cssText += `
+        opacity: 0.5;
+        border-color: rgba(239, 68, 68, 0.4);
+        background: rgba(30, 20, 20, 0.4);
+        cursor: not-allowed;
+      `;
+      btn.innerHTML = `${h} Hour${h > 1 ? 's' : ''} &#128274;`;
+      btn.title = `${h}-hour booking unavailable because one or more required slots are already booked.`;
+    } else {
+      btn.innerHTML = `${h} Hour${h > 1 ? 's' : ''}`;
+      btn.title = `${h}-hour consecutive booking available`;
+      btn.addEventListener('click', () => {
+        selectedDuration = h;
+        updateFormSummary();
+      });
+    }
+
+    container.appendChild(btn);
+  }
+}
+
+function renderAvailabilityPreview() {
+  const container = document.getElementById('preview-intervals-list');
+  const statusBadge = document.getElementById('preview-overall-status-badge');
+  const submitBtn = document.getElementById('btn-submit-booking');
+
+  if (!container) return;
+  container.innerHTML = '';
+
+  const check = checkConsecutiveIntervals(selectedCourtId, selectedDate, selectedSlotTime, selectedDuration);
+
+  if (statusBadge) {
+    if (check.allAvailable) {
+      statusBadge.className = 'cc-badge cc-badge-active';
+      statusBadge.innerHTML = `&#10003; ${selectedDuration}-hour booking available`;
+    } else {
+      statusBadge.className = 'cc-badge cc-badge-danger';
+      statusBadge.innerHTML = `&#10005; ${selectedDuration}-hour booking unavailable`;
+    }
+  }
+
+  check.intervals.forEach(int => {
+    const row = document.createElement('div');
+    row.style.cssText = `
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 8px;
+      border-radius: var(--cc-radius-sm);
+      background: ${int.isAvailable ? 'rgba(0, 229, 153, 0.08)' : 'rgba(239, 68, 68, 0.12)'};
+      border: 1px solid ${int.isAvailable ? 'rgba(0, 229, 153, 0.25)' : 'rgba(239, 68, 68, 0.35)'};
+    `;
+
+    row.innerHTML = `
+      <span class="cc-text-mono" style="color: var(--cc-text-primary); font-weight: 600;">
+        ${int.start} &ndash; ${int.end}
+      </span>
+      <span class="cc-badge ${int.isAvailable ? 'cc-badge-active' : 'cc-badge-danger'}" style="font-size: 10px; font-weight: 700;">
+        ${int.isAvailable ? 'AVAILABLE' : `BOOKED (${int.booking ? int.booking.id : 'Conflict'})`}
+      </span>
+    `;
+
+    container.appendChild(row);
+  });
+
+  // Enable/Disable Submit Button based on full interval availability
+  if (submitBtn) {
+    const isSocial = document.getElementById('booking-social-toggle')?.checked;
+    if (check.allAvailable || isSocial) {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      submitBtn.style.cursor = 'pointer';
+      submitBtn.title = '';
+    } else {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.45';
+      submitBtn.style.cursor = 'not-allowed';
+      submitBtn.title = 'Cannot confirm: one or more required slots are already booked.';
+    }
+  }
+}
+
 function updateFormSummary() {
   const court = courts.find(c => String(c.id) === String(selectedCourtId)) || courts[0];
   const startMins = timeToMinutes(selectedSlotTime);
-  const endSlot = minutesToTime(startMins + 60);
+  const endSlot = minutesToTime(startMins + (selectedDuration * 60));
 
   if (!court) return;
 
   document.getElementById('summary-court-name').textContent = court.name;
-  document.getElementById('summary-time-window').textContent = `${selectedSlotTime} → ${endSlot} (1 Hr Session)`;
+  document.getElementById('summary-time-window').textContent = `${selectedSlotTime} → ${endSlot} (${selectedDuration} Hr${selectedDuration > 1 ? 's' : ''})`;
   document.getElementById('form-selected-slot-badge').textContent = `${selectedSlotTime} - ${endSlot}`;
 
   const isMember = document.getElementById('radio-party-member')?.checked ?? true;
   if (isMember) {
     const profile = getCurrentMember();
     if (profile) {
-      document.getElementById('summary-rate-amount').textContent = profile.rateLabel;
+      if (profile.plan === 'gold' && profile.state === 'active') {
+        document.getElementById('summary-rate-amount').textContent = `Free (Gold Tier Entitlement &bull; ${selectedDuration} Hr${selectedDuration > 1 ? 's' : ''})`;
+      } else if (profile.plan === 'silver' && profile.state === 'active') {
+        const total = 300.0 * selectedDuration;
+        document.getElementById('summary-rate-amount').textContent = `₹ ${total.toFixed(2)} (${selectedDuration} hrs @ ₹300/hr)`;
+      } else if (profile.plan === 'junior' && profile.state === 'active') {
+        const total = 200.0 * selectedDuration;
+        document.getElementById('summary-rate-amount').textContent = `₹ ${total.toFixed(2)} (${selectedDuration} hr @ ₹200/hr)`;
+      } else {
+        const total = 500.0 * selectedDuration;
+        document.getElementById('summary-rate-amount').textContent = `₹ ${total.toFixed(2)} (${selectedDuration} hrs @ ₹500/hr Standard)`;
+      }
     }
   } else {
-    document.getElementById('summary-rate-amount').textContent = `₹ ${court.walkinRate.toFixed(2)} / hr (Standard Walk-in)`;
+    const total = court.walkinRate * selectedDuration;
+    document.getElementById('summary-rate-amount').textContent = `₹ ${total.toFixed(2)} (${selectedDuration} hrs @ ₹${court.walkinRate}/hr)`;
   }
+
+  renderDurationOptions();
+  renderAvailabilityPreview();
 }
 
 function renderAdminBookings() {
@@ -362,6 +621,7 @@ function renderAdminBookings() {
 
   filtered.forEach(b => {
     const tr = document.createElement('tr');
+    const durHours = b.durationHours || 1;
     tr.innerHTML = `
       <td>
         <div class="cc-text-mono" style="font-weight: 800; color: var(--cc-gold-400);">${b.id}</div>
@@ -377,7 +637,7 @@ function renderAdminBookings() {
       <td class="cc-text-mono" style="font-size: 13px;">
         ${b.date} &bull; <strong style="color: var(--cc-text-primary);">${b.startTime} - ${b.endTime}</strong>
       </td>
-      <td>1 Hour</td>
+      <td>${durHours} Hour${durHours > 1 ? 's' : ''}</td>
       <td class="cc-text-mono" style="color: var(--cc-neon-green); font-weight: 700;">${b.rateApplied}</td>
       <td>
         <span class="cc-badge ${b.state === 'confirmed' ? 'cc-badge-active' : 'cc-badge-danger'}">
@@ -411,6 +671,8 @@ window.cancelBookingAction = async function(bookingId) {
       window.ClubDataStore.saveBookings(bookingsData);
     }
     renderSlots();
+    renderDurationOptions();
+    renderAvailabilityPreview();
     renderAdminBookings();
   }
 };
@@ -527,7 +789,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     radioWalkin.addEventListener('change', () => {
       sectionMember.style.display = 'none';
       sectionWalkin.style.display = 'block';
+      selectedDuration = 1;
       updateFormSummary();
+    });
+  }
+
+  // Social Toggle
+  const socialToggle = document.getElementById('booking-social-toggle');
+  if (socialToggle) {
+    socialToggle.addEventListener('change', () => {
+      renderAvailabilityPreview();
     });
   }
 
@@ -552,7 +823,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const court = courts.find(c => String(c.id) === String(selectedCourtId));
       const isSocial = document.getElementById('booking-social-toggle').checked;
       const startMins = timeToMinutes(selectedSlotTime);
-      const endTimeStr = minutesToTime(startMins + 60);
+      const endTimeStr = minutesToTime(startMins + (selectedDuration * 60));
 
       let memberId = null;
       let playerName = '';
@@ -570,7 +841,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         memberId = profile.id;
         playerName = `${profile.name} (${profile.plan.toUpperCase()})`;
-        rateAppliedStr = profile.rate === 0 ? '₹ 0.00 (Free)' : `₹ ${profile.rate.toFixed(2)}`;
+
+        if (profile.plan === 'gold' && profile.state === 'active') {
+          rateAppliedStr = '₹ 0.00 (Free)';
+        } else if (profile.plan === 'silver' && profile.state === 'active') {
+          rateAppliedStr = `₹ ${(300 * selectedDuration).toFixed(2)}`;
+        } else if (profile.plan === 'junior' && profile.state === 'active') {
+          rateAppliedStr = `₹ ${(200 * selectedDuration).toFixed(2)}`;
+        } else {
+          rateAppliedStr = `₹ ${(500 * selectedDuration).toFixed(2)}`;
+        }
 
         // RULE 1: Daily Limit Enforcement (Max 2 bookings per member per day)
         const memberDayCount = bookingsData.filter(b => 
@@ -589,6 +869,17 @@ document.addEventListener('DOMContentLoaded', async () => {
           return;
         }
 
+        // RULE 2: Max Booking Duration by Membership Tier
+        const maxAllowed = getMemberMaxBookingHours();
+        if (selectedDuration > maxAllowed) {
+          if (errorBox) {
+            errorTitle.textContent = "Duration Limit Exceeded";
+            errorMsg.textContent = `Your ${profile.plan.toUpperCase()} membership plan allows a maximum booking duration of ${maxAllowed} hour${maxAllowed > 1 ? 's' : ''}.`;
+            errorBox.style.display = 'flex';
+          }
+          return;
+        }
+
       } else {
         const walkinName = document.getElementById('walkin-name-input').value.trim();
         if (!walkinName) {
@@ -600,16 +891,26 @@ document.addEventListener('DOMContentLoaded', async () => {
           return;
         }
         playerName = `${walkinName} (Walk-in)`;
-        rateAppliedStr = `₹ ${court.walkinRate.toFixed(2)}`;
+        rateAppliedStr = `₹ ${(court.walkinRate * selectedDuration).toFixed(2)}`;
+
+        if (selectedDuration > 1) {
+          if (errorBox) {
+            errorTitle.textContent = "Duration Limit Exceeded";
+            errorMsg.textContent = "Walk-in guests are restricted to a maximum 1-hour booking duration.";
+            errorBox.style.display = 'flex';
+          }
+          return;
+        }
       }
 
-      // RULE 2: Double Booking Overlap Lock
+      // RULE 3: Double Booking Protection across ALL consecutive intervals
       if (!isSocial) {
-        const overlap = checkSlotOverlap(selectedCourtId, selectedDate, selectedSlotTime);
-        if (overlap.isOverlap) {
+        const check = checkConsecutiveIntervals(selectedCourtId, selectedDate, selectedSlotTime, selectedDuration);
+        if (!check.allAvailable) {
+          const conflict = check.firstConflict;
           if (errorBox) {
-            errorTitle.textContent = "Double Booking Conflict";
-            errorMsg.textContent = `Court '${court.name}' is already booked from ${overlap.booking.startTime} to ${overlap.booking.endTime} (${overlap.booking.id}). Two players cannot share the same court.`;
+            errorTitle.textContent = "Consecutive Slot Conflict";
+            errorMsg.textContent = `Cannot book ${selectedSlotTime}–${endTimeStr} because ${conflict ? conflict.interval : 'a required interval'} is already booked.`;
             errorBox.style.display = 'flex';
           }
           return;
@@ -625,6 +926,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const apiRes = await window.ClubAPI.createBooking({
             court_id: selectedCourtId,
             start_time: startDateTimeStr,
+            duration_hours: selectedDuration,
             booking_type: isMember ? 'member' : 'walkin',
             member_id: isMember ? memberId : null,
             walkin_name: !isMember ? playerName : null,
@@ -643,6 +945,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           date: selectedDate,
           startTime: selectedSlotTime,
           endTime: endTimeStr,
+          durationHours: selectedDuration,
           bookingType: isMember ? 'member' : 'walkin',
           memberId: memberId,
           playerName: playerName,
@@ -658,13 +961,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Refresh UI
         renderSlots();
+        renderDurationOptions();
+        renderAvailabilityPreview();
         renderAdminBookings();
 
         // Show Confirmation Modal
         const confirmModal = document.getElementById('modal-booking-confirmation');
         document.getElementById('confirm-modal-ref').textContent = newRef;
         document.getElementById('confirm-modal-court').textContent = court.name;
-        document.getElementById('confirm-modal-time').textContent = `${selectedDate} | ${selectedSlotTime} - ${endTimeStr}`;
+        document.getElementById('confirm-modal-time').textContent = `${selectedDate} | ${selectedSlotTime} - ${endTimeStr} (${selectedDuration} Hr${selectedDuration > 1 ? 's' : ''})`;
         document.getElementById('confirm-modal-player').textContent = playerName;
         document.getElementById('confirm-modal-rate').textContent = rateAppliedStr;
 
@@ -681,5 +986,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
+
+  // Expose globally for synchronized member auth events
+  window.updateMemberDisplayCard = updateMemberDisplayCard;
+  window.getCurrentMember = getCurrentMember;
+  window.getMemberMaxBookingHours = getMemberMaxBookingHours;
+  window.checkConsecutiveIntervals = checkConsecutiveIntervals;
 });
+
+// Also attach globally for immediate availability
+if (typeof window !== 'undefined') {
+  window.updateMemberDisplayCard = updateMemberDisplayCard;
+  window.getCurrentMember = getCurrentMember;
+  window.getMemberMaxBookingHours = getMemberMaxBookingHours;
+  window.checkConsecutiveIntervals = checkConsecutiveIntervals;
+}
+
+
 

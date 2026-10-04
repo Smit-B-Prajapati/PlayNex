@@ -877,38 +877,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Auto-focus and open lead in Admin View if ref query param is present
+  // Optional URL query param handling: fill tracker if present (NO auto-opening modal without user click)
   const requestedRef = urlParams.get('ref');
   if (requestedRef) {
     const cleanRef = decodeURIComponent(requestedRef).trim();
-    const normalizedRef = cleanRef.replace(/[_\s]+/g, '-').toLowerCase();
-    
-    setTimeout(async () => {
-      await fetchLeads();
-      const matchedLead = leads.find(l => {
-        const lid = (l.id || '').toLowerCase().replace(/[_\s]+/g, '-');
-        const lraw = String(l.rawId || '').toLowerCase();
-        const lphone = (l.phone || '').replace(/\D/g, '');
-        const cleanDigits = cleanRef.replace(/\D/g, '');
-        return lid === normalizedRef ||
-               lid.includes(normalizedRef) ||
-               lraw === normalizedRef ||
-               (cleanDigits.length >= 2 && lid.endsWith(cleanDigits)) ||
-               (cleanDigits.length >= 4 && lphone.includes(cleanDigits));
-      });
-
-      if (matchedLead) {
-        const isAdmin = window.ClubAdminAuth && window.ClubAdminAuth.isAdmin && window.ClubAdminAuth.isAdmin();
-        if (isAdmin) {
-          openLeadModal(matchedLead.id);
-          const cardEl = document.querySelector(`[data-lead-id="${matchedLead.id}"]`);
-          if (cardEl) {
-            cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            cardEl.style.boxShadow = '0 0 0 2px var(--cc-gold-400), 0 0 16px rgba(212,175,55,0.4)';
-          }
-        }
-      }
-    }, 350);
+    if (trackInput) {
+      trackInput.value = cleanRef;
+    }
+  }
 
   // 4. View Switcher Helper for Staff / Public
   const btnToggleCrm = document.getElementById('btn-toggle-crm-view');
@@ -941,6 +917,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
+
+window.renderPipeline = renderPipeline;
+window.openLeadModal = openLeadModal;
 
 // Global Helpers for CRM views
 function showPublicEnquiryView() {

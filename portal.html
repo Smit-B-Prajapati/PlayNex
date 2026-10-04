@@ -44,6 +44,41 @@
       flex-wrap: wrap;
       gap: 1.5rem;
     }
+    .cc-modal-backdrop {
+      position: fixed !important;
+      inset: 0 !important;
+      background: rgba(8, 11, 16, 0.88) !important;
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+      z-index: 999999 !important;
+      display: none !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 1.5rem !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      transition: opacity 0.2s ease, visibility 0.2s ease !important;
+    }
+    .cc-modal-backdrop.is-open {
+      display: flex !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    .cc-modal-backdrop.is-open .cc-modal {
+      transform: scale(1) translateY(0) !important;
+    }
+    .cc-modal {
+      background: #0F172A !important;
+      border: 1px solid var(--cc-gold-500) !important;
+      border-radius: 16px !important;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(212,175,55,0.15) !important;
+      transform: scale(0.95) translateY(10px) !important;
+      transition: transform 0.2s ease !important;
+      max-height: 90vh !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
   </style>
 </head>
 <body>
@@ -67,10 +102,7 @@
           <li><a href="bookings.html" class="cc-nav-link">Courts</a></li>
           <li><a href="shop.html" class="cc-nav-link">Shop</a></li>
           <li><a href="pos.html" class="cc-nav-link">Bar POS</a></li>
-          <li><a href="crm.html" class="cc-nav-link">CRM</a></li>
-          <li><a href="members.html" class="cc-nav-link">Roster (Admin)</a></li>
-          <li><a href="portal.html" class="cc-nav-link is-active">Member Portal</a></li>
-          <li><a href="dashboard.html" class="cc-nav-link cc-text-gold" style="font-weight: 700;">Admin Dashboard</a></li>
+          <li><a href="crm.html" class="cc-nav-link">Enquiries</a></li>
         </ul>
       </nav>
 
@@ -93,19 +125,19 @@
           <span class="cc-eyebrow">Authenticated Self-Service Area</span>
           <h2 class="cc-heading-2" style="font-size: 1.5rem; margin-top: 4px;">Member Sign In</h2>
           <p class="cc-body-xs" style="color: var(--cc-text-muted); margin-top: 6px;">
-            Enter your Member ID, Registered Email, or Phone to securely access your personal club benefits and records.
+            Enter your Full Name and Phone Number to securely access your personal club benefits, court bookings, and order records.
           </p>
         </div>
 
         <form id="form-portal-login">
           <div class="cc-form-group">
-            <label class="cc-label" for="login-identifier">Member ID / Email *</label>
-            <input type="text" id="login-identifier" class="cc-input" placeholder="e.g. CC-MEM-00101 or david.vance@example.com" required>
+            <label class="cc-label" for="login-name">Full Name *</label>
+            <input type="text" id="login-name" class="cc-input" placeholder="e.g. David Vance" required>
           </div>
 
           <div class="cc-form-group">
-            <label class="cc-label" for="login-password">PIN / Password (Optional for Demo)</label>
-            <input type="password" id="login-password" class="cc-input" placeholder="••••••••">
+            <label class="cc-label" for="login-phone">Phone Number *</label>
+            <input type="tel" id="login-phone" class="cc-input" placeholder="e.g. +91 98234 11201 or 9823411201" required>
           </div>
 
           <button type="submit" class="cc-btn cc-btn-primary cc-btn-full cc-btn-pill" style="margin-top: 1.5rem; padding: 12px;">
@@ -114,10 +146,21 @@
         </form>
 
         <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.02); border: 1px dashed var(--cc-border-subtle); border-radius: var(--cc-radius-sm); font-size: 11px; color: var(--cc-text-muted);">
-          <strong style="color: var(--cc-gold-400); display: block; margin-bottom: 4px;">Quick Demo Accounts:</strong>
-          <div>&bull; Gold: <code style="color: var(--cc-text-primary);">CC-MEM-00101</code> (David Vance)</div>
-          <div>&bull; Silver: <code style="color: var(--cc-text-primary);">CC-MEM-00102</code> (Elena Rostova)</div>
-          <div>&bull; Junior: <code style="color: var(--cc-text-primary);">CC-MEM-00103</code> (Leo Chen)</div>
+          <strong style="color: var(--cc-gold-400); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">⚡ Quick 1-Click Demo Accounts:</strong>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; justify-content: space-between; padding: 6px 10px; width: 100%; text-align: left;" onclick="if(window.ClubMemberAuth) window.ClubMemberAuth.quickFillMember('David Vance', '+91 98234 11201');">
+              <span>★ <strong>David Vance</strong> (+91 98234 11201)</span>
+              <span class="cc-badge cc-badge-gold" style="font-size: 9px;">GOLD</span>
+            </button>
+            <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; justify-content: space-between; padding: 6px 10px; width: 100%; text-align: left;" onclick="if(window.ClubMemberAuth) window.ClubMemberAuth.quickFillMember('Elena Rostova', '+91 98450 77312');">
+              <span>◆ <strong>Elena Rostova</strong> (+91 98450 77312)</span>
+              <span class="cc-badge cc-badge-silver" style="font-size: 9px;">SILVER</span>
+            </button>
+            <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; justify-content: space-between; padding: 6px 10px; width: 100%; text-align: left;" onclick="if(window.ClubMemberAuth) window.ClubMemberAuth.quickFillMember('Leo Chen', '+91 97123 90814');">
+              <span>● <strong>Leo Chen</strong> (+91 97123 90814)</span>
+              <span class="cc-badge cc-badge-junior" style="font-size: 9px;">JUNIOR</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -139,7 +182,7 @@
           </p>
         </div>
 
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
           <div style="background: rgba(10, 14, 23, 0.7); padding: 12px 18px; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle); text-align: center;">
             <div style="font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase;">Validity Expiry</div>
             <div class="cc-text-mono" id="profile-expiry-date" style="font-size: 1.1rem; font-weight: 800; color: var(--cc-gold-400); margin-top: 2px;">2027-10-03</div>
@@ -147,6 +190,28 @@
           <div style="background: rgba(10, 14, 23, 0.7); padding: 12px 18px; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle); text-align: center;">
             <div style="font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase;">Active Privileges</div>
             <div style="font-size: 1.1rem; font-weight: 800; color: var(--cc-neon-green); margin-top: 2px;" id="profile-privileges-text">Full Access</div>
+          </div>
+          <!-- Action buttons for subscription lifecycle -->
+          <div id="profile-subscription-actions" style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-open-upgrade-modal" onclick="openUpgradeMembershipModal()">
+              ⭐ Upgrade Subscription
+            </button>
+            <button class="cc-btn cc-btn-secondary cc-btn-sm cc-btn-pill" id="btn-open-cancel-modal" style="border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5;" onclick="openCancelMembershipModal()">
+              🚫 Cancel Membership
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CANCELLATION NOTICE BANNER (Displayed if state == 'cancelled') -->
+      <div id="profile-cancelled-banner" style="display: none; background: rgba(220, 38, 38, 0.12); border: 1px solid #DC2626; border-radius: var(--cc-radius-md); padding: 1.25rem 1.5rem; margin-bottom: 2rem; color: #FFFFFF;">
+        <div style="display: flex; gap: 12px; align-items: flex-start;">
+          <span style="font-size: 24px; line-height: 1;">⚠️</span>
+          <div>
+            <strong style="color: #F87171; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">Membership Cancelled (No-Refund Policy Applied)</strong>
+            <p class="cc-body-xs" style="color: #E2E8F0; margin: 0; line-height: 1.5;">
+              Your membership has been terminated at your request. Under Champions Club's strict <strong>No-Refund Policy</strong>, all remaining validity days have been forfeited with ₹0.00 refund. Court bookings, pro shop discounts, and bar tab privileges are currently revoked.
+            </p>
           </div>
         </div>
       </div>
@@ -257,6 +322,241 @@
     </div>
 
   </main>
+
+  <!-- ==========================================
+       MODAL: CANCEL MEMBERSHIP (NO-REFUND POLICY)
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-cancel-membership" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 520px; width: 95%;">
+      <div class="cc-modal-header" style="border-bottom: 1px solid var(--cc-border-medium);">
+        <div>
+          <span class="cc-eyebrow" style="color: #EF4444;">Member Subscription Action</span>
+          <h3 class="cc-modal-title" style="color: #FFFFFF; font-size: 1.35rem;">Cancel Membership</h3>
+        </div>
+        <button class="cc-modal-close" onclick="closeCancelMembershipModal()" aria-label="Close dialog">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="cc-modal-body" style="padding: 1.5rem;">
+        
+        <!-- Member Summary -->
+        <div style="background: rgba(10, 14, 23, 0.6); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;" id="cancel-modal-member-name">Member Name</div>
+              <div class="cc-text-mono" style="font-size: 12px; color: var(--cc-gold-400);" id="cancel-modal-member-code">CC-MEM-00101</div>
+            </div>
+            <div style="text-align: right;">
+              <span class="cc-badge cc-badge-gold" id="cancel-modal-member-tier">GOLD TIER</span>
+              <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 4px;" id="cancel-modal-member-expiry">Valid until: 2027-10-03</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STRICT NO REFUND POLICY CALLOUT BOX -->
+        <div style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(153, 27, 27, 0.25)); border: 1px solid #DC2626; border-radius: var(--cc-radius-md); padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 4px 20px rgba(220, 38, 38, 0.15);">
+          <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 18px;">⚠️</span>
+            <strong style="color: #F87171; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--cc-font-display);">Strict No-Refund Policy Notice</strong>
+          </div>
+          <p class="cc-body-xs" style="color: #FEE2E2; margin: 0; line-height: 1.5; font-size: 12px;">
+            Champions Club operates under an absolute <strong>No-Refund Policy</strong> for all annual and term membership subscriptions. Terminating your membership will immediately forfeit all remaining validity days, revoke free/discounted court booking privileges, and cancel all pro shop and bar tab discounts. <strong>Zero refund (₹ 0.00)</strong> will be issued for any remaining subscription term.
+          </p>
+        </div>
+
+        <!-- Reason for Cancellation -->
+        <div class="cc-form-group" style="margin-bottom: 1rem;">
+          <label class="cc-label" for="cancel-reason-select" style="font-size: 12px;">Primary Reason for Cancellation *</label>
+          <select id="cancel-reason-select" class="cc-input" style="padding: 8px 12px;">
+            <option value="Relocation / Moving out of area">Relocation / Moving out of area</option>
+            <option value="Schedule & Time constraints">Schedule & Time constraints / Not playing often</option>
+            <option value="Medical / Injury / Physical health">Medical / Injury / Physical health</option>
+            <option value="Financial / Budgetary changes">Financial / Budgetary changes</option>
+            <option value="Other feedback">Other reason</option>
+          </select>
+        </div>
+
+        <!-- Feedback Notes -->
+        <div class="cc-form-group" style="margin-bottom: 1.25rem;">
+          <label class="cc-label" for="cancel-feedback-text" style="font-size: 12px;">Additional Feedback (Optional)</label>
+          <textarea id="cancel-feedback-text" class="cc-input" rows="2" placeholder="Tell us how we can improve our facilities or services..."></textarea>
+        </div>
+
+        <!-- Acknowledgment Checkbox -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--cc-border-medium); border-radius: var(--cc-radius-sm); padding: 12px; margin-bottom: 1rem;">
+          <label style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="cancel-policy-checkbox" style="margin-top: 3px; accent-color: #EF4444; width: 16px; height: 16px;">
+            <span style="font-size: 12px; color: #E2E8F0; line-height: 1.4;">
+              I have read, understood, and accept the <strong>No-Refund Policy</strong>. I confirm that cancelling immediately forfeits my remaining membership validity with ₹0.00 refund.
+            </span>
+          </label>
+        </div>
+
+      </div>
+
+      <div class="cc-modal-footer" style="display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--cc-border-medium); padding: 1rem 1.5rem;">
+        <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" onclick="closeCancelMembershipModal()">
+          Keep My Membership
+        </button>
+        <button type="button" class="cc-btn cc-btn-danger cc-btn-sm cc-btn-pill" id="btn-confirm-cancel-membership" onclick="confirmCancelMembership()">
+          Confirm Cancellation
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: UPGRADE SUBSCRIPTION (PRO-RATA CREDIT)
+       ========================================== -->
+  <div class="cc-modal-backdrop" id="modal-upgrade-membership" role="dialog" aria-modal="true">
+    <div class="cc-modal" style="max-width: 600px; width: 95%;">
+      <div class="cc-modal-header" style="border-bottom: 1px solid var(--cc-border-medium);">
+        <div>
+          <span class="cc-eyebrow" style="color: var(--cc-gold-400);">Instant Tier Upgrade</span>
+          <h3 class="cc-modal-title" style="color: #FFFFFF; font-size: 1.35rem;">Upgrade Subscription</h3>
+        </div>
+        <button class="cc-modal-close" onclick="closeUpgradeMembershipModal()" aria-label="Close dialog">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="cc-modal-body" style="padding: 1.5rem; max-height: 75vh; overflow-y: auto;">
+
+        <!-- STEP 1: CURRENT PLAN & PRO-RATA CALCULATION BOX -->
+        <div style="background: rgba(13, 19, 31, 0.85); border: 1px solid var(--cc-gold-500); border-radius: var(--cc-radius-md); padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
+          <span class="cc-eyebrow" style="color: var(--cc-gold-400); margin-bottom: 6px;">Current Subscription & Pro-Rata Credit</span>
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <div style="font-size: 1.1rem; font-weight: 800; color: #FFFFFF;" id="upgrade-current-plan-name">Silver Plan (₹ 14,000 / yr)</div>
+              <div style="font-size: 12px; color: var(--cc-text-muted); margin-top: 2px;">
+                Monthly Value: <strong class="cc-text-mono" style="color: var(--cc-gold-300);" id="upgrade-current-monthly-val">₹ 1,166.67 / mo</strong> (Fee &divide; 12)
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div class="cc-badge cc-badge-active" id="upgrade-remaining-months-badge">6 Months Remaining</div>
+              <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 4px;" id="upgrade-current-expiry-display">Expires: 2027-04-03</div>
+            </div>
+          </div>
+
+          <!-- Calculation Formula Explanation Box -->
+          <div style="background: rgba(212, 175, 55, 0.08); border: 1px dashed var(--cc-gold-500); border-radius: var(--cc-radius-sm); padding: 10px 14px; font-size: 12px; color: #F1F5F9;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>Unused Term Discount:</strong> (<span id="calc-formula-fee">₹14,000</span> &divide; 12) &times; <span id="calc-formula-months">6</span> mos</span>
+              <strong class="cc-text-mono" style="color: var(--cc-neon-green); font-size: 14px;" id="upgrade-discount-amount-display">- ₹ 7,000.00</strong>
+            </div>
+            <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 4px;">
+              Your remaining subscription value is credited 100% as a discount towards your upgraded plan.
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: SELECT UPGRADE TARGET PLAN -->
+        <div style="margin-bottom: 1.25rem;">
+          <label class="cc-label" style="font-size: 12px; margin-bottom: 8px;">Select Upgrade Target Plan *</label>
+          
+          <div style="display: flex; flex-direction: column; gap: 10px;" id="upgrade-plan-options-container">
+            
+            <!-- Option: GOLD PLAN -->
+            <label class="cc-upgrade-plan-card is-selected" id="card-upgrade-gold" style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.03); border: 2px solid var(--cc-gold-500); border-radius: var(--cc-radius-md); padding: 1rem; cursor: pointer; transition: all 0.2s ease;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <input type="radio" name="upgrade_target_plan" value="gold" checked onchange="selectUpgradeTargetPlan('gold')" style="accent-color: var(--cc-gold-500); width: 18px; height: 18px;">
+                <div>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <strong style="color: #FFFFFF; font-size: 15px;">Gold Membership</strong>
+                    <span class="cc-badge cc-badge-gold" style="font-size: 9px;">PREMIUM</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 2px;">
+                    Free Courts &bull; 15% Shop &amp; Bar &bull; Bar Tab Privilege &bull; 4 Guest Passes
+                  </div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div class="cc-text-mono" style="font-weight: 800; font-size: 15px; color: var(--cc-gold-400);">₹ 24,000 / yr</div>
+                <div style="font-size: 10px; color: var(--cc-neon-green);">1-Year Validity</div>
+              </div>
+            </label>
+
+            <!-- Option: SILVER PLAN -->
+            <label class="cc-upgrade-plan-card" id="card-upgrade-silver" style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--cc-border-medium); border-radius: var(--cc-radius-md); padding: 1rem; cursor: pointer; transition: all 0.2s ease;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <input type="radio" name="upgrade_target_plan" value="silver" onchange="selectUpgradeTargetPlan('silver')" style="accent-color: var(--cc-gold-500); width: 18px; height: 18px;">
+                <div>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <strong style="color: #FFFFFF; font-size: 15px;">Silver Membership</strong>
+                    <span class="cc-badge cc-badge-silver" style="font-size: 9px;">STANDARD</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--cc-text-muted); margin-top: 2px;">
+                    ₹ 300/hr Courts &bull; 10% Shop &amp; Bar Discounts &bull; 1 Guest Pass
+                  </div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div class="cc-text-mono" style="font-weight: 800; font-size: 15px; color: #E2E8F0;">₹ 14,000 / yr</div>
+                <div style="font-size: 10px; color: var(--cc-neon-green);">1-Year Validity</div>
+              </div>
+            </label>
+
+          </div>
+        </div>
+
+        <!-- STEP 3: FINANCIAL BREAKDOWN SUMMARY TABLE -->
+        <div style="background: rgba(10, 14, 23, 0.6); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 1.25rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--cc-text-secondary); margin-bottom: 6px;">
+            <span>New Plan Standard Fee:</span>
+            <span class="cc-text-mono" style="color: #FFFFFF;" id="summary-new-plan-fee">₹ 24,000.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--cc-text-secondary); margin-bottom: 6px;">
+            <span>Remaining Term Pro-Rata Credit:</span>
+            <span class="cc-text-mono" style="color: var(--cc-neon-green);" id="summary-prorata-credit">- ₹ 7,000.00</span>
+          </div>
+          <div style="height: 1px; background: var(--cc-border-medium); margin: 8px 0;"></div>
+          <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: #FFFFFF; align-items: center;">
+            <span>Net Payable Amount Today:</span>
+            <span class="cc-text-mono" style="color: var(--cc-gold-400); font-size: 1.25rem;" id="summary-net-payable">₹ 17,000.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--cc-text-muted); margin-top: 6px;">
+            <span>New Validity End Date:</span>
+            <span class="cc-text-mono" style="color: var(--cc-gold-300);" id="summary-new-expiry-date">2027-10-04 (1 Full Year)</span>
+          </div>
+        </div>
+
+        <!-- STEP 4: PAYMENT METHOD -->
+        <div class="cc-form-group" style="margin-bottom: 0;">
+          <label class="cc-label" style="font-size: 12px; margin-bottom: 6px;">Payment Method</label>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            <label style="background: rgba(255,255,255,0.04); border: 1px solid var(--cc-border-medium); border-radius: var(--cc-radius-sm); padding: 8px; text-align: center; cursor: pointer; font-size: 11px; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <input type="radio" name="upgrade_payment_method" value="upi" checked style="accent-color: var(--cc-gold-500);">
+              <span>📱 Instant UPI / QR</span>
+            </label>
+            <label style="background: rgba(255,255,255,0.04); border: 1px solid var(--cc-border-medium); border-radius: var(--cc-radius-sm); padding: 8px; text-align: center; cursor: pointer; font-size: 11px; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <input type="radio" name="upgrade_payment_method" value="card" style="accent-color: var(--cc-gold-500);">
+              <span>💳 Credit / Debit Card</span>
+            </label>
+            <label style="background: rgba(255,255,255,0.04); border: 1px solid var(--cc-border-medium); border-radius: var(--cc-radius-sm); padding: 8px; text-align: center; cursor: pointer; font-size: 11px; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <input type="radio" name="upgrade_payment_method" value="netbanking" style="accent-color: var(--cc-gold-500);">
+              <span>🏦 Net Banking</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="cc-modal-footer" style="display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--cc-border-medium); padding: 1rem 1.5rem;">
+        <button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" onclick="closeUpgradeMembershipModal()">
+          Cancel
+        </button>
+        <button type="button" class="cc-btn cc-btn-primary cc-btn-sm cc-btn-pill" id="btn-confirm-upgrade-submit" onclick="confirmUpgradeMembership()">
+          Confirm &amp; Upgrade Plan &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script src="js/club_data_store.js"></script>
