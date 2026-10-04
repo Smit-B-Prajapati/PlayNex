@@ -829,17 +829,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Real Backend ORM Creation
         let newRef = `CC-BK-${String(bookingsData.length + 1).padStart(4, '0')}`;
         if (window.ClubAPI) {
+          const profile = isMember ? getCurrentMember() : null;
           const apiRes = await window.ClubAPI.createBooking({
             court_id: selectedCourtId,
             start_time: startDateTimeStr,
             duration_hours: selectedDuration,
             booking_type: isMember ? 'member' : 'walkin',
             member_id: isMember ? memberId : null,
+            member_name: isMember && profile ? profile.name : null,
+            member_plan: isMember && profile ? profile.plan : null,
             walkin_name: !isMember ? playerName : null,
             is_social_play: isSocial
           });
-          if (apiRes && apiRes.reference) {
-            newRef = apiRes.reference;
+          if (apiRes && (apiRes.reference || apiRes.booking_id || apiRes.id)) {
+            newRef = apiRes.reference || apiRes.booking_id || apiRes.id;
           }
         }
 
