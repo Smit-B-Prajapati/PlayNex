@@ -176,25 +176,6 @@
         }
       ],
       "notes": "Silver Tier member."
-    },
-    {
-      "id": "CC-MEM-00109",
-      "member_code": "CC-MEM-00109",
-      "name": "Madhu",
-      "phone": "+91 9999922222",
-      "email": "madhu@example.com",
-      "plan": "gold",
-      "startDate": "2026-10-04",
-      "endDate": "2027-10-04",
-      "state": "active",
-      "history": [
-        {
-          "timestamp": "2026-10-04 03:19",
-          "type": "signup",
-          "desc": "Authenticated via mobile verification (+91 9999922222)."
-        }
-      ],
-      "notes": "Authenticated member profile."
     }
   ],
   "cc_courts": [
@@ -254,7 +235,7 @@
       "name": "Pro Tour Carbon Tennis Racket",
       "category": "rackets",
       "price": 8500,
-      "stock": 12,
+      "stock": 10,
       "minAlert": 4,
       "desc": "High-modulus graphite frame with synthetic gut stringing.",
       "image": "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=400&q=80"
@@ -276,7 +257,7 @@
       "name": "Tournament Tennis Balls (Can of 3)",
       "category": "balls",
       "price": 450,
-      "stock": 65,
+      "stock": 59,
       "minAlert": 15,
       "desc": "ITF approved championship extra-duty felt tennis balls.",
       "image": "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=400&q=80"
@@ -328,7 +309,7 @@
   ],
   "cc_shop_orders": [
     {
-      "id": "CC-SO-0006",
+      "id": "CC-SO-0008",
       "memberId": "GUEST",
       "channel": "counter",
       "customer": "Inventory Test Buyer",
@@ -347,41 +328,79 @@
       "date": "2026-10-04"
     },
     {
-      "id": "CC-SO-0005",
+      "id": "CC-SO-0007",
       "memberId": "GUEST",
       "channel": "counter",
-      "customer": "Inventory Test Buyer",
+      "customer": "Walk-in Member",
       "fulfillment": "Immediate Counter Handover",
+      "items": [
+        {
+          "id": "p3",
+          "sku": "CC-BAL-01",
+          "name": "Tournament Tennis Balls (Can of 3)",
+          "price": 450.0,
+          "qty": 3
+        }
+      ],
+      "total": 1350.0,
+      "state": "completed",
+      "date": "2026-10-04"
+    },
+    {
+      "id": "CC-SO-0006",
+      "memberId": "ABC",
+      "channel": "online",
+      "customer": "ABC",
+      "fulfillment": "Collect at Club (Click & Collect)",
       "items": [
         {
           "id": "p1",
           "sku": "CC-RCK-01",
           "name": "Pro Tour Carbon Tennis Racket",
-          "price": 8500,
-          "qty": 2
+          "price": 8500.0,
+          "qty": 1
         }
       ],
-      "total": 17000,
-      "state": "cancelled",
+      "total": 8500.0,
+      "state": "confirmed",
+      "date": "2026-10-04"
+    },
+    {
+      "id": "CC-SO-0005",
+      "memberId": "GUEST",
+      "channel": "counter",
+      "customer": "Walk-in Member",
+      "fulfillment": "Immediate Counter Handover",
+      "items": [
+        {
+          "id": "p3",
+          "sku": "CC-BAL-01",
+          "name": "Tournament Tennis Balls (Can of 3)",
+          "price": 450.0,
+          "qty": 3
+        }
+      ],
+      "total": 1350.0,
+      "state": "completed",
       "date": "2026-10-04"
     },
     {
       "id": "CC-SO-0004",
-      "memberId": "GUEST",
-      "channel": "counter",
-      "customer": "Inventory Test Buyer",
-      "fulfillment": "Immediate Counter Handover",
+      "memberId": "ABC",
+      "channel": "online",
+      "customer": "ABC",
+      "fulfillment": "Collect at Club (Click & Collect)",
       "items": [
         {
           "id": "p1",
           "sku": "CC-RCK-01",
           "name": "Pro Tour Carbon Tennis Racket",
-          "price": 8500,
-          "qty": 2
+          "price": 8500.0,
+          "qty": 1
         }
       ],
-      "total": 17000,
-      "state": "cancelled",
+      "total": 8500.0,
+      "state": "confirmed",
       "date": "2026-10-04"
     },
     {
@@ -395,11 +414,11 @@
           "id": "p1",
           "sku": "CC-RCK-01",
           "name": "Pro Tour Carbon Tennis Racket",
-          "price": 8500,
+          "price": 8500.0,
           "qty": 2
         }
       ],
-      "total": 17000,
+      "total": 17000.0,
       "state": "cancelled",
       "date": "2026-10-04"
     },
@@ -522,27 +541,27 @@
     }
   ],
   "cc_bar_revenue": {
-    "cash": 240,
-    "card": 450,
-    "upi": 320
+    "cash": 240.0,
+    "card": 450.0,
+    "upi": 320.0
   },
   "cc_leads": [
     {
-      "id": "CC-ENQ-0005",
-      "rawId": "CC-ENQ-0005",
+      "id": "CC-ENQ-0003",
+      "rawId": "CC-ENQ-0003",
       "name": "Aanya Sharma",
       "phone": "9999988888",
       "email": "aanya.sharma@example.com",
       "source": "website",
-      "plan": "gold",
+      "plan": "silver",
       "message": "Interested in weekend tennis memberships.",
       "stage": "contacted",
       "staff": "Pooja Patel (Membership Advisor)",
       "quoteSent": false,
-      "quoteAmount": 24000,
+      "quoteAmount": 14000,
       "followups": [
         {
-          "time": "2026-10-04 09:07",
+          "time": "2026-10-04 09:26",
           "note": "Website enquiry registered from website. Stage: New Enquiry."
         },
         {
@@ -550,45 +569,20 @@
           "note": "Staff reached out to visitor via phone/WhatsApp (Pooja Patel (Membership Advisor))."
         },
         {
-          "time": "2026-10-04 09:07",
+          "time": "2026-10-04 09:26",
           "note": "Repeat enquiry received via website. Note: Checking back regarding court timings. Updated interest to SILVER plan."
-        },
-        {
-          "time": "2026-10-04 09:08",
-          "note": "Repeat enquiry received via website. Note: Interested in weekend tennis memberships. Updated interest to GOLD plan."
-        }
-      ],
-      "memberId": null
-    },
-    {
-      "id": "CC-ENQ-0004",
-      "rawId": "CC-ENQ-0004",
-      "name": "Madhu",
-      "phone": "9999922222",
-      "email": "madhu@gmail.com",
-      "source": "website",
-      "plan": "gold",
-      "message": "",
-      "stage": "new",
-      "staff": "Pooja Patel (Membership Advisor)",
-      "quoteSent": false,
-      "quoteAmount": 24000,
-      "followups": [
-        {
-          "time": "2026-10-03 20:40",
-          "note": "Website enquiry registered from website. Stage: New Enquiry."
         }
       ],
       "memberId": null
     },
     {
       "id": "CC-ENQ-0001",
-      "rawId": "CC-ENQ-0001",
       "name": "Siddharth Rao",
       "phone": "+91 99001 22334",
       "email": "siddharth.rao@example.com",
-      "source": "website",
       "plan": "gold",
+      "source": "website",
+      "sport": "tennis",
       "message": "Interested in Gold membership and court availability for weekend tennis.",
       "stage": "converted",
       "staff": "Pooja Patel (Membership Advisor)",
@@ -608,12 +602,12 @@
     },
     {
       "id": "CC-ENQ-0002",
-      "rawId": "CC-ENQ-0002",
       "name": "Ananya Deshmukh",
       "phone": "+91 98210 44556",
       "email": "ananya.d@example.com",
-      "source": "website",
       "plan": "silver",
+      "source": "website",
+      "sport": "badminton",
       "message": "Inquiring about badminton court slots after office hours (7 PM).",
       "stage": "contacted",
       "staff": "Rohan Verma (Front Desk Lead)",
@@ -629,123 +623,6 @@
     }
   ],
   "cc_bookings": [
-    {
-      "id": "CC-BK-0009",
-      "courtId": "1",
-      "courtName": "Tennis Court 1 (Clay)",
-      "sport": "tennis",
-      "date": "2026-12-22",
-      "startTime": "06:00",
-      "endTime": "07:00",
-      "duration": "1 Hour",
-      "durationHours": 1,
-      "bookingType": "member",
-      "memberId": "CC-MEM-00105",
-      "playerName": "Siddharth Rao (GOLD)",
-      "rateApplied": "\u20b9 0.00 (Free)",
-      "isSocial": false,
-      "state": "confirmed"
-    },
-    {
-      "id": "CC-BK-0008",
-      "courtId": "5",
-      "courtName": "Badminton Court 1 (Indoor Mat)",
-      "sport": "badminton",
-      "date": "2026-12-22",
-      "startTime": "14:00",
-      "endTime": "15:00",
-      "duration": "1 Hour",
-      "durationHours": 1,
-      "bookingType": "walkin",
-      "memberId": null,
-      "playerName": "Novak Djokovic",
-      "rateApplied": "\u20b9 400.00",
-      "isSocial": false,
-      "state": "confirmed"
-    },
-    {
-      "id": "CC-BK-0007",
-      "courtId": "3",
-      "courtName": "Cricket Pitch & Net 1 (Turf)",
-      "sport": "cricket",
-      "date": "2026-12-22",
-      "startTime": "09:00",
-      "endTime": "12:00",
-      "duration": "3 Hours",
-      "durationHours": 3,
-      "bookingType": "member",
-      "memberId": "CC-MEM-00101",
-      "playerName": "David Vance (GOLD)",
-      "rateApplied": "\u20b9 0.00 (Free)",
-      "isSocial": false,
-      "state": "confirmed"
-    },
-    {
-      "id": "CC-BK-0006",
-      "courtId": "2",
-      "courtName": "Tennis Court 2 (Hard)",
-      "sport": "tennis",
-      "date": "2026-12-22",
-      "startTime": "07:00",
-      "endTime": "09:00",
-      "duration": "2 Hours",
-      "durationHours": 2,
-      "bookingType": "member",
-      "memberId": "CC-MEM-00102",
-      "playerName": "Elena Rostova (SILVER)",
-      "rateApplied": "\u20b9 600.00",
-      "isSocial": false,
-      "state": "confirmed"
-    },
-    {
-      "id": "CC-BK-0005",
-      "courtId": "1",
-      "courtName": "Tennis Court 1 (Clay)",
-      "sport": "tennis",
-      "date": "2026-12-22",
-      "startTime": "06:00",
-      "endTime": "07:00",
-      "duration": "1 Hour",
-      "durationHours": 1,
-      "bookingType": "member",
-      "memberId": "CC-MEM-00103",
-      "playerName": "Leo Chen (JUNIOR)",
-      "rateApplied": "\u20b9 200.00",
-      "isSocial": false,
-      "state": "cancelled"
-    },
-    {
-      "id": "CC-BK-0004",
-      "courtId": "1",
-      "courtName": "Tennis Court 1 (Clay)",
-      "sport": "tennis",
-      "date": "2026-10-03",
-      "startTime": "06:00",
-      "endTime": "07:00",
-      "durationHours": 1,
-      "bookingType": "member",
-      "memberId": "CC-MEM-00102",
-      "playerName": "Elena Rostova (SILVER)",
-      "rateApplied": "\u20b9 300.00",
-      "isSocial": true,
-      "state": "confirmed"
-    },
-    {
-      "id": "CC-BK-0003",
-      "courtId": "1",
-      "courtName": "Tennis Court 1 (Clay)",
-      "sport": "tennis",
-      "date": "2026-10-03",
-      "startTime": "06:00",
-      "endTime": "07:00",
-      "durationHours": 1,
-      "bookingType": "member",
-      "memberId": "CC-MEM-00101",
-      "playerName": "David Vance (GOLD)",
-      "rateApplied": "\u20b9 0.00 (Free)",
-      "isSocial": true,
-      "state": "confirmed"
-    },
     {
       "id": "CC-BK-0001",
       "courtId": "1",

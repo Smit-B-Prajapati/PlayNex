@@ -9,12 +9,14 @@ import os
 import sys
 import json
 import urllib.parse
+import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 
 PORT = 8000
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(BASE_DIR, 'data', 'club_store.json')
+STORE_LOCK = threading.Lock()
 
 DEFAULT_STORE = {
     "cc_members": [
@@ -364,36 +366,51 @@ DEFAULT_STORE = {
     ]
 }
 
-def load_store():
-    store = {}
-    if os.path.exists(DATA_FILE):
-        try:
-            with open(DATA_FILE, 'r', encoding='utf-8') as f:
-                store = json.load(f)
-        except Exception as e:
-            print(f"[Store] Error reading {DATA_FILE}: {e}")
-            store = {}
-    
-    modified = False
-    for k, v in DEFAULT_STORE.items():
-        if k not in store or (isinstance(store[k], list) and len(store[k]) == 0 and len(v) > 0):
-            store[k] = v
-            modified = True
-            
-    if modified:
-        save_store(store)
-
-    return store
-
-def save_store(store_data):
+def _raw_save_store(store_data):
     os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
     try:
-        with open(DATA_FILE, 'w', encoding='utf-8') as f:
+        tmp_file = DATA_FILE + '.tmp'
+        with open(tmp_file, 'w', encoding='utf-8') as f:
             json.dump(store_data, f, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        if os.path.exists(tmp_file):
+            if os.path.exists(DATA_FILE):
+                os.replace(tmp_file, DATA_FILE)
+            else:
+                os.rename(tmp_file, DATA_FILE)
         return True
     except Exception as e:
         print(f"[Store] Error writing {DATA_FILE}: {e}")
         return False
+
+def save_store(store_data):
+    with STORE_LOCK:
+        return _raw_save_store(store_data)
+
+def load_store():
+    with STORE_LOCK:
+        store = {}
+        if os.path.exists(DATA_FILE):
+            try:
+                with open(DATA_FILE, 'r', encoding='utf-8') as f:
+                    content = f.read().strip()
+                    if content:
+                        store = json.loads(content)
+            except Exception as e:
+                print(f"[Store] Error reading {DATA_FILE}: {e}")
+                store = {}
+        
+        modified = False
+        for k, v in DEFAULT_STORE.items():
+            if k not in store:
+                store[k] = v
+                modified = True
+                
+        if modified:
+            _raw_save_store(store)
+
+        return store
 
 class ClubRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -838,10 +855,16 @@ class ClubRequestHandler(SimpleHTTPRequestHandler):
 
             # Check member discount
             discount_percent = 0
-            if member_id:
+            check_name = (customer_name or '').strip().lower()
+            check_id = str(member_id or '').strip().lower()
+            if check_id or check_name:
                 members = store.get('cc_members', [])
                 for m in members:
-                    if str(m.get('id')) == str(member_id) or str(m.get('member_code')) == str(member_id):
+                    m_id = str(m.get('id', '')).strip().lower()
+                    m_code = str(m.get('member_code', '')).strip().lower()
+                    m_name = str(m.get('name', '')).strip().lower()
+                    if (check_id and (m_id == check_id or m_code == check_id or m_name == check_id)) or \
+                       (check_name and m_name == check_name):
                         plan = (m.get('plan') or 'gold').lower()
                         discount_percent = 15 if plan == 'gold' else 10 if plan == 'silver' else 15
                         break
@@ -851,7 +874,7 @@ class ClubRequestHandler(SimpleHTTPRequestHandler):
 
             order_num = len(orders) + 1
             order_ref = f"CC-SO-{str(order_num).zfill(4)}"
-            fulfillment_label = 'Immediate Counter Handover' if channel == 'counter' else f"Home Delivery ({deliveryAddress})" if fulfillment == 'delivery' else 'Collect at Club (Click & Collect)'
+            fulfillment_label = 'Immediate Counter Handover' if channel == 'counter' else (f"Home Delivery ({delivery_address})" if (fulfillment == 'delivery' and delivery_address) else ('Home Delivery' if fulfillment == 'delivery' else 'Collect at Club (Click & Collect)'))
 
             new_order = {
                 'id': order_ref,
