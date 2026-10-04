@@ -234,9 +234,8 @@ const ClubAdminAuth = (function() {
     if (navUl) {
       const isDashboard = typeof window !== 'undefined' && window.location && window.location.pathname.toLowerCase().includes('dashboard.html');
       if (isDashboard) {
-        // On dashboard.html, center navigation displays ADMIN DASHBOARD indicator
+        // On dashboard.html, center navigation is kept clean and empty
         navUl.innerHTML = '';
-        navUl.innerHTML = `<li><a href="dashboard.html" class="cc-nav-link is-active">ADMIN DASHBOARD</a></li>`;
       } else {
         // On public / member / admin pages: Home, Courts, Shop, Cafe/Bar, Enquiries (NO Admin Dashboard button in public navbar)
         navUl.innerHTML = '';

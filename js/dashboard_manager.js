@@ -135,6 +135,12 @@
     const invoices = window.ClubDataStore ? window.ClubDataStore.getInvoices() : [];
     const planBenefits = window.ClubDataStore ? window.ClubDataStore.getPlanBenefits() : {};
 
+    // Update Dynamic Date to Today
+    const dateEl = document.getElementById('dashboard-current-date');
+    if (dateEl) {
+      dateEl.textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
     // Update Tab Header Badges
     updateTabBadges({ members, bookings, products, leads, leaves });
 
@@ -408,13 +414,13 @@
           </button>
         </div>
 
-        <div class="cc-card cc-card-glass" style="border-top: 3px solid var(--cc-silver-400); padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="cc-card cc-card-glass" style="border-top: 3px solid #DB2777; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span class="cc-badge cc-badge-silver">◆ SILVER TIER</span>
-              <strong style="color: var(--cc-silver-300); font-size: 14px;">${silverCount} Members</strong>
+              <span class="cc-badge" style="background: rgba(219, 39, 119, 0.15); color: #DB2777; border: 1px solid rgba(219, 39, 119, 0.3);">◆ SILVER TIER</span>
+              <strong style="color: #DB2777; font-size: 14px;">${silverCount} Members</strong>
             </div>
-            <div style="font-size: 1.4rem; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;" id="disp-tier-fee-silver">
+            <div style="font-size: 1.4rem; font-weight: 800; color: #DB2777; margin-bottom: 6px;" id="disp-tier-fee-silver">
               ${formatCurrency(plans.silver.fee || 14000)} <span style="font-size: 11px; font-weight: normal; color: var(--cc-text-muted);">/ year</span>
             </div>
             <ul style="font-size: 11px; color: var(--cc-text-secondary); line-height: 1.6; padding-left: 14px; margin: 0 0 14px;">
@@ -424,7 +430,7 @@
               <li>Annual Club Championship Access</li>
             </ul>
           </div>
-          <button class="cc-btn cc-btn-secondary cc-btn-sm" style="width: 100%; font-size: 11px; padding: 4px 8px; border-color: rgba(148,163,184,0.4); color: #FFFFFF;" onclick="openPlanConfigModal()">
+          <button class="cc-btn cc-btn-secondary cc-btn-sm" style="width: 100%; font-size: 11px; padding: 4px 8px; border-color: rgba(219, 39, 119, 0.4); color: #DB2777;" onclick="openPlanConfigModal()">
             ✏️ Edit Silver Pricing
           </button>
         </div>
