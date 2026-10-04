@@ -493,17 +493,17 @@
 
           <!-- Tax Overview Cards -->
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 20px;">
-            <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-subtle); padding: 16px; border-radius: var(--cc-radius-md);">
+            <div style="background: var(--cc-bg-surface); border: 1px solid var(--cc-border-subtle); padding: 16px; border-radius: var(--cc-radius-md);">
               <span class="cc-eyebrow">Gross Receipts</span>
               <div class="cc-text-mono" id="tax-gross-rev" style="font-size: 1.6rem; font-weight: 800; color: var(--cc-gold-400); margin-top: 4px;">₹ 11,010.00</div>
               <span class="cc-body-xs" style="color: var(--cc-text-muted);">Recorded transactions</span>
             </div>
-            <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-subtle); padding: 16px; border-radius: var(--cc-radius-md);">
+            <div style="background: var(--cc-bg-surface); border: 1px solid var(--cc-border-subtle); padding: 16px; border-radius: var(--cc-radius-md);">
               <span class="cc-eyebrow">Taxable Base Amount</span>
-              <div class="cc-text-mono" id="tax-taxable-base" style="font-size: 1.6rem; font-weight: 800; color: #FFFFFF; margin-top: 4px;">₹ 9,330.51</div>
+              <div class="cc-text-mono" id="tax-taxable-base" style="font-size: 1.6rem; font-weight: 800; color: var(--cc-text-primary); margin-top: 4px;">₹ 9,330.51</div>
               <span class="cc-body-xs" style="color: var(--cc-text-muted);">Net of 18% GST</span>
             </div>
-            <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid rgba(212, 175, 55, 0.4); padding: 16px; border-radius: var(--cc-radius-md);">
+            <div style="background: var(--cc-bg-surface); border: 1px solid rgba(212, 175, 55, 0.4); padding: 16px; border-radius: var(--cc-radius-md);">
               <span class="cc-eyebrow" style="color: var(--cc-gold-400);">GST 18% Tax Collected</span>
               <div class="cc-text-mono" id="tax-gst-total" style="font-size: 1.6rem; font-weight: 800; color: var(--cc-neon-green); margin-top: 4px;">₹ 1,679.49</div>
               <span class="cc-body-xs" style="color: var(--cc-text-muted);">Payable to government</span>
@@ -704,19 +704,19 @@
 
           <!-- Invoice Summary Cards -->
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
-            <div style="background: rgba(14, 19, 31, 0.7); border: 1px solid var(--cc-border-subtle); padding: 14px; border-radius: var(--cc-radius-md);">
+            <div style="background: var(--cc-bg-surface); border: 1px solid var(--cc-border-subtle); padding: 14px; border-radius: var(--cc-radius-md);">
               <span class="cc-eyebrow">Total Invoiced</span>
               <div class="cc-text-mono" id="inv-kpi-total" style="font-size: 1.4rem; font-weight: 800; color: var(--cc-gold-400); margin-top: 4px;">₹ 1,22,720.00</div>
             </div>
-            <div style="background: rgba(14, 19, 31, 0.7); border: 1px solid rgba(0, 229, 153, 0.3); padding: 14px; border-radius: var(--cc-radius-md);">
+            <div style="background: var(--cc-bg-surface); border: 1px solid rgba(0, 229, 153, 0.3); padding: 14px; border-radius: var(--cc-radius-md);">
               <span class="cc-eyebrow" style="color: var(--cc-neon-green);">Paid &amp; Cleared</span>
               <div class="cc-text-mono" id="inv-kpi-paid" style="font-size: 1.4rem; font-weight: 800; color: var(--cc-neon-green); margin-top: 4px;">₹ 87,320.00</div>
             </div>
-            <div style="background: rgba(14, 19, 31, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); padding: 14px; border-radius: var(--cc-radius-md);">
+            <div style="background: var(--cc-bg-surface); border: 1px solid rgba(245, 158, 11, 0.3); padding: 14px; border-radius: var(--cc-radius-md);">
               <span class="cc-eyebrow" style="color: var(--cc-amber);">Pending Payment</span>
               <div class="cc-text-mono" id="inv-kpi-pending" style="font-size: 1.4rem; font-weight: 800; color: var(--cc-amber); margin-top: 4px;">₹ 21,240.00</div>
             </div>
-            <div style="background: rgba(14, 19, 31, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); padding: 14px; border-radius: var(--cc-radius-md);">
+            <div style="background: var(--cc-bg-surface); border: 1px solid rgba(239, 68, 68, 0.3); padding: 14px; border-radius: var(--cc-radius-md);">
               <span class="cc-eyebrow" style="color: #fca5a5;">Overdue</span>
               <div class="cc-text-mono" id="inv-kpi-overdue" style="font-size: 1.4rem; font-weight: 800; color: #ef4444; margin-top: 4px;">₹ 14,160.00</div>
             </div>
@@ -765,7 +765,7 @@
           </div>
 
           <!-- Payroll Summary -->
-          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(14, 19, 31, 0.7); border: 1px solid var(--cc-border-subtle); padding: 14px 20px; border-radius: var(--cc-radius-md); margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; background: var(--cc-bg-surface); border: 1px solid var(--cc-border-subtle); padding: 14px 20px; border-radius: var(--cc-radius-md); margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
             <div>
               <span class="cc-eyebrow">Monthly Club Payroll Obligation</span>
               <div class="cc-text-mono" id="emp-payroll-total" style="font-size: 1.6rem; font-weight: 800; color: var(--cc-gold-400); margin-top: 2px;">
@@ -922,12 +922,12 @@
           </div>
 
           <!-- MEMBER DETAILS -->
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; background: rgba(14, 19, 31, 0.6); padding: 12px 16px; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle); margin-bottom: 1.25rem; font-size: 13px;">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; background: var(--cc-bg-surface); padding: 12px 16px; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle); margin-bottom: 1.25rem; font-size: 13px;">
             <div>
-              <span style="color: var(--cc-text-muted);">Phone:</span> <strong id="m360-phone" style="color: #FFF;">-</strong>
+              <span style="color: var(--cc-text-muted);">Phone:</span> <strong id="m360-phone" style="color: var(--cc-text-primary);">-</strong>
             </div>
             <div>
-              <span style="color: var(--cc-text-muted);">Email:</span> <strong id="m360-email" style="color: #FFF;">-</strong>
+              <span style="color: var(--cc-text-muted);">Email:</span> <strong id="m360-email" style="color: var(--cc-text-primary);">-</strong>
             </div>
             <div>
               <span style="color: var(--cc-text-muted);">Court Rate:</span> <strong id="m360-court-rate" style="color: var(--cc-neon-green);">Free</strong>
@@ -1182,7 +1182,7 @@
               <div class="cc-form-group">
                 <label class="cc-label" for="qadd-prod-image">Product Image URL</label>
                 <div style="display: flex; gap: 12px; align-items: flex-start;">
-                  <div style="width: 64px; height: 64px; min-width: 64px; border-radius: 8px; background: rgba(10, 14, 23, 0.85); border: 1px solid rgba(212, 175, 55, 0.35); display: flex; align-items: center; justify-content: center; overflow: hidden;" id="qadd-prod-preview-box">
+                  <div style="width: 64px; height: 64px; min-width: 64px; border-radius: 8px; background: var(--cc-bg-primary); border: 1px solid rgba(212, 175, 55, 0.35); display: flex; align-items: center; justify-content: center; overflow: hidden;" id="qadd-prod-preview-box">
                     <span id="qadd-prod-preview-placeholder" style="font-size: 22px; color: var(--cc-text-muted);">📷</span>
                     <img id="qadd-prod-preview-img" src="" alt="Preview" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                   </div>
@@ -1492,7 +1492,7 @@
             <div class="cc-form-group">
               <label class="cc-label" for="prod-image">Product Image URL</label>
               <div style="display: flex; gap: 12px; align-items: flex-start;">
-                <div style="width: 64px; height: 64px; min-width: 64px; border-radius: 8px; background: rgba(10, 14, 23, 0.85); border: 1px solid rgba(212, 175, 55, 0.35); display: flex; align-items: center; justify-content: center; overflow: hidden;" id="dash-prod-preview-box">
+                <div style="width: 64px; height: 64px; min-width: 64px; border-radius: 8px; background: var(--cc-bg-primary); border: 1px solid rgba(212, 175, 55, 0.35); display: flex; align-items: center; justify-content: center; overflow: hidden;" id="dash-prod-preview-box">
                   <span id="dash-prod-preview-placeholder" style="font-size: 22px; color: var(--cc-text-muted);">📷</span>
                   <img id="dash-prod-preview-img" src="" alt="Preview" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                 </div>
@@ -1583,7 +1583,7 @@
                 </select>
               </div>
             </div>
-            <div style="background: rgba(14, 19, 31, 0.8); border: 1px solid var(--cc-border-subtle); padding: 10px 14px; border-radius: var(--cc-radius-sm); font-size: 13px;">
+            <div style="background: var(--cc-bg-surface); border: 1px solid var(--cc-border-subtle); padding: 10px 14px; border-radius: var(--cc-radius-sm); font-size: 13px;">
               <span>GST (18%): <strong id="inv-tax-preview">₹ 9,000.00</strong> &bull; Total: <strong class="cc-text-mono" id="inv-total-preview" style="color: var(--cc-gold-400);">₹ 59,000.00</strong></span>
             </div>
           </div>
@@ -1709,10 +1709,10 @@
           <button class="cc-modal-close" onclick="closeModal('modal-lead-detail')">&times;</button>
         </div>
         <div class="cc-modal-body" style="max-height: 70vh; overflow-y: auto;">
-          <div style="background: rgba(14, 19, 31, 0.6); padding: 12px 16px; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle); margin-bottom: 12px; font-size: 13px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="background: var(--cc-bg-surface); padding: 12px 16px; border-radius: var(--cc-radius-md); border: 1px solid var(--cc-border-subtle); margin-bottom: 12px; font-size: 13px; display: flex; flex-direction: column; gap: 6px;">
             <div style="display: flex; justify-content: space-between;">
               <span style="color: var(--cc-text-muted);">Contact:</span>
-              <strong id="crm-modal-contact" style="color: #FFF;">-</strong>
+              <strong id="crm-modal-contact" style="color: var(--cc-text-primary);">-</strong>
             </div>
             <div style="display: flex; justify-content: space-between;">
               <span style="color: var(--cc-text-muted);">Interested Tier:</span>

@@ -32,7 +32,8 @@ function postJson(path, payload) {
 
 async function runTests() {
   console.log('--- STARTING COURT BOOKING API AUDIT ---');
-  const testDate = '2026-10-05'; // Use a fresh date for test suite
+  const today = new Date();
+  const testDate = `2026-12-${String(Math.floor(Math.random() * 20) + 10).padStart(2, '0')}`; // Fresh random date for each test run
 
   // Test 1: Book with Leo Chen (CC-MEM-00103) - 1 Hour Junior plan
   const res1 = await postJson('/champions_club/bookings/create', {

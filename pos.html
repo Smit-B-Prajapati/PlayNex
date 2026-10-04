@@ -31,9 +31,9 @@
       gap: 1rem;
     }
     .cc-menu-item-card {
-      background: rgba(18, 25, 41, 0.7);
+      background: var(--cc-bg-surface);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--cc-border-medium);
       border-radius: var(--cc-radius-lg);
       padding: 0.9rem;
       cursor: pointer;
@@ -46,11 +46,11 @@
     .cc-menu-item-card:hover {
       border-color: rgba(212, 175, 55, 0.5);
       transform: translateY(-3px);
-      background: rgba(26, 36, 58, 0.85);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), 0 0 16px rgba(212, 175, 55, 0.15);
+      background: var(--cc-bg-card);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2), 0 0 16px rgba(212, 175, 55, 0.15);
     }
     .cc-table-pill-btn {
-      background: rgba(22, 29, 46, 0.6);
+      background: var(--cc-bg-surface);
       border: 1px solid var(--cc-border-medium);
       padding: 8px 14px;
       border-radius: var(--cc-radius-md);
@@ -74,7 +74,7 @@
       color: #FCA5A5;
     }
     .cc-ticket-box {
-      background: rgba(14, 19, 31, 0.95);
+      background: var(--cc-bg-surface);
       border: 1px solid var(--cc-border-highlight);
       border-radius: var(--cc-radius-xl);
       padding: var(--cc-space-6);
@@ -84,13 +84,13 @@
     
     /* Ultra-Premium Filter Pills */
     .cc-filter-pill-container {
-      background: rgba(14, 19, 31, 0.7);
+      background: var(--cc-bg-surface);
       backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--cc-border-medium);
       border-radius: var(--cc-radius-xl);
       padding: 0.75rem 1rem;
       margin-bottom: 1.25rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
     .cc-filter-pill-row {
       display: flex;
@@ -99,8 +99,8 @@
       align-items: center;
     }
     .cc-filter-pill {
-      background: rgba(22, 29, 46, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--cc-bg-secondary);
+      border: 1px solid var(--cc-border-medium);
       border-radius: 9999px;
       padding: 7px 14px;
       color: var(--cc-text-secondary);
@@ -454,7 +454,7 @@
           </div>
         </div>
 
-        <div style="background: rgba(22, 29, 46, 0.8); border: 1px solid var(--cc-gold-500); border-radius: var(--cc-radius-md); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+        <div style="background: var(--cc-bg-surface); border: 1px solid var(--cc-gold-500); border-radius: var(--cc-radius-md); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
           <div>
             <div style="font-size: 12px; color: var(--cc-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Total Daily Cafe/Bar Earnings</div>
             <div style="font-size: 12px; color: var(--cc-neon-green); font-weight: 600;">Shift Reconciled &bull; 100% Balanced</div>

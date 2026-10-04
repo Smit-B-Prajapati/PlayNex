@@ -25,9 +25,9 @@
       gap: 1.25rem;
     }
     .cc-product-card {
-      background: rgba(14, 19, 31, 0.75);
+      background: var(--cc-bg-surface);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--cc-border-medium);
       border-radius: var(--cc-radius-xl);
       padding: 1.25rem;
       display: flex;
@@ -38,8 +38,8 @@
     .cc-product-card:hover {
       transform: translateY(-5px);
       border-color: rgba(212, 175, 55, 0.45);
-      background: rgba(18, 25, 41, 0.85);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(212, 175, 55, 0.15);
+      background: var(--cc-bg-card);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(212, 175, 55, 0.15);
     }
     .cc-product-thumb-box {
       width: 68px;
@@ -47,15 +47,15 @@
       min-width: 68px;
       max-width: 68px;
       border-radius: 14px;
-      background: rgba(8, 11, 18, 0.85);
-      border: 1px solid rgba(212, 175, 55, 0.25);
+      background: var(--cc-bg-primary);
+      border: 1px solid var(--cc-border-medium);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       position: relative;
       flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       transition: all 0.3s ease;
     }
     .cc-product-card:hover .cc-product-thumb-box {
@@ -77,13 +77,13 @@
     
     /* Ultra-Premium Filter Pills */
     .cc-filter-pill-container {
-      background: rgba(14, 19, 31, 0.7);
+      background: var(--cc-bg-surface);
       backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--cc-border-medium);
       border-radius: var(--cc-radius-xl);
       padding: 0.85rem 1rem;
       margin-bottom: 1.5rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
     .cc-filter-pill-row {
       display: flex;
@@ -92,8 +92,8 @@
       align-items: center;
     }
     .cc-filter-pill {
-      background: rgba(22, 29, 46, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--cc-bg-secondary);
+      border: 1px solid var(--cc-border-medium);
       border-radius: 9999px;
       padding: 7px 14px;
       color: var(--cc-text-secondary);
@@ -107,23 +107,23 @@
       user-select: none;
     }
     .cc-filter-pill:hover {
-      background: rgba(32, 42, 66, 0.85);
+      background: var(--cc-bg-card);
       border-color: rgba(212, 175, 55, 0.4);
-      color: #ffffff;
+      color: var(--cc-text-primary);
       transform: translateY(-2px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     }
     .cc-filter-pill.is-active {
       background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(184, 134, 11, 0.12) 100%);
       border-color: var(--cc-gold-400);
-      color: #ffffff;
+      color: var(--cc-text-primary);
       font-weight: 700;
       box-shadow: 0 0 16px rgba(212, 175, 55, 0.25), inset 0 0 8px rgba(212, 175, 55, 0.1);
       transform: translateY(-2px);
     }
     .cc-count-chip {
-      background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--cc-border-medium);
       color: var(--cc-gold-400);
       padding: 1px 7px;
       border-radius: 999px;
@@ -146,7 +146,7 @@
       margin: 0.75rem 0;
     }
     .cc-cart-drawer {
-      background: rgba(14, 19, 31, 0.95);
+      background: var(--cc-bg-surface);
       border: 1px solid var(--cc-border-highlight);
       border-radius: var(--cc-radius-xl);
       padding: var(--cc-space-6);
@@ -168,7 +168,7 @@
       height: 72px;
       min-width: 72px;
       border-radius: var(--cc-radius-md);
-      background: rgba(10, 14, 23, 0.85);
+      background: var(--cc-bg-primary);
       border: 1px solid rgba(212, 175, 55, 0.35);
       display: flex;
       align-items: center;
@@ -182,8 +182,8 @@
       object-fit: cover;
     }
     .cc-preset-pill {
-      background: rgba(22, 29, 46, 0.8);
-      border: 1px solid rgba(212, 175, 55, 0.25);
+      background: var(--cc-bg-secondary);
+      border: 1px solid var(--cc-border-medium);
       border-radius: 999px;
       padding: 3px 9px;
       font-size: 11px;
@@ -195,7 +195,7 @@
     .cc-preset-pill:hover {
       background: rgba(212, 175, 55, 0.2);
       border-color: var(--cc-gold-400);
-      color: #fff;
+      color: var(--cc-text-primary);
     }
     [data-theme="light"] .cc-product-card {
       background: #FFFFFF;
@@ -484,7 +484,7 @@
           Stock has been deducted from the unified shared shelf.
         </p>
 
-        <div style="background: rgba(22, 29, 46, 0.6); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 1rem; text-align: left; display: flex; flex-direction: column; gap: 0.5rem; font-size: 13px;">
+        <div style="background: var(--cc-bg-surface); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 1rem; text-align: left; display: flex; flex-direction: column; gap: 0.5rem; font-size: 13px;">
           <div style="display: flex; justify-content: space-between;">
             <span style="color: var(--cc-text-muted);">Channel:</span>
             <strong id="confirm-shop-channel" style="color: var(--cc-text-primary);">-</strong>

@@ -95,7 +95,7 @@ async function renderCatalog() {
 
   if (filtered.length === 0) {
     container.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--cc-text-muted); background: rgba(22, 29, 46, 0.4); border-radius: var(--cc-radius-lg); border: 1px dashed var(--cc-border-medium);">
+      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--cc-text-muted); background: var(--cc-bg-surface); border-radius: var(--cc-radius-lg); border: 1px dashed var(--cc-border-medium);">
         <div style="font-size: 24px; margin-bottom: 6px;">📦</div>
         <strong style="display: block; font-size: 15px; color: var(--cc-text-primary);">No products found</strong>
         <span style="font-size: 13px;">No items currently listed under '${currentCategoryFilter}'.</span>

@@ -774,7 +774,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const planBadgeClass = planCode === 'gold' ? 'cc-badge-gold' : planCode === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
 
       trackResult.innerHTML = `
-        <div style="background: rgba(14, 19, 31, 0.95); border: 1px solid var(--cc-border-highlight); border-radius: var(--cc-radius-lg); padding: 1.25rem; font-size: 13px; box-shadow: var(--cc-shadow-md);">
+        <div style="background: var(--cc-bg-surface); border: 1px solid var(--cc-border-highlight); border-radius: var(--cc-radius-lg); padding: 1.25rem; font-size: 13px; box-shadow: var(--cc-shadow-md);">
           
           <!-- HEADER -->
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; border-bottom: 1px solid var(--cc-border-subtle); padding-bottom: 0.75rem;">
@@ -818,7 +818,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
 
           <!-- KEY DETAILS STRIP -->
-          <div style="background: rgba(22, 29, 46, 0.6); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 0.75rem 1rem; margin-bottom: 1rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; font-size: 12px;">
+          <div style="background: var(--cc-bg-secondary); border: 1px solid var(--cc-border-subtle); border-radius: var(--cc-radius-md); padding: 0.75rem 1rem; margin-bottom: 1rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; font-size: 12px;">
             <div>
               <span style="color: var(--cc-text-muted);">Assigned Advisor:</span><br>
               <strong style="color: var(--cc-text-primary); font-size: 13px;">${found.staff || 'Pooja Patel (Membership Advisor)'}</strong>

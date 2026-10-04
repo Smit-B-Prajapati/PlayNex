@@ -356,7 +356,7 @@
 .cc-textarea {
   width: 100%;
   box-sizing: border-box;
-  background: rgba(22, 29, 46, 0.6);
+  background: var(--cc-input-bg, var(--cc-bg-surface));
   border: 1px solid var(--cc-border-medium);
   border-radius: var(--cc-radius-sm);
   padding: 12px 16px;
@@ -372,7 +372,7 @@
 .cc-textarea:focus {
   border-color: var(--cc-gold-500);
   box-shadow: 0 0 0 3px var(--cc-gold-glow);
-  background: rgba(22, 29, 46, 0.9);
+  background: var(--cc-bg-surface);
 }
 
 .cc-input::placeholder,
@@ -876,7 +876,7 @@
   color: var(--cc-text-muted);
   padding: 16px 20px;
   border-bottom: 1px solid var(--cc-border-medium);
-  background: rgba(22, 29, 46, 0.5);
+  background: var(--cc-table-header-bg, var(--cc-bg-surface));
   white-space: nowrap;
 }
 
