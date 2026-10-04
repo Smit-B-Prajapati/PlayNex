@@ -3,7 +3,7 @@
     'name': 'Champions Club — Sports Club Management System',
     'version': '1.0.0',
     'category': 'Sports & Recreation',
-    'summary': 'Digital backbone for sports club: Enquiries, Memberships, Courts, Pro Shop, and Bar POS',
+    'summary': 'Digital backbone for sports club: Enquiries, Memberships, Courts, Pro Shop, and Cafe/Bar',
     'description': """
 CHAMPIONS CLUB Management System
 ================================
@@ -13,7 +13,7 @@ Authoritative implementation of Sports Club Management:
 - Sports Facilities: Tennis, Cricket, and Badminton courts
 - 1-Hour Court Bookings with 30-Minute Staggered Slots
 - Pro Shop Shared Inventory: Rackets, Balls, Shoes, Accessories, and Apparel
-- Bar & Cafeteria POS: Orders, Tables, Member Running Tabs, Shifts
+- Cafe & Bar POS: Orders, Tables, Member Running Tabs, Shifts
 - Multi-Payment Support: Cash, Card, and UPI
 - Membership Plans: Gold, Silver, Junior with Configurable Entitlements
     """,

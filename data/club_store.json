@@ -45,7 +45,7 @@
       "stock": 12,
       "minAlert": 4,
       "desc": "High-modulus graphite frame with synthetic gut stringing.",
-      "image": "https://images.unsplash.com/photo-1617083934555-563d41e7374c?auto=format&fit=crop&w=400&q=80"
+      "image": "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=400&q=80"
     },
     {
       "id": "p2",
@@ -257,49 +257,49 @@
       "source": "website",
       "plan": "silver",
       "message": "Seeking regular squash partner sparring and court booking.",
-      "stage": "followup",
-      "staff": "Rohan Verma (Front Desk Lead)",
-      "quoteSent": false,
-      "quoteAmount": 14000,
-      "followups": [
-        {
-          "time": "2026-10-02 17:30",
-          "note": "Discussed Silver Tier rates and off-peak sparring times."
-        }
-      ],
-      "memberId": null
-    },
-    {
-      "id": "CC-ENQ-0009",
-      "rawId": "CC-ENQ-0009",
-      "name": "Kavita Nair",
-      "phone": "+91 98205 66778",
-      "email": "kavita.n@example.com",
+      "st"CC-ENQ-0005",
+      "rawId": "CC-ENQ-0005",
+      "name": "Rohan Mathur",
+      "phone": "+91 98112 33445",
+      "email": "rohan.mathur@example.com",
       "source": "website",
       "plan": "gold",
-      "message": "Evaluating premium facilities for family tennis training.",
-      "stage": "followup",
+      "message": "Interested in Gold membership and private weekend clay court trial session.",
+      "stage": "new",
       "staff": "Pooja Patel (Membership Advisor)",
       "quoteSent": false,
       "quoteAmount": 24000,
       "followups": [
         {
-          "time": "2026-10-02 11:00",
-          "note": "Front desk tour completed with family."
-        },
-        {
-          "time": "2026-10-03 10:15",
-          "note": "Scheduled trial court session & coach assessment for Sunday."
+          "time": "2026-10-03 14:20",
+          "note": "New web enquiry submitted through Club portal."
         }
       ],
       "memberId": null
     },
     {
-      "id": "CC-ENQ-0008",
-      "rawId": "CC-ENQ-0008",
-      "name": "Devraj Chauhan",
-      "phone": "+91 98330 11229",
-      "email": "devraj.c@example.com",
+      "id": "CC-ENQ-0001",
+      "rawId": "CC-ENQ-0001",
+      "name": "Mevawala Hetal Jiteshkumar",
+      "phone": "7767689999",
+      "email": "mevawalatisha@gmail.com",
+      "source": "website",
+      "plan": "gold",
+      "message": "",
+      "stage": "new",
+      "staff": "Pooja Patel (Membership Advisor)",
+      "quoteSent": false,
+      "quoteAmount": 24000,
+      "followups": [
+        {
+          "time": "2026-10-03 20:40",
+          "note": "Website enquiry registered from website. Stage: New Enquiry."
+        }
+      ],
+      "memberId": null
+    }
+  ]
+}    "email": "devraj.c@example.com",
       "source": "website",
       "plan": "gold",
       "message": "Corporate executive looking for Gold membership with priority court booking.",
