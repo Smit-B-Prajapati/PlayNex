@@ -174,83 +174,7 @@ function updateMemberDisplayCard() {
   updateFormSummary();
 }
 
-function renderSwitchMembersList(filterText = '') {
-  const container = document.getElementById('switch-members-list');
-  if (!container) return;
-  container.innerHTML = '';
 
-  const members = getDynamicMembers();
-  const filtered = members.filter(m => {
-    if (!filterText) return true;
-    const q = filterText.toLowerCase();
-    return m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q) || m.plan.toLowerCase().includes(q);
-  });
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<div style="color: var(--cc-text-muted); font-size: 12px; padding: 1rem; text-align: center;">No registered members found.</div>';
-    return;
-  }
-
-  const current = getCurrentMember();
-
-  filtered.forEach(m => {
-    const isCurrent = current && current.id === m.id;
-    const isCancelled = m.state === 'cancelled' || m.state === 'expired' || m.state === 'inactive';
-    const planClass = m.plan === 'gold' ? 'cc-badge-gold' : m.plan === 'silver' ? 'cc-badge-silver' : 'cc-badge-junior';
-    const planBadgeHtml = isCancelled
-      ? `<span class="cc-badge cc-badge-danger" style="font-size: 9px; padding: 1px 5px;">${m.state.toUpperCase()}</span>`
-      : `<span class="cc-badge ${planClass}" style="font-size: 9px; padding: 1px 5px;">${m.plan.toUpperCase()}</span>`;
-
-    const item = document.createElement('div');
-    item.className = 'cc-card cc-card-glass';
-    item.style.cssText = `
-      padding: 10px 14px;
-      cursor: pointer;
-      border-color: ${isCurrent ? 'var(--cc-gold-500)' : 'var(--cc-border-medium)'};
-      background: ${isCurrent ? 'rgba(212, 175, 55, 0.12)' : 'rgba(22, 29, 46, 0.6)'};
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all var(--cc-transition-fast);
-    `;
-
-    item.innerHTML = `
-      <div>
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <strong style="color: var(--cc-text-primary); font-size: 14px;">${m.name}</strong>
-          ${planBadgeHtml}
-        </div>
-        <div class="cc-text-mono" style="font-size: 11px; color: var(--cc-gold-400);">${m.id} &bull; <span style="color: var(--cc-text-muted);">${m.rateLabel}</span></div>
-      </div>
-      <div>
-        ${isCurrent ? '<span class="cc-badge cc-badge-active" style="font-size: 10px;">Active</span>' : '<button type="button" class="cc-btn cc-btn-secondary cc-btn-sm" style="font-size: 11px; padding: 3px 10px;">Select</button>'}
-      </div>
-    `;
-
-    item.addEventListener('click', () => {
-      const hiddenInput = document.getElementById('booking-member-id');
-      if (hiddenInput) hiddenInput.value = m.id;
-      if (window.ClubMemberAuth) {
-        window.ClubMemberAuth.login(m.name, m.phone || '+91 98234 11201');
-      } else {
-        sessionStorage.setItem('cc_portal_member', JSON.stringify({
-          member_id: m.id,
-          member_code: m.id,
-          name: m.name,
-          plan_name: m.plan.toUpperCase(),
-          tier_code: m.plan,
-          state: m.state
-        }));
-      }
-      updateMemberDisplayCard();
-      const modal = document.getElementById('modal-switch-member');
-      if (modal) modal.classList.remove('is-open');
-      document.body.style.overflow = '';
-    });
-
-    container.appendChild(item);
-  });
-}
 
 let bookingsData = (window.ClubDataStore && window.ClubDataStore.getBookings) ? window.ClubDataStore.getBookings() : [
   {
@@ -706,25 +630,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateFormSummary();
   renderAdminBookings();
 
-  // Member Switch Button & Search Modal
-  const btnSwitchMember = document.getElementById('btn-switch-member');
-  const switchModal = document.getElementById('modal-switch-member');
-  const switchSearch = document.getElementById('switch-member-search');
 
-  if (btnSwitchMember && switchModal) {
-    btnSwitchMember.addEventListener('click', () => {
-      if (switchSearch) switchSearch.value = '';
-      renderSwitchMembersList('');
-      switchModal.classList.add('is-open');
-      document.body.style.overflow = 'hidden';
-    });
-  }
-
-  if (switchSearch) {
-    switchSearch.addEventListener('input', (e) => {
-      renderSwitchMembersList(e.target.value);
-    });
-  }
 
   // Court Dropdown Change
   const courtSelect = document.getElementById('booking-court-select');

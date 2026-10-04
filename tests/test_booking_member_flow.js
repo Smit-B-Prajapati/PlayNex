@@ -14,15 +14,15 @@ const html = fs.readFileSync(htmlPath, 'utf8');
 assert(!html.includes('id="booking-member-select"'), 'Old hardcoded member select box should not exist');
 console.log('✓ [DOM AUDIT] Old static member select box successfully eliminated.');
 
-// Check Authenticated Club Member Card exists
+// Check Authenticated Club Member Card exists and Switch Member feature is eliminated
 assert(html.includes('id="member-active-badge-card"'), 'Authenticated member card must exist');
 assert(html.includes('id="member-card-id"'), 'Member ID element must exist');
 assert(html.includes('id="member-card-name"'), 'Member Name element must exist');
 assert(html.includes('id="member-card-tier-badge"'), 'Member Tier Badge element must exist');
 assert(html.includes('id="member-card-rate-label"'), 'Member Entitlement element must exist');
-assert(html.includes('id="btn-switch-member"'), 'Switch member button must exist');
-assert(html.includes('id="modal-switch-member"'), 'Switch member modal must exist');
-console.log('✓ [DOM AUDIT] Authenticated Member Card and Switch Member Modal components present.');
+assert(!html.includes('id="btn-switch-member"'), 'Switch member button must be removed');
+assert(!html.includes('id="modal-switch-member"'), 'Switch member modal must be removed');
+console.log('✓ [DOM AUDIT] Authenticated Logged-In Member Card present; Switch Member features strictly removed.');
 
 // 2. Audit js/booking_manager.js logic
 const jsPath = path.join(__dirname, '../js/booking_manager.js');
@@ -31,8 +31,7 @@ const jsCode = fs.readFileSync(jsPath, 'utf8');
 assert(jsCode.includes('function getDynamicMembers()'), 'getDynamicMembers function must be defined');
 assert(jsCode.includes('function getCurrentMember()'), 'getCurrentMember function must be defined');
 assert(jsCode.includes('function updateMemberDisplayCard()'), 'updateMemberDisplayCard function must be defined');
-assert(jsCode.includes('function renderSwitchMembersList('), 'renderSwitchMembersList function must be defined');
-console.log('✓ [LOGIC AUDIT] Dynamic member resolution and display functions present.');
+console.log('✓ [LOGIC AUDIT] Logged-in member session resolution and display functions present.');
 
 // 3. Simulate Member Session and Tier Rates
 // Mock ClubDataStore with custom / new members

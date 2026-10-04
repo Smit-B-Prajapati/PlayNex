@@ -265,10 +265,8 @@
             <!-- Member Identity Display Section (No select box needed) -->
             <div id="section-member-select" class="cc-form-group">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <label class="cc-label" style="margin-bottom: 0;">Authenticated Club Member</label>
-                <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" id="btn-switch-member" style="font-size: 11px; color: var(--cc-gold-400); padding: 2px 8px; text-decoration: underline;">
-                  🔄 Switch Member
-                </button>
+                <label class="cc-label" style="margin-bottom: 0;">Logged-In Member Account</label>
+                <span class="cc-badge cc-badge-active" id="member-logged-in-indicator" style="font-size: 10px;">Authenticated</span>
               </div>
 
               <!-- Dynamic Member Identity Card -->
@@ -430,40 +428,7 @@
     </div>
   </div>
 
-  <!-- ==========================================
-       MODAL: SWITCH / SELECT REGISTERED MEMBER
-       ========================================== -->
-  <div class="cc-modal-backdrop" id="modal-switch-member" role="dialog" aria-modal="true" aria-labelledby="modal-switch-title">
-    <div class="cc-modal" style="max-width: 520px;">
-      <div class="cc-modal-header">
-        <div>
-          <span class="cc-eyebrow" style="color: var(--cc-gold-400);">Roster &amp; Member Accounts</span>
-          <h3 class="cc-modal-title" id="modal-switch-title">Select Member for Booking</h3>
-        </div>
-        <button class="cc-modal-close" data-cc-modal-close aria-label="Close dialog">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-      <div class="cc-modal-body">
-        <p class="cc-body-xs" style="color: var(--cc-text-muted); margin-bottom: 1rem;">
-          Select any active club member below. All newly enrolled members and CRM conversions appear dynamically.
-        </p>
-        
-        <div class="cc-form-group" style="margin-bottom: 1rem;">
-          <input type="text" id="switch-member-search" class="cc-input" placeholder="Search members by name, ID or tier..." style="font-size: 13px;">
-        </div>
 
-        <div id="switch-members-list" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 280px; overflow-y: auto;">
-          <!-- Dynamically populated from ClubDataStore.getMembers() -->
-        </div>
-      </div>
-      <div class="cc-modal-footer">
-        <button type="button" class="cc-btn cc-btn-ghost cc-btn-sm" data-cc-modal-close>Close</button>
-      </div>
-    </div>
-  </div>
 
   <script src="js/club_data_store.js"></script>
   <script src="js/club_api.js"></script>
