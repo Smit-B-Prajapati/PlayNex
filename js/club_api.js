@@ -366,19 +366,51 @@ const ClubAPI = (function() {
       if (res && res.success && res.reference) {
         if (window.ClubDataStore && res.lead) {
           const leads = window.ClubDataStore.getLeads();
-          leads.unshift(res.lead);
+          const existingIdx = leads.findIndex(l => (l.id && l.id === res.lead.id) || (l.rawId && l.rawId === res.lead.id) || (enquiryData.phone && l.phone && String(l.phone).replace(/\D/g, '') === String(enquiryData.phone).replace(/\D/g, '')));
+          if (existingIdx >= 0) {
+            leads[existingIdx] = res.lead;
+          } else {
+            leads.unshift(res.lead);
+          }
           window.ClubDataStore.saveLeads(leads);
         }
-        showSuccess(`Enquiry registered! Reference: ${res.reference}`);
+        if (res.is_existing) {
+          showSuccess(`Existing enquiry ${res.reference} recognized & updated with your latest message.`);
+        } else {
+          showSuccess(`Enquiry registered! Reference: ${res.reference}`);
+        }
         return res;
       }
       if (res && res.error) {
         showError(res.error, 'Submission Failed');
         throw new Error(res.error);
       }
-      // Local Data Store Fallback
+      // Local Data Store Fallback with duplicate prevention
       if (window.ClubDataStore) {
         const leads = window.ClubDataStore.getLeads();
+        const normPhone = (enquiryData.phone || '').replace(/\D/g, '');
+        const normEmail = (enquiryData.email || '').trim().toLowerCase();
+        const existingLead = leads.find(l => {
+          const lp = (l.phone || '').replace(/\D/g, '');
+          const le = (l.email || '').trim().toLowerCase();
+          if (normPhone && lp && (normPhone === lp || normPhone.endsWith(lp) || lp.endsWith(normPhone))) return true;
+          if (normEmail && le && normEmail === le) return true;
+          return false;
+        });
+
+        if (existingLead) {
+          existingLead.followups = existingLead.followups || [];
+          existingLead.followups.push({
+            time: new Date().toISOString().replace('T', ' ').substring(0, 16),
+            note: `Repeat enquiry received from ${enquiryData.source || 'Website'}. Message: ${enquiryData.message || 'Expressed ongoing interest.'}`
+          });
+          if (enquiryData.plan) existingLead.plan = enquiryData.plan;
+          if (enquiryData.message && !existingLead.message) existingLead.message = enquiryData.message;
+          window.ClubDataStore.saveLeads(leads);
+          showSuccess(`Existing enquiry ${existingLead.id} updated!`);
+          return { success: true, is_existing: true, reference: existingLead.id, id: existingLead.id, name: existingLead.id, lead: existingLead };
+        }
+
         const refCode = `CC-ENQ-000${leads.length + 1}`;
         const newLead = {
           id: refCode,
@@ -401,7 +433,7 @@ const ClubAPI = (function() {
         leads.unshift(newLead);
         window.ClubDataStore.saveLeads(leads);
         showSuccess(`Enquiry ${refCode} registered!`);
-        return { success: true, reference: refCode, id: refCode, name: refCode, lead: newLead };
+        return { success: true, is_existing: false, reference: refCode, id: refCode, name: refCode, lead: newLead };
       }
       return null;
     },

@@ -328,7 +328,7 @@
   ],
   "cc_shop_orders": [
     {
-      "id": "CC-SO-0005",
+      "id": "CC-SO-0006",
       "memberId": "GUEST",
       "channel": "counter",
       "customer": "Inventory Test Buyer",
@@ -343,6 +343,25 @@
         }
       ],
       "total": 17000.0,
+      "state": "cancelled",
+      "date": "2026-10-04"
+    },
+    {
+      "id": "CC-SO-0005",
+      "memberId": "GUEST",
+      "channel": "counter",
+      "customer": "Inventory Test Buyer",
+      "fulfillment": "Immediate Counter Handover",
+      "items": [
+        {
+          "id": "p1",
+          "sku": "CC-RCK-01",
+          "name": "Pro Tour Carbon Tennis Racket",
+          "price": 8500,
+          "qty": 2
+        }
+      ],
+      "total": 17000,
       "state": "cancelled",
       "date": "2026-10-04"
     },
@@ -357,11 +376,11 @@
           "id": "p1",
           "sku": "CC-RCK-01",
           "name": "Pro Tour Carbon Tennis Racket",
-          "price": 8500.0,
+          "price": 8500,
           "qty": 2
         }
       ],
-      "total": 17000.0,
+      "total": 17000,
       "state": "cancelled",
       "date": "2026-10-04"
     },
@@ -376,11 +395,11 @@
           "id": "p1",
           "sku": "CC-RCK-01",
           "name": "Pro Tour Carbon Tennis Racket",
-          "price": 8500.0,
+          "price": 8500,
           "qty": 2
         }
       ],
-      "total": 17000.0,
+      "total": 17000,
       "state": "cancelled",
       "date": "2026-10-04"
     },
@@ -503,11 +522,44 @@
     }
   ],
   "cc_bar_revenue": {
-    "cash": 240.0,
-    "card": 450.0,
-    "upi": 320.0
+    "cash": 240,
+    "card": 450,
+    "upi": 320
   },
   "cc_leads": [
+    {
+      "id": "CC-ENQ-0005",
+      "rawId": "CC-ENQ-0005",
+      "name": "Aanya Sharma",
+      "phone": "9999988888",
+      "email": "aanya.sharma@example.com",
+      "source": "website",
+      "plan": "gold",
+      "message": "Interested in weekend tennis memberships.",
+      "stage": "contacted",
+      "staff": "Pooja Patel (Membership Advisor)",
+      "quoteSent": false,
+      "quoteAmount": 24000,
+      "followups": [
+        {
+          "time": "2026-10-04 09:07",
+          "note": "Website enquiry registered from website. Stage: New Enquiry."
+        },
+        {
+          "time": "2026-10-03 20:42",
+          "note": "Staff reached out to visitor via phone/WhatsApp (Pooja Patel (Membership Advisor))."
+        },
+        {
+          "time": "2026-10-04 09:07",
+          "note": "Repeat enquiry received via website. Note: Checking back regarding court timings. Updated interest to SILVER plan."
+        },
+        {
+          "time": "2026-10-04 09:08",
+          "note": "Repeat enquiry received via website. Note: Interested in weekend tennis memberships. Updated interest to GOLD plan."
+        }
+      ],
+      "memberId": null
+    },
     {
       "id": "CC-ENQ-0004",
       "rawId": "CC-ENQ-0004",
@@ -525,39 +577,6 @@
         {
           "time": "2026-10-03 20:40",
           "note": "Website enquiry registered from website. Stage: New Enquiry."
-        }
-      ],
-      "memberId": null
-    },
-    {
-      "id": "CC-ENQ-0003",
-      "rawId": "CC-ENQ-0003",
-      "name": "Madhu",
-      "phone": "9999922222",
-      "email": "madhu@gmail.com",
-      "source": "website",
-      "plan": "gold",
-      "message": "",
-      "stage": "followup",
-      "staff": "Pooja Patel (Membership Advisor)",
-      "quoteSent": false,
-      "quoteAmount": 24000,
-      "followups": [
-        {
-          "time": "2026-10-03 20:40",
-          "note": "Website enquiry registered from website. Stage: New Enquiry."
-        },
-        {
-          "time": "2026-10-03 16:05",
-          "note": "Hiii"
-        },
-        {
-          "time": "2026-10-03 16:10",
-          "note": "Staff reached out to visitor via phone/WhatsApp."
-        },
-        {
-          "time": "2026-10-03 16:05",
-          "note": "hello"
         }
       ],
       "memberId": null
@@ -619,7 +638,7 @@
       "startTime": "06:00",
       "endTime": "07:00",
       "duration": "1 Hour",
-      "durationHours": 1.0,
+      "durationHours": 1,
       "bookingType": "member",
       "memberId": "CC-MEM-00105",
       "playerName": "Siddharth Rao (GOLD)",
@@ -636,7 +655,7 @@
       "startTime": "14:00",
       "endTime": "15:00",
       "duration": "1 Hour",
-      "durationHours": 1.0,
+      "durationHours": 1,
       "bookingType": "walkin",
       "memberId": null,
       "playerName": "Novak Djokovic",
@@ -653,7 +672,7 @@
       "startTime": "09:00",
       "endTime": "12:00",
       "duration": "3 Hours",
-      "durationHours": 3.0,
+      "durationHours": 3,
       "bookingType": "member",
       "memberId": "CC-MEM-00101",
       "playerName": "David Vance (GOLD)",
@@ -670,7 +689,7 @@
       "startTime": "07:00",
       "endTime": "09:00",
       "duration": "2 Hours",
-      "durationHours": 2.0,
+      "durationHours": 2,
       "bookingType": "member",
       "memberId": "CC-MEM-00102",
       "playerName": "Elena Rostova (SILVER)",
@@ -687,7 +706,7 @@
       "startTime": "06:00",
       "endTime": "07:00",
       "duration": "1 Hour",
-      "durationHours": 1.0,
+      "durationHours": 1,
       "bookingType": "member",
       "memberId": "CC-MEM-00103",
       "playerName": "Leo Chen (JUNIOR)",

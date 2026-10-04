@@ -1006,7 +1006,88 @@ class ClubRequestHandler(SimpleHTTPRequestHandler):
             store = load_store()
             leads = store.get('cc_leads', [])
             
-            # Determine next reference ID
+            name = (data.get('partner_name') or data.get('name') or 'Prospective Member').strip()
+            phone = str(data.get('phone') or '').strip()
+            email = str(data.get('email') or '').strip()
+            plan = (data.get('plan_code') or data.get('plan') or 'gold').lower()
+            source = data.get('source') or 'website'
+            msg = (data.get('message') or '').strip()
+            quote_amt = 24000 if plan == 'gold' else 14000 if plan == 'silver' else 8000
+
+            import datetime
+            now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+            # Helper to normalize phone numbers (digits only)
+            def norm_phone(p):
+                digits = "".join(c for c in str(p) if c.isdigit())
+                if len(digits) == 12 and digits.startswith('91'):
+                    return digits[2:]
+                return digits
+
+            phone_digits = norm_phone(phone)
+            email_lower = email.lower()
+            name_lower = name.lower()
+
+            existing_lead = None
+            for l in leads:
+                l_phone_digits = norm_phone(l.get('phone', ''))
+                l_email_lower = str(l.get('email', '')).strip().lower()
+                l_name_lower = str(l.get('name', '')).strip().lower()
+
+                # Match on phone
+                if phone_digits and l_phone_digits and (phone_digits == l_phone_digits or phone_digits in l_phone_digits or l_phone_digits in phone_digits):
+                    existing_lead = l
+                    break
+                # Match on email
+                if email_lower and l_email_lower and email_lower == l_email_lower:
+                    existing_lead = l
+                    break
+                # Match on name + contact similarity
+                if name_lower and l_name_lower and name_lower == l_name_lower and (phone or email):
+                    if (phone_digits and l_phone_digits and phone_digits == l_phone_digits) or (email_lower and l_email_lower and email_lower == l_email_lower):
+                        existing_lead = l
+                        break
+
+            if existing_lead:
+                # Deduplication: Lead already exists. Append new interaction to audit log without creating duplicate
+                note_text = f"Repeat enquiry received via {source}."
+                if msg:
+                    note_text += f" Note: {msg}"
+                if plan and plan != (existing_lead.get('plan') or '').lower():
+                    note_text += f" Updated interest to {plan.upper()} plan."
+                    existing_lead['plan'] = plan
+                    if not existing_lead.get('quoteSent'):
+                        existing_lead['quoteAmount'] = quote_amt
+
+                if msg and not existing_lead.get('message'):
+                    existing_lead['message'] = msg
+
+                existing_lead.setdefault('followups', []).append({
+                    'time': now_str,
+                    'note': note_text
+                })
+
+                store['cc_leads'] = leads
+                save_store(store)
+
+                lead_ref = existing_lead.get('id') or existing_lead.get('rawId')
+                payload = json.dumps({
+                    'success': True,
+                    'is_existing': True,
+                    'reference': lead_ref,
+                    'id': lead_ref,
+                    'name': lead_ref,
+                    'lead': existing_lead,
+                    'message': f"Existing enquiry found for {existing_lead.get('name')} ({lead_ref}). Follow-up interaction logged."
+                }).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            # If brand new lead, determine next reference ID
             max_num = 0
             for l in leads:
                 lid = str(l.get('id', ''))
@@ -1019,21 +1100,10 @@ class ClubRequestHandler(SimpleHTTPRequestHandler):
                         pass
             
             new_id_num = max(max_num + 1, len(leads) + 1)
-            ref_code = f"CC-ENQ-00{String(new_id_num).zfill(2) if 'String' in globals() else str(new_id_num).zfill(2)}"
-            # Standard formatting: CC-ENQ-0005 or CC-ENQ-0038
             if new_id_num < 100:
                 ref_code = f"CC-ENQ-00{str(new_id_num).zfill(2)}"
             else:
                 ref_code = f"CC-ENQ-{str(new_id_num).zfill(4)}"
-
-            name = data.get('partner_name') or data.get('name') or 'Prospective Member'
-            phone = data.get('phone') or ''
-            email = data.get('email') or ''
-            plan = data.get('plan_code') or data.get('plan') or 'gold'
-            source = data.get('source') or 'website'
-            msg = data.get('message') or ''
-
-            quote_amt = 24000 if plan == 'gold' else 14000 if plan == 'silver' else 8000
 
             new_lead = {
                 'id': ref_code,
@@ -1049,7 +1119,7 @@ class ClubRequestHandler(SimpleHTTPRequestHandler):
                 'quoteSent': False,
                 'quoteAmount': quote_amt,
                 'followups': [
-                    {'time': '2026-10-03 20:40', 'note': f"Website enquiry registered from {source}. Stage: New Enquiry."}
+                    {'time': now_str, 'note': f"Website enquiry registered from {source}. Stage: New Enquiry."}
                 ],
                 'memberId': None
             }
@@ -1060,6 +1130,7 @@ class ClubRequestHandler(SimpleHTTPRequestHandler):
 
             payload = json.dumps({
                 'success': True,
+                'is_existing': False,
                 'reference': ref_code,
                 'id': ref_code,
                 'name': ref_code,

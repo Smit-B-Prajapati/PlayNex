@@ -2387,12 +2387,12 @@
 
   async function handleCreateEnquiry(event) {
     event.preventDefault();
-    const name = document.getElementById('adm-enq-name')?.value;
-    const phone = document.getElementById('adm-enq-phone')?.value;
-    const email = document.getElementById('adm-enq-email')?.value;
-    const source = document.getElementById('adm-enq-source')?.value;
-    const plan = document.getElementById('adm-enq-plan')?.value;
-    const message = document.getElementById('adm-enq-msg')?.value;
+    const name = document.getElementById('adm-enq-name')?.value?.trim();
+    const phone = document.getElementById('adm-enq-phone')?.value?.trim();
+    const email = document.getElementById('adm-enq-email')?.value?.trim();
+    const source = document.getElementById('adm-enq-source')?.value || 'website';
+    const plan = document.getElementById('adm-enq-plan')?.value || 'gold';
+    const message = document.getElementById('adm-enq-msg')?.value?.trim();
 
     let resData = null;
     try {
@@ -2405,34 +2405,66 @@
     } catch (e) {}
 
     const leads = window.ClubDataStore ? window.ClubDataStore.getLeads() : [];
-    const newRef = resData?.reference || `CC-ENQ-00${40 + leads.length + 1}`;
+    const leadRef = resData?.reference || `CC-ENQ-00${40 + leads.length + 1}`;
     
-    if (!leads.find(l => l.id === newRef || l.phone === phone)) {
-      leads.unshift({
-        id: newRef,
-        rawId: newRef,
-        name,
-        phone,
-        email,
-        source,
-        plan,
-        message,
-        stage: 'new',
-        staff: 'Pooja Patel (Membership Advisor)',
-        quoteSent: false,
-        quoteAmount: (window.ClubDataStore?.getPlanBenefits()?.[plan]?.fee) || (plan === 'gold' ? 24000 : plan === 'silver' ? 14000 : 8000),
-        followups: [
-          { time: '2026-10-03 16:45', note: `Enquiry logged via Front Desk. Source: ${source}.` }
-        ],
-        memberId: null
-      });
+    if (resData && resData.lead) {
+      const idx = leads.findIndex(l => (l.id && l.id === resData.lead.id) || (l.rawId && l.rawId === resData.lead.id) || (phone && l.phone && l.phone.replace(/\D/g, '') === phone.replace(/\D/g, '')));
+      if (idx >= 0) {
+        leads[idx] = resData.lead;
+      } else {
+        leads.unshift(resData.lead);
+      }
       window.ClubDataStore.saveLeads(leads);
+    } else {
+      const normPhone = (phone || '').replace(/\D/g, '');
+      const normEmail = (email || '').toLowerCase();
+      const existing = leads.find(l => {
+        const lp = (l.phone || '').replace(/\D/g, '');
+        const le = (l.email || '').toLowerCase();
+        if (normPhone && lp && normPhone === lp) return true;
+        if (normEmail && le && normEmail === le) return true;
+        return false;
+      });
+
+      if (existing) {
+        existing.followups = existing.followups || [];
+        existing.followups.push({
+          time: new Date().toISOString().replace('T', ' ').substring(0, 16),
+          note: `Repeat enquiry received from ${source}. Message: ${message || 'Expressed ongoing interest.'}`
+        });
+        if (plan) existing.plan = plan;
+        window.ClubDataStore.saveLeads(leads);
+      } else {
+        leads.unshift({
+          id: leadRef,
+          rawId: leadRef,
+          name,
+          phone,
+          email,
+          source,
+          plan,
+          message,
+          stage: 'new',
+          staff: 'Pooja Patel (Membership Advisor)',
+          quoteSent: false,
+          quoteAmount: (window.ClubDataStore?.getPlanBenefits()?.[plan]?.fee) || (plan === 'gold' ? 24000 : plan === 'silver' ? 14000 : 8000),
+          followups: [
+            { time: new Date().toISOString().replace('T', ' ').substring(0, 16), note: `Enquiry logged via Front Desk. Source: ${source}.` }
+          ],
+          memberId: null
+        });
+        window.ClubDataStore.saveLeads(leads);
+      }
     }
 
     closeModal('modal-new-enquiry');
     document.getElementById('form-admin-new-enquiry')?.reset();
     renderAllSections();
-    alert(`✓ Visitor enquiry logged! Reference ID: ${newRef}`);
+    if (resData?.is_existing) {
+      alert(`✓ Existing enquiry ${leadRef} for ${name} found! Follow-up activity logged without creating duplicate.`);
+    } else {
+      alert(`✓ Visitor enquiry logged! Reference ID: ${leadRef}`);
+    }
   }
 
   function handleCreateEmployee(event) {
